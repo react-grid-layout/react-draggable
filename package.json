@@ -1,0 +1,28 @@
+{
+  "name": "react-draggable",
+  "version": "0.0.0",
+  "description": "React draggable component",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "script/build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mzabriskie/react-draggable.git"
+  },
+  "keywords": [
+    "react",
+    "draggable"
+  ],
+  "author": "Matt Zabriskie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mzabriskie/react-draggable/issues"
+  },
+  "homepage": "https://github.com/mzabriskie/react-draggable",
+  "devDependencies": {
+    "react": "^0.11.0",
+    "jsx-loader": "^0.11.0"
+  }
+}
