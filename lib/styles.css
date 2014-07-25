@@ -1,6 +1,4 @@
 .react-draggable {
-	cursor: move;
-	display: inline-block;
 	position: relative;
 	-webkit-user-select: none;
 	-moz-user-select: none;
