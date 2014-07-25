@@ -30,28 +30,28 @@ var App = React.createClass({
 				<p>
 					<a href="https://github.com/mzabriskie/react-draggable/blob/master/example/main.js">Demo Source</a>
 				</p>
-				<Draggable>
+				<Draggable zIndex={100}>
 					<div className="box">I can be dragged anywhere</div>
 				</Draggable>
-				<Draggable axis="x">
+				<Draggable axis="x" zIndex={100}>
 					<div className="box">I can only be dragged horizonally</div>
 				</Draggable>
-				<Draggable axis="y">
+				<Draggable axis="y" zIndex={100}>
 					<div className="box">I can only be dragged vertically</div>
 				</Draggable>
-				<Draggable onDrag={this.handleDrag}>
+				<Draggable onDrag={this.handleDrag} zIndex={100}>
 					<div className="box">
 						<div>I track my position</div>
 						<div>top: {this.state.position.top}, left: {this.state.position.left}</div>
 					</div>
 				</Draggable>
-				<Draggable handle="strong">
+				<Draggable handle="strong" zIndex={100}>
 					<div className="box">
 						<strong>Drag here</strong>
 						<div>You must click my handle to drag me</div>
 					</div>
 				</Draggable>
-				<Draggable cancel="strong">
+				<Draggable cancel="strong" zIndex={100}>
 					<div className="box">
 						<strong>Can't drag here</strong>
 						<div>Dragging here works</div>
