@@ -8,7 +8,7 @@ var App = React.createClass({
 	},
 
 	handleDrag: function (e, ui) {
-		console.log(ui.position);
+		console.log('drag');
 	},
 
 	handleStop: function () {
@@ -18,6 +18,10 @@ var App = React.createClass({
 	render: function () {
 		return (
 			<div>
+				<h1>React Draggable</h1>
+				<p>
+					<a href="https://github.com/mzabriskie/react-draggable/blob/master/example/main.js">Demo Source</a>
+				</p>
 				<Draggable
 					onStart={this.handleStart}
 					onDrag={this.handleDrag}
