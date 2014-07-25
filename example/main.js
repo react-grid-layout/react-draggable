@@ -52,6 +52,16 @@ var App = React.createClass({
 						<div>You must click my handle to drag me</div>
 					</div>
 				</Draggable>
+				<Draggable
+					cancel="strong"
+					onStart={this.handleStart}
+					onDrag={this.handleDrag}
+					onStop={this.handleStop}>
+					<div className="box">
+						<strong>Can't drag from here</strong>
+						<div>Dragging from here works fine</div>
+					</div>
+				</Draggable>
 			</div>
 		);
 	}
