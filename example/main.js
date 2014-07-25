@@ -3,16 +3,24 @@ var React = require('react'),
 	Draggable = require('../lib/main');
 
 var App = React.createClass({
+	getInitialState: function () {
+		return {
+			position: {
+				top: 0, left: 0
+			}
+		};
+	},
+
 	handleStart: function (e, ui) {
-		console.log('start');
 	},
 
 	handleDrag: function (e, ui) {
-		console.log('drag');
+		this.setState({
+			position: ui.position
+		});
 	},
 
-	handleStop: function () {
-		console.log('stop');
+	handleStop: function (e, ui) {
 	},
 
 	render: function () {
@@ -22,44 +30,31 @@ var App = React.createClass({
 				<p>
 					<a href="https://github.com/mzabriskie/react-draggable/blob/master/example/main.js">Demo Source</a>
 				</p>
-				<Draggable
-					onStart={this.handleStart}
-					onDrag={this.handleDrag}
-					onStop={this.handleStop}>
+				<Draggable>
 					<div className="box">I can be dragged anywhere</div>
 				</Draggable>
-				<Draggable
-					axis='x'
-					onStart={this.handleStart}
-					onDrag={this.handleDrag}
-					onStop={this.handleStop}>
+				<Draggable axis="x">
 					<div className="box">I can only be dragged horizonally</div>
 				</Draggable>
-				<Draggable
-					axis='y'
-					onStart={this.handleStart}
-					onDrag={this.handleDrag}
-					onStop={this.handleStop}>
+				<Draggable axis="y">
 					<div className="box">I can only be dragged vertically</div>
 				</Draggable>
-				<Draggable
-					handle="strong"
-					onStart={this.handleStart}
-					onDrag={this.handleDrag}
-					onStop={this.handleStop}>
+				<Draggable onDrag={this.handleDrag}>
 					<div className="box">
-						<strong>Handle</strong>
+						<div>I track my position</div>
+						<div>top: {this.state.position.top}, left: {this.state.position.left}</div>
+					</div>
+				</Draggable>
+				<Draggable handle="strong">
+					<div className="box">
+						<strong>Drag here</strong>
 						<div>You must click my handle to drag me</div>
 					</div>
 				</Draggable>
-				<Draggable
-					cancel="strong"
-					onStart={this.handleStart}
-					onDrag={this.handleDrag}
-					onStop={this.handleStop}>
+				<Draggable cancel="strong">
 					<div className="box">
-						<strong>Can't drag from here</strong>
-						<div>Dragging from here works fine</div>
+						<strong>Can't drag here</strong>
+						<div>Dragging here works</div>
 					</div>
 				</Draggable>
 			</div>
