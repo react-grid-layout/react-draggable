@@ -1,4 +1,4 @@
-# react-draggable
+# react-draggable [![Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable)
 
 React draggable component
 
