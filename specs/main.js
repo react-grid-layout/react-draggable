@@ -1,0 +1,1 @@
+require('./draggable.spec.js');
