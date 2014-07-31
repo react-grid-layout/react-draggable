@@ -34,10 +34,10 @@ var App = React.createClass({
 					<div className="box">I can be dragged anywhere</div>
 				</Draggable>
 				<Draggable axis="x" zIndex={100}>
-					<div className="box">I can only be dragged horizonally</div>
+					<div className="box cursor-x">I can only be dragged horizonally</div>
 				</Draggable>
 				<Draggable axis="y" zIndex={100}>
-					<div className="box">I can only be dragged vertically</div>
+					<div className="box cursor-y">I can only be dragged vertically</div>
 				</Draggable>
 				<Draggable onDrag={this.handleDrag} zIndex={100}>
 					<div className="box">
@@ -46,14 +46,14 @@ var App = React.createClass({
 					</div>
 				</Draggable>
 				<Draggable handle="strong" zIndex={100}>
-					<div className="box">
-						<strong>Drag here</strong>
+					<div className="box no-cursor">
+						<strong className="cursor">Drag here</strong>
 						<div>You must click my handle to drag me</div>
 					</div>
 				</Draggable>
 				<Draggable cancel="strong" zIndex={100}>
 					<div className="box">
-						<strong>Can't drag here</strong>
+						<strong className="no-cursor">Can't drag here</strong>
 						<div>Dragging here works</div>
 					</div>
 				</Draggable>
