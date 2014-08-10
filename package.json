@@ -5,7 +5,7 @@
   "main": "lib/main.js",
   "scripts": {
     "test": "script/test --browsers Firefox --single-run",
-    "build": "script/build"
+    "start": "script/build"
   },
   "repository": {
     "type": "git",
