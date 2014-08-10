@@ -50,6 +50,8 @@ var App = React.createClass({
 			//
 			// `cancel` specifies a selector to be used to prevent drag initialization.
 			//
+			// `grid` specifies the x and y that dragging should snap to.
+			//
 			// `zIndex` specifies the zIndex to use while dragging.
 			//
 			// `onStart` is called when dragging starts.
@@ -61,6 +63,7 @@ var App = React.createClass({
 			<Draggable
 				axis="x"
 				handle=".handle"
+				grid={[25, 25]}
 				zIndex={100}
 				onStart={this.handleStart}
 				onDrag={this.handleDrag}
