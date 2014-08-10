@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
-var React = require('react/addons'),
-	TestUtils = React.addons.TestUtils,
-	Draggable = require('../lib/main');
+var React = require('react/addons');
+var TestUtils = React.addons.TestUtils;
+var Draggable = require('../lib/main');
 
 describe('react-draggable', function () {
 	describe('props', function () {
@@ -23,24 +23,26 @@ describe('react-draggable', function () {
 			function handleStop() {}
 
 			var drag = TestUtils.renderIntoDocument(
-					<Draggable
-						axis="y"
-						handle=".handle"
-						cancel=".cancel"
-						zIndex={1000}
-						onStart={handleStart}
-						onDrag={handleDrag}
-						onStop={handleStop}>
-						<div>
-							<div className="handle"/>
-							<div className="cancel"/>
-						</div>
-					</Draggable>
-				);
+				<Draggable
+					axis="y"
+					handle=".handle"
+					cancel=".cancel"
+					grid={[10, 10]}
+					zIndex={1000}
+					onStart={handleStart}
+					onDrag={handleDrag}
+					onStop={handleStop}>
+					<div>
+						<div className="handle"/>
+						<div className="cancel"/>
+					</div>
+				</Draggable>
+			);
 
 			expect(drag.props.axis).toEqual('y');
 			expect(drag.props.handle).toEqual('.handle');
 			expect(drag.props.cancel).toEqual('.cancel');
+			expect(drag.props.grid).toEqual([10, 10]);
 			expect(drag.props.zIndex).toEqual(1000);
 			expect(drag.props.onStart).toEqual(handleStart);
 			expect(drag.props.onDrag).toEqual(handleDrag);
@@ -48,24 +50,24 @@ describe('react-draggable', function () {
 		});
 
 		it('should call onStart when dragging begins', function () {
-			var called = false,
-				drag = TestUtils.renderIntoDocument(
-					<Draggable onStart={function () { called = true; }}>
-						<div/>
-					</Draggable>
-				);
+			var called = false;
+			var drag = TestUtils.renderIntoDocument(
+				<Draggable onStart={function () { called = true; }}>
+					<div/>
+				</Draggable>
+			);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode());
 			expect(called).toEqual(true);
 		});
 
 		it('should call onStop when dragging ends', function () {
-			var called = false,
-				drag = TestUtils.renderIntoDocument(
-					<Draggable onStop={function () { called = true; }}>
-						<div/>
-					</Draggable>
-				);
+			var called = false;
+			var drag = TestUtils.renderIntoDocument(
+				<Draggable onStop={function () { called = true; }}>
+					<div/>
+				</Draggable>
+			);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode());
 			TestUtils.Simulate.mouseUp(drag.getDOMNode());
@@ -83,13 +85,13 @@ describe('react-draggable', function () {
 
 		it('should only initialize dragging onmousedown of handle', function () {
 			var drag = TestUtils.renderIntoDocument(
-					<Draggable handle=".handle">
-						<div>
-							<div className="handle">Handle</div>
-							<div className="content">Lorem ipsum...</div>
-						</div>
-					</Draggable>
-				);
+				<Draggable handle=".handle">
+					<div>
+						<div className="handle">Handle</div>
+						<div className="content">Lorem ipsum...</div>
+					</div>
+				</Draggable>
+			);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.content'));
 			expect(drag.state.dragging).toEqual(false);
@@ -100,13 +102,13 @@ describe('react-draggable', function () {
 
 		it('should not initialize dragging onmousedown of cancel', function () {
 			var drag = TestUtils.renderIntoDocument(
-					<Draggable cancel=".cancel">
-						<div>
-							<div className="cancel">Cancel</div>
-							<div className="content">Lorem ipsum...</div>
-						</div>
-					</Draggable>
-				);
+				<Draggable cancel=".cancel">
+					<div>
+						<div className="cancel">Cancel</div>
+						<div className="content">Lorem ipsum...</div>
+					</div>
+				</Draggable>
+			);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.cancel'));
 			expect(drag.state.dragging).toEqual(false);

@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-var React = require('react'),
-	Draggable = require('../lib/main');
+var React = require('react');
+var Draggable = require('../lib/main');
 
 var App = React.createClass({
 	getInitialState: function () {
@@ -11,16 +11,10 @@ var App = React.createClass({
 		};
 	},
 
-	handleStart: function (e, ui) {
-	},
-
 	handleDrag: function (e, ui) {
 		this.setState({
 			position: ui.position
 		});
-	},
-
-	handleStop: function (e, ui) {
 	},
 
 	render: function () {
@@ -57,6 +51,12 @@ var App = React.createClass({
 						<div>Dragging here works</div>
 					</div>
 				</Draggable>
+        		<Draggable grid={[25, 25]}>
+          			<div className="box">I snap to a 25 x 25 grid</div>
+        		</Draggable>
+        		<Draggable grid={[50, 50]}>
+          			<div className="box">I snap to a 50 x 50 grid</div>
+        		</Draggable>
 			</div>
 		);
 	}
