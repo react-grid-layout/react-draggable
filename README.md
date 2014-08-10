@@ -80,10 +80,10 @@ React.renderComponent(<App/>, document.body);
 ## Contributing
 
 - Fork the project
-- `$ npm install && npm run build`
+- `$ npm install && npm start`
 - Make changes, webpack will watch and rebuild as you make changes
 - Add appropriate tests
-- `$ npm run test`
+- `$ npm test`
 - If tests don't pass, make them pass.
 - Update README with appropriate docs.
 - Commit and PR
