@@ -8,7 +8,9 @@
     "start": "script/build"
   },
   "browserify": {
-    "transform": ["reactify"]
+    "transform": [
+      "reactify"
+    ]
   },
   "repository": {
     "type": "git",
@@ -24,8 +26,10 @@
     "url": "https://github.com/mzabriskie/react-draggable/issues"
   },
   "homepage": "https://github.com/mzabriskie/react-draggable",
+  "dependencies": {
+    "react": "^0.11.1"
+  },
   "devDependencies": {
-    "react": "^0.11.0",
     "jsx-loader": "^0.11.0",
     "karma": "^0.12.19",
     "karma-cli": "0.0.4",
