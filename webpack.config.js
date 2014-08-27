@@ -3,7 +3,7 @@ var DefinePlugin = require('webpack').DefinePlugin;
 module.exports = {
   entry: './lib/main.js',
   output: {
-    filename: './build/bundle.js',
+    filename: './build/ReactDraggable.js',
     library: "ReactDraggable",
     libraryTarget: "var"
   },
