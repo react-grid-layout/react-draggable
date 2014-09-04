@@ -18,7 +18,8 @@
   },
   "keywords": [
     "react",
-    "draggable"
+    "draggable",
+    "react-component"
   ],
   "author": "Matt Zabriskie",
   "license": "MIT",
