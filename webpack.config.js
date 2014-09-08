@@ -1,8 +1,13 @@
 module.exports = {
-	entry: './example/main.js',
+	entry: './lib/main.js',
 	output: {
-		filename: './build/bundle.js'
+    filename: './dist/react-draggable.js',
+    library: 'Draggable',
+    libraryTarget: 'umd'
 	},
+  externals: {
+    'react/addons': 'React'
+  },
 	module: {
 		loaders: [
 			{test: /\.js$/, loader: 'jsx-loader'}

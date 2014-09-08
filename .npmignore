@@ -1,6 +1,5 @@
 idea
 *.iml
-build
 example
 script
 specs
