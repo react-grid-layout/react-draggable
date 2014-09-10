@@ -6,6 +6,8 @@ React draggable component
 
 ```bash
 $ npm install react-draggable
+# or
+$ bower install react-draggable
 ```
 
 ## Demo
