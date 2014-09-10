@@ -3,7 +3,7 @@ module.exports = {
 	output: {
     filename: './dist/react-draggable.js',
     sourceMapFilename: './dist/react-draggable.map',
-    library: 'Draggable',
+    library: 'ReactDraggable',
     libraryTarget: 'umd'
 	},
   externals: {

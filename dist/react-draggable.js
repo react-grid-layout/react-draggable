@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define(["React"], factory);
 	else if(typeof exports === 'object')
-		exports["Draggable"] = factory(require("React"));
+		exports["ReactDraggable"] = factory(require("React"));
 	else
-		root["Draggable"] = factory(root["React"]);
+		root["ReactDraggable"] = factory(root["React"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
