@@ -2,7 +2,7 @@
   "name": "react-draggable",
   "version": "0.1.1",
   "description": "React draggable component",
-  "main": "lib/main.js",
+  "main": "index.js",
   "scripts": {
     "test": "script/test --browsers Firefox --single-run",
     "start": "script/build"

@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
-var Draggable = require('../lib/main');
+var Draggable = require('../index');
 
 describe('react-draggable', function () {
 	describe('props', function () {

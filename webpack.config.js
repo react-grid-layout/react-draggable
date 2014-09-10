@@ -1,5 +1,5 @@
 module.exports = {
-	entry: './lib/main.js',
+	entry: './index.js',
 	output: {
     filename: './dist/react-draggable.js',
     sourceMapFilename: './dist/react-draggable.map',
