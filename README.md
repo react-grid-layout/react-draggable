@@ -54,6 +54,8 @@ var App = React.createClass({
 			//
 			// `grid` specifies the x and y that dragging should snap to.
 			//
+			// `start` specifies the x and y that the dragged item should start at
+			//
 			// `zIndex` specifies the zIndex to use while dragging.
 			//
 			// `onStart` is called when dragging starts.
@@ -66,6 +68,7 @@ var App = React.createClass({
 				axis="x"
 				handle=".handle"
 				grid={[25, 25]}
+				start={{x: 25, y: 25}}
 				zIndex={100}
 				onStart={this.handleStart}
 				onDrag={this.handleDrag}
