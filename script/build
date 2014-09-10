@@ -1,2 +1,8 @@
 #!/bin/sh
-webpack --watch --devtool inline-source-map
+webpack --devtool source-map
+
+node_modules/.bin/uglifyjs dist/react-draggable.js \
+  --output dist/react-draggable.min.js \
+  --source-map dist/react-draggable.min.map \
+  --source-map-url react-draggable.min.map \
+  --compress warnings=false
