@@ -21,6 +21,7 @@
     "specs",
     "index.js",
     "karma.conf.js",
+    "webpack.config.js",
     "package.json"
   ]
 }
