@@ -1,8 +1,7 @@
-idea
-*.iml
+**/.*
 example
 script
 specs
-.travis.yml
+bower.json
 karma.conf.js
 webpack.config.js
