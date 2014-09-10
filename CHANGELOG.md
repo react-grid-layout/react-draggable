@@ -15,3 +15,7 @@
 - Ensure event handlers are destroyed on unmount
 - Adding browserify support
 - Adding bower support
+
+### 0.2.1 (Sep 10, 2014)
+
+- Exporting as ReactDraggable
