@@ -86,24 +86,59 @@ return /******/ (function(modules) { // webpackBootstrap
 				draggable.props.axis === 'x';
 	}
 	
-	function isFunction(fn) {
-		return typeof fn === 'function';
+	function matchesSelector(el, selector) {
+	    var matcheMethods = [
+	            'matches',
+	            'webkitMatchesSelector',
+	            'mozMatchesSelector',
+	            'msMatchesSelector',
+	            'oMatchesSelector'
+	        ],
+	        length = matcheMethods.length;
+	
+	    for (var i = 0; i < length; i++) {
+	        if (typeof el[matcheMethods[i]] === 'function') {
+	            return el[matcheMethods[i]](selector);
+	        }
+	    }
 	}
 	
-	function matchesSelector(el, selector) {
-		if (isFunction(el.matches)) {
-			return el.matches(selector);
-		} else if (isFunction(el.webkitMatchesSelector)) {
-			return el.webkitMatchesSelector(selector);
-		} else if (isFunction(el.mozMatchesSelector)) {
-			return el.mozMatchesSelector(selector);
-		} else if (isFunction(el.msMatchesSelector)) {
-			return el.msMatchesSelector(selector);
-		} else if (isFunction(el.oMatchesSelector)) {
-			return el.oMatchesSelector(selector);
-		} else if (isFunction(el.webkitMatchesSelector)) {
-			return el.webkitMatchesSelector(selector);
-		}
+	// @credits: http://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
+	var isTouchDevice = 'ontouchstart' in window // works on most browsers
+	    || 'onmsgesturechange' in window; // works on ie10 on ms surface
+	
+	function isMultiTouch(e) {
+	    return e.touches && Array.isArray(e.touches) && e.touches.length > 1
+	}
+	
+	/**
+	 * simple abstraction for dragging events names
+	 * */
+	var dragEventFor = (function () {
+	    var eventsFor = {
+	        touch: {
+	            start: 'touchstart',
+	            move: 'touchmove',
+	            end: 'touchend'
+	        },
+	        mouse: {
+	            start: 'mousedown',
+	            move: 'mousemove',
+	            end: 'mouseup'
+	        }
+	    };
+	    return eventsFor[isTouchDevice ? 'touch' : 'mouse'];
+	})();
+	
+	/**
+	 * get {clientX, clientY} positions of control
+	 * */
+	function getControlPosition(e) {
+	    var position = !isTouchDevice ? e : e.touches[0];
+	    return {
+	        clientX: position.clientX,
+	        clientY: position.clientY
+	    }
 	}
 	
 	function addEvent(el, event, handler) {
@@ -313,8 +348,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		componentWillUnmount: function() {
 			// Remove any leftover event handlers
-			removeEvent(window, 'mousemove', this.handleMouseMove);
-			removeEvent(window, 'mouseup', this.handleMouseUp);
+			removeEvent(window, dragEventFor['move'], this.handleDrag);
+			removeEvent(window, dragEventFor['end'], this.handleDragEnd);
 		},
 	
 		getDefaultProps: function () {
@@ -351,7 +386,11 @@ return /******/ (function(modules) { // webpackBootstrap
 			};
 		},
 	
-		handleMouseDown: function (e) {
+		handleDragStart: function (e) {
+	        // prevent multi-touch events
+	        if (isMultiTouch(e)) {
+	            return
+	        }
 			// Make it possible to attach event handlers on top of this one
 			this.props.onMouseDown(e);
 	
@@ -363,11 +402,13 @@ return /******/ (function(modules) { // webpackBootstrap
 				return;
 			}
 	
+	        var dragPoint = getControlPosition(e);
+	
 			// Initiate dragging
 			this.setState({
 				dragging: true,
-				offsetX: e.clientX,
-				offsetY: e.clientY,
+				offsetX: dragPoint.clientX,
+				offsetY: dragPoint.clientY,
 				startX: parseInt(node.style.left, 10) || 0,
 				startY: parseInt(node.style.top, 10) || 0
 			});
@@ -376,11 +417,11 @@ return /******/ (function(modules) { // webpackBootstrap
 			this.props.onStart(e, createUIEvent(this));
 	
 			// Add event handlers
-			addEvent(window, 'mousemove', this.handleMouseMove);
-			addEvent(window, 'mouseup', this.handleMouseUp);
+			addEvent(window, dragEventFor['move'], this.handleDrag);
+			addEvent(window, dragEventFor['end'], this.handleDragEnd);
 		},
 	
-		handleMouseUp: function (e) {
+		handleDragEnd: function (e) {
 			// Short circuit if not currently dragging
 			if (!this.state.dragging) {
 				return;
@@ -395,14 +436,16 @@ return /******/ (function(modules) { // webpackBootstrap
 			this.props.onStop(e, createUIEvent(this));
 	
 			// Remove event handlers
-			removeEvent(window, 'mousemove', this.handleMouseMove);
-			removeEvent(window, 'mouseup', this.handleMouseUp);
+	        removeEvent(window, dragEventFor['move'], this.handleDrag);
+	        removeEvent(window, dragEventFor['end'], this.handleDragEnd);
 		},
 	
-		handleMouseMove: function (e) {
+		handleDrag: function (e) {
+	        var dragPoint = getControlPosition(e);
+	
 			// Calculate top and left
-			var clientX = (this.state.startX + (e.clientX - this.state.offsetX));
-			var clientY = (this.state.startY + (e.clientY - this.state.offsetY));
+	        var clientX = (this.state.startX + (dragPoint.clientX - this.state.offsetX));
+	        var clientY = (this.state.startY + (dragPoint.clientY - this.state.offsetY));
 	
 			// Snap to grid if prop has been provided
 			if (Array.isArray(this.props.grid)) {
@@ -448,8 +491,15 @@ return /******/ (function(modules) { // webpackBootstrap
 			return React.addons.cloneWithProps(React.Children.only(this.props.children), {
 				style: style,
 				className: 'react-draggable',
-				onMouseUp: this.handleMouseUp,
-				onMouseDown: this.handleMouseDown
+	
+				onMouseDown: this.handleDragStart,
+				onTouchStart: function(ev){
+	                ev.preventDefault(); // prevent for scroll
+	                return this.handleDragStart.apply(this, arguments);
+	            }.bind(this),
+	
+				onMouseUp: this.handleDragEnd,
+				onTouchEnd: this.handleDragEnd
 			});
 		}
 	});
@@ -642,6 +692,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }
 /******/ ])
-})
+});
 
 //# sourceMappingURL=react-draggable.map
