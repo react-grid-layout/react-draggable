@@ -115,9 +115,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var isTouchDevice = 'ontouchstart' in window // works on most browsers
 	    || 'onmsgesturechange' in window; // works on ie10 on ms surface
 	
-	function isMultiTouch(e) {
-	    return e.touches && Array.isArray(e.touches) && e.touches.length > 1
-	}
+	// look ::handleDragStart
+	//function isMultiTouch(e) {
+	//    return e.touches && Array.isArray(e.touches) && e.touches.length > 1
+	//}
 	
 	/**
 	 * simple abstraction for dragging events names
@@ -395,11 +396,13 @@ return /******/ (function(modules) { // webpackBootstrap
 		},
 	
 		handleDragStart: function (e) {
+	        // todo: write right implementation to prevent multitouch drag
 	        // prevent multi-touch events
-	        if (isMultiTouch(e)) {
-	            this.handleDragEnd.apply(e, arguments);
-	            return
-	        }
+	        // if (isMultiTouch(e)) {
+	        //     this.handleDragEnd.apply(e, arguments);
+	        //     return
+	        // }
+	
 			// Make it possible to attach event handlers on top of this one
 			this.props.onMouseDown(e);
 	
