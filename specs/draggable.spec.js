@@ -81,6 +81,7 @@ describe('react-draggable', function () {
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode());
 			expect(drag.state.dragging).toEqual(true);
+			expect(drag.state.dragged).toEqual(true);
 		});
 
 		it('should only initialize dragging onmousedown of handle', function () {
