@@ -19,3 +19,7 @@
 ### 0.2.1 (Sep 10, 2014)
 
 - Exporting as ReactDraggable
+
+### 0.3.0 (Oct 21, 2014)
+
+- Adding support for touch devices
