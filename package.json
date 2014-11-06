@@ -28,18 +28,18 @@
   },
   "homepage": "https://github.com/mzabriskie/react-draggable",
   "dependencies": {
-    "react": "^0.11.1"
+    "react": "^0.12.0"
   },
   "devDependencies": {
-    "jsx-loader": "^0.11.0",
-    "karma": "^0.12.19",
+    "jsx-loader": "^0.12.1",
+    "karma": "^0.12.24",
     "karma-cli": "0.0.4",
-    "karma-jasmine": "^0.1.5",
-    "karma-chrome-launcher": "^0.1.4",
+    "karma-jasmine": "^0.2.3",
+    "karma-chrome-launcher": "^0.1.5",
     "karma-firefox-launcher": "^0.1.3",
-    "webpack": "^1.3.2-beta8",
-    "webpack-dev-server": "^1.4.7",
-    "karma-webpack": "^1.2.1",
+    "webpack": "^1.4.13",
+    "webpack-dev-server": "^1.6.5",
+    "karma-webpack": "^1.3.1",
     "uglify-js": "^2.4.15"
   }
 }
