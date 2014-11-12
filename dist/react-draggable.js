@@ -419,8 +419,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			// Initiate dragging
 			this.setState({
 				dragging: true,
-				offsetX: parseInt(dragPoint.clientX, 10),
-				offsetY: parseInt(dragPoint.clientY, 10),
+				offsetX: dragPoint.clientX,
+				offsetY: dragPoint.clientY,
 				startX: parseInt(node.style.left, 10) || 0,
 				startY: parseInt(node.style.top, 10) || 0
 			});
@@ -461,15 +461,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 			// Snap to grid if prop has been provided
 			if (Array.isArray(this.props.grid)) {
-				var directionX = clientX < parseInt(this.state.clientX) ? -1 : 1;
-				var directionY = clientY < parseInt(this.state.clientY) ? -1 : 1;
-	
-				clientX = Math.abs(clientX - parseInt(this.state.clientX)) >= this.props.grid[0]
-						? (parseInt(this.state.clientX) + (this.props.grid[0] * directionX)) 
+				clientX = Math.abs(clientX - this.state.clientX) >= this.props.grid[0]
+						? clientX
 						: this.state.clientX;
 	
-				clientY = Math.abs(clientY - parseInt(this.state.clientY)) >= this.props.grid[1]
-						? (parseInt(this.state.clientY) + (this.props.grid[1] * directionY))
+				clientY = Math.abs(clientY - this.state.clientY) >= this.props.grid[1]
+						? clientY
 						: this.state.clientY;
 			}
 	
@@ -707,6 +704,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }
 /******/ ])
-});
+})
 
 //# sourceMappingURL=react-draggable.map
