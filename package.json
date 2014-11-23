@@ -27,7 +27,7 @@
     "url": "https://github.com/mzabriskie/react-draggable/issues"
   },
   "homepage": "https://github.com/mzabriskie/react-draggable",
-  "dependencies": {
+  "peerDependencies": {
     "react": "^0.12.0"
   },
   "devDependencies": {
