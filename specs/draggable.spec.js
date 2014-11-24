@@ -28,6 +28,7 @@ describe('react-draggable', function () {
 					handle=".handle"
 					cancel=".cancel"
 					grid={[10, 10]}
+					start={{x: 100, y: 100}}
 					zIndex={1000}
 					onStart={handleStart}
 					onDrag={handleDrag}
@@ -43,10 +44,14 @@ describe('react-draggable', function () {
 			expect(drag.props.handle).toEqual('.handle');
 			expect(drag.props.cancel).toEqual('.cancel');
 			expect(drag.props.grid).toEqual([10, 10]);
+			expect(drag.props.start).toEqual({x: 100, y: 100});
 			expect(drag.props.zIndex).toEqual(1000);
 			expect(drag.props.onStart).toEqual(handleStart);
 			expect(drag.props.onDrag).toEqual(handleDrag);
 			expect(drag.props.onStop).toEqual(handleStop);
+
+			expect(drag.state.startX).toEqual(100);
+			expect(drag.state.startY).toEqual(100);
 		});
 
 		it('should call onStart when dragging begins', function () {
