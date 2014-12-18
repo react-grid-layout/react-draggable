@@ -27,9 +27,6 @@
     "url": "https://github.com/mzabriskie/react-draggable/issues"
   },
   "homepage": "https://github.com/mzabriskie/react-draggable",
-  "dependencies": {
-    "react": "^0.11.1"
-  },
   "devDependencies": {
     "jsx-loader": "^0.11.0",
     "karma": "^0.12.19",
@@ -38,6 +35,7 @@
     "karma-firefox-launcher": "^0.1.3",
     "karma-jasmine": "^0.1.5",
     "karma-webpack": "^1.2.1",
+    "react": "^0.11.1",
     "reactify": "^0.17.1",
     "uglify-js": "^2.4.15",
     "webpack": "^1.3.2-beta8",
