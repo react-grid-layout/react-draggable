@@ -1,6 +1,6 @@
 {
   "name": "react-draggable",
-  "version": "0.3.1-react-0.12",
+  "version": "0.3.1-react-0.12-hotfix-1",
   "description": "React draggable component",
   "main": "index.js",
   "scripts": {
