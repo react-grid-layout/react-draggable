@@ -66,6 +66,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/** @jsx React.DOM */
 	var React = __webpack_require__(2);
 	var emptyFunction = __webpack_require__(3);
+	var CX = React.addons.classSet;
 	
 	function createUIEvent(draggable) {
 		return {
@@ -112,8 +113,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	// @credits: http://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
-	var isTouchDevice = 'ontouchstart' in window // works on most browsers
+	/* Conditional to fix node server side rendering of component */
+	if (typeof window === 'undefined') {
+	    // Do Node Stuff
+	    var isTouchDevice = false;
+	} else {
+	    // Do Browser Stuff
+	    var isTouchDevice = 'ontouchstart' in window // works on most browsers
 	    || 'onmsgesturechange' in window; // works on ie10 on ms surface
+	
+	}
 	
 	// look ::handleDragStart
 	//function isMultiTouch(e) {
@@ -419,8 +428,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			// Initiate dragging
 			this.setState({
 				dragging: true,
-				offsetX: dragPoint.clientX,
-				offsetY: dragPoint.clientY,
+				offsetX: parseInt(dragPoint.clientX, 10),
+				offsetY: parseInt(dragPoint.clientY, 10),
 				startX: parseInt(node.style.left, 10) || 0,
 				startY: parseInt(node.style.top, 10) || 0
 			});
@@ -461,12 +470,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 			// Snap to grid if prop has been provided
 			if (Array.isArray(this.props.grid)) {
-				clientX = Math.abs(clientX - this.state.clientX) >= this.props.grid[0]
-						? clientX
+				var directionX = clientX < parseInt(this.state.clientX, 10) ? -1 : 1;
+				var directionY = clientY < parseInt(this.state.clientY, 10) ? -1 : 1;
+	
+				clientX = Math.abs(clientX - parseInt(this.state.clientX, 10)) >= this.props.grid[0]
+						? (parseInt(this.state.clientX, 10) + (this.props.grid[0] * directionX))
 						: this.state.clientX;
 	
-				clientY = Math.abs(clientY - this.state.clientY) >= this.props.grid[1]
-						? clientY
+				clientY = Math.abs(clientY - parseInt(this.state.clientY, 10)) >= this.props.grid[1]
+						? (parseInt(this.state.clientY, 10) + (this.props.grid[1] * directionY))
 						: this.state.clientY;
 			}
 	
@@ -497,12 +509,16 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (this.state.dragging && !isNaN(this.props.zIndex)) {
 				style.zIndex = this.props.zIndex;
 			}
-	
+			
+			var className = CX({
+				'react-draggable': true,
+				'react-draggable-dragging': this.state.dragging
+			});
 			// Reuse the child provided
 			// This makes it flexible to use whatever element is wanted (div, ul, etc)
 			return React.addons.cloneWithProps(React.Children.only(this.props.children), {
 				style: style,
-				className: 'react-draggable',
+				className: className,
 	
 				onMouseDown: this.handleDragStart,
 				onTouchStart: function(ev){
@@ -528,24 +544,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2014 Facebook, Inc.
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
 	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
 	 * @providesModule emptyFunction
 	 */
-	
-	var copyProperties = __webpack_require__(4);
 	
 	function makeEmptyFunction(arg) {
 	  return function() {
@@ -560,150 +567,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function emptyFunction() {}
 	
-	copyProperties(emptyFunction, {
-	  thatReturns: makeEmptyFunction,
-	  thatReturnsFalse: makeEmptyFunction(false),
-	  thatReturnsTrue: makeEmptyFunction(true),
-	  thatReturnsNull: makeEmptyFunction(null),
-	  thatReturnsThis: function() { return this; },
-	  thatReturnsArgument: function(arg) { return arg; }
-	});
+	emptyFunction.thatReturns = makeEmptyFunction;
+	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+	emptyFunction.thatReturnsThis = function() { return this; };
+	emptyFunction.thatReturnsArgument = function(arg) { return arg; };
 	
 	module.exports = emptyFunction;
 
 
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule copyProperties
-	 */
-	
-	/**
-	 * Copy properties from one or more objects (up to 5) into the first object.
-	 * This is a shallow copy. It mutates the first object and also returns it.
-	 *
-	 * NOTE: `arguments` has a very significant performance penalty, which is why
-	 * we don't support unlimited arguments.
-	 */
-	function copyProperties(obj, a, b, c, d, e, f) {
-	  obj = obj || {};
-	
-	  if ("production" !== process.env.NODE_ENV) {
-	    if (f) {
-	      throw new Error('Too many arguments passed to copyProperties');
-	    }
-	  }
-	
-	  var args = [a, b, c, d, e];
-	  var ii = 0, v;
-	  while (args[ii]) {
-	    v = args[ii++];
-	    for (var k in v) {
-	      obj[k] = v[k];
-	    }
-	
-	    // IE ignores toString in object iteration.. See:
-	    // webreflection.blogspot.com/2007/07/quick-fix-internet-explorer-and.html
-	    if (v.hasOwnProperty && v.hasOwnProperty('toString') &&
-	        (typeof v.toString != 'undefined') && (obj.toString !== v.toString)) {
-	      obj.toString = v.toString;
-	    }
-	  }
-	
-	  return obj;
-	}
-	
-	module.exports = copyProperties;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// shim for using process in browser
-	
-	var process = module.exports = {};
-	
-	process.nextTick = (function () {
-	    var canSetImmediate = typeof window !== 'undefined'
-	    && window.setImmediate;
-	    var canPost = typeof window !== 'undefined'
-	    && window.postMessage && window.addEventListener
-	    ;
-	
-	    if (canSetImmediate) {
-	        return function (f) { return window.setImmediate(f) };
-	    }
-	
-	    if (canPost) {
-	        var queue = [];
-	        window.addEventListener('message', function (ev) {
-	            var source = ev.source;
-	            if ((source === window || source === null) && ev.data === 'process-tick') {
-	                ev.stopPropagation();
-	                if (queue.length > 0) {
-	                    var fn = queue.shift();
-	                    fn();
-	                }
-	            }
-	        }, true);
-	
-	        return function nextTick(fn) {
-	            queue.push(fn);
-	            window.postMessage('process-tick', '*');
-	        };
-	    }
-	
-	    return function nextTick(fn) {
-	        setTimeout(fn, 0);
-	    };
-	})();
-	
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	
-	function noop() {}
-	
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-	
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	}
-	
-	// TODO(shtylman)
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-
-
 /***/ }
 /******/ ])
-})
+});
 
 //# sourceMappingURL=react-draggable.map

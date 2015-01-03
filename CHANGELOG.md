@@ -23,3 +23,11 @@
 ### 0.3.0 (Oct 21, 2014)
 
 - Adding support for touch devices
+
+### 0.4.0 (Jan 03, 2015)
+
+- Improving accuracy of snap to grid
+- Updating to React 0.12
+- Adding dragging className
+- Adding reactify support for browserify
+- Fixing issue with server side rendering
