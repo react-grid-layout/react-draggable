@@ -3,6 +3,7 @@ var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
 var Draggable = require('../index');
 
+/*global describe,it,expect */
 describe('react-draggable', function () {
 	describe('props', function () {
 		it('should have default properties', function () {
@@ -72,6 +73,23 @@ describe('react-draggable', function () {
 			TestUtils.Simulate.mouseDown(drag.getDOMNode());
 			TestUtils.Simulate.mouseUp(drag.getDOMNode());
 			expect(called).toEqual(true);
+		});
+
+		it('should render with translate() if useCSSTransforms is true', function () {
+			var drag = TestUtils.renderIntoDocument(
+				<Draggable
+					start={{x: 100, y: 100}}
+					useCSSTransforms={true}>
+					<div />
+				</Draggable>
+			);
+
+			var style = drag.getDOMNode().getAttribute('style');
+			expect(style).toEqual('transform:translate(100px,100px);' + 
+				'-webkit-transform:translate(100px,100px);' + 
+				'-o-transform:translate(100px,100px);' + 
+				'-ms-transform:translate(100px,100px);' + 
+				'-moz-transform:translate(100px,100px);');
 		});
 	});
 
