@@ -1,1 +1,1 @@
-require('./draggable.spec.js');
+require('./Draggable.spec.js');

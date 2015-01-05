@@ -1,20 +1,19 @@
 /** @jsx React.DOM */
-var React = require('react/addons');
-var TestUtils = React.addons.TestUtils;
-var Draggable = require('../index');
+
+require('./helper');
 
 describe('react-draggable', function () {
 	describe('props', function () {
 		it('should have default properties', function () {
 			var drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
-			expect(drag.props.axis).toEqual('both');
-			expect(drag.props.handle).toEqual(null);
-			expect(drag.props.cancel).toEqual(null);
-			expect(isNaN(drag.props.zIndex)).toEqual(true);
-			expect(typeof drag.props.onStart).toEqual('function');
-			expect(typeof drag.props.onDrag).toEqual('function');
-			expect(typeof drag.props.onStop).toEqual('function');
+			equal(drag.props.axis, 'both');
+			equal(drag.props.handle, null);
+			equal(drag.props.cancel, null);
+			equal(isNaN(drag.props.zIndex), true);
+			equal(typeof drag.props.onStart, 'function');
+			equal(typeof drag.props.onDrag, 'function');
+			equal(typeof drag.props.onStop, 'function');
 		});
 
 		it('should honor props', function () {
@@ -39,14 +38,14 @@ describe('react-draggable', function () {
 				</Draggable>
 			);
 
-			expect(drag.props.axis).toEqual('y');
-			expect(drag.props.handle).toEqual('.handle');
-			expect(drag.props.cancel).toEqual('.cancel');
-			expect(drag.props.grid).toEqual([10, 10]);
-			expect(drag.props.zIndex).toEqual(1000);
-			expect(drag.props.onStart).toEqual(handleStart);
-			expect(drag.props.onDrag).toEqual(handleDrag);
-			expect(drag.props.onStop).toEqual(handleStop);
+			equal(drag.props.axis, 'y');
+			equal(drag.props.handle, '.handle');
+			equal(drag.props.cancel, '.cancel');
+			deepEqual(drag.props.grid, [10, 10]);
+			equal(drag.props.zIndex, 1000);
+			equal(drag.props.onStart, handleStart);
+			equal(drag.props.onDrag, handleDrag);
+			equal(drag.props.onStop, handleStop);
 		});
 
 		it('should call onStart when dragging begins', function () {
@@ -58,7 +57,7 @@ describe('react-draggable', function () {
 			);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode());
-			expect(called).toEqual(true);
+			equal(called, true);
 		});
 
 		it('should call onStop when dragging ends', function () {
@@ -71,7 +70,7 @@ describe('react-draggable', function () {
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode());
 			TestUtils.Simulate.mouseUp(drag.getDOMNode());
-			expect(called).toEqual(true);
+			equal(called, true);
 		});
 	});
 
@@ -80,7 +79,7 @@ describe('react-draggable', function () {
 			var drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode());
-			expect(drag.state.dragging).toEqual(true);
+			equal(drag.state.dragging, true);
 		});
 
 		it('should only initialize dragging onmousedown of handle', function () {
@@ -94,10 +93,10 @@ describe('react-draggable', function () {
 			);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.content'));
-			expect(drag.state.dragging).toEqual(false);
+			equal(drag.state.dragging, false);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.handle'));
-			expect(drag.state.dragging).toEqual(true);
+			equal(drag.state.dragging, true);
 		});
 
 		it('should not initialize dragging onmousedown of cancel', function () {
@@ -111,20 +110,20 @@ describe('react-draggable', function () {
 			);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.cancel'));
-			expect(drag.state.dragging).toEqual(false);
+			equal(drag.state.dragging, false);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.content'));
-			expect(drag.state.dragging).toEqual(true);
+			equal(drag.state.dragging, true);
 		});
 
 		it('should discontinue dragging onmouseup', function () {
 			var drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode());
-			expect(drag.state.dragging).toEqual(true);
+			equal(drag.state.dragging, true);
 
 			TestUtils.Simulate.mouseUp(drag.getDOMNode());
-			expect(drag.state.dragging).toEqual(false);
+			equal(drag.state.dragging, false);
 		});
 	});
 
@@ -139,7 +138,7 @@ describe('react-draggable', function () {
 				error = true;
 			}
 
-			expect(error).toEqual(true);
+			equal(error, true);
 		});
 
 		it('should result with invariant if there\'s more than a single child', function () {
@@ -152,7 +151,7 @@ describe('react-draggable', function () {
 				error = true;
 			}
 
-			expect(error).toEqual(true);
+			equal(error, true);
 		});
 	});
 });

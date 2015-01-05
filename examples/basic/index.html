@@ -1,0 +1,55 @@
+<!doctype html>
+<meta charset="utf-8"/>
+<title>React Draggable</title>
+<link rel="stylesheet" href="http://instructure-react.github.io/library/shared.css"/>
+<style type="text/css">
+	body {
+		color: #222;
+		font-family: "Helvetica Neue", sans-serif;
+		font-weight: 200;
+		margin: 0 50px;
+	}
+
+	.react-draggable, .cursor {
+		cursor: move;
+	}
+	.no-cursor {
+		cursor: auto;
+	}
+	.cursor-y {
+		cursor: ns-resize;
+	}
+	.cursor-x {
+		cursor: ew-resize;
+	}
+
+	.react-draggable strong {
+		background: #ddd;
+		border: 1px solid #999;
+		border-radius: 3px;
+		display: block;
+		margin-bottom: 10px;
+		padding: 3px 5px;
+		text-align: center;
+	}
+
+	.box {
+		background: #fff;
+		border: 1px solid #999;
+		border-radius: 3px;
+		width: 150px;
+		height: 150px;
+		margin: 10px;
+		padding: 10px;
+		float: left;
+	}
+</style>
+<body>
+	<header class="branding padbox">
+		<h1>react-draggable</h1>
+		<h2>React draggable component</h2>
+	</header>
+	<div id="example" class="padbox"></div>
+	<a target="_blank" href="https://github.com/mzabriskie/react-draggable"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://github-camo.global.ssl.fastly.net/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+	<script src="../__build__/shared.js"></script>
+	<script src="../__build__/basic.js"></script>

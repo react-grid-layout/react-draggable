@@ -2,43 +2,44 @@
   "name": "react-draggable",
   "version": "0.4.0",
   "description": "React draggable component",
-  "main": "index.js",
+  "main": "lib/main.js",
   "scripts": {
-    "test": "script/test --browsers Firefox --single-run",
-    "start": "script/build"
+    "test": "node_modules/.bin/rackt test --single-run --browsers Firefox",
+    "start": "node_modules/.bin/rackt dev"
   },
   "browserify": {
     "transform": [
       "reactify"
     ]
   },
+  "browserify-shim": {
+    "react": "global:React"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mzabriskie/react-draggable.git"
   },
-  "keywords": [
-    "react",
-    "draggable",
-    "react-component"
-  ],
   "author": "Matt Zabriskie",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/mzabriskie/react-draggable/issues"
   },
   "homepage": "https://github.com/mzabriskie/react-draggable",
+  "keywords": [
+    "react",
+    "draggable",
+    "react-component"
+  ],
   "devDependencies": {
-    "jsx-loader": "^0.12.0",
-    "karma": "^0.12.19",
-    "karma-chrome-launcher": "^0.1.4",
-    "karma-cli": "0.0.4",
-    "karma-firefox-launcher": "^0.1.3",
-    "karma-jasmine": "^0.1.5",
-    "karma-webpack": "^1.2.1",
-    "react": "^0.12.0",
-    "reactify": "^0.17.1",
-    "uglify-js": "^2.4.15",
-    "webpack": "^1.3.2-beta8",
-    "webpack-dev-server": "^1.4.7"
+    "browserify": "^8.0.3",
+    "browserify-shim": "^3.8.2",
+    "envify": "^3.2.0",
+    "jsx-loader": "^0.12.2",
+    "rackt-cli": "^0.1.2",
+    "reactify": "^0.17.1"
+  },
+  "dependencies": {
+    "js-stylesheet": "0.0.1",
+    "react": "^0.12.2"
   }
 }
