@@ -109,8 +109,10 @@
           <Draggable grid={[50, 50]}>
             <div className="box">I snap to a 50 x 50 grid</div>
           </Draggable>
-          <Draggable minBounds={[0, 0]} maxBounds={[500, 500]}>
-            <div className="box">I am bound to the left and top at 0px and right and bottom at 500px</div>
+          <Draggable start={[250, 250]} minBounds={[0, 0]} maxBounds={[500, 500]}>
+            <div className="box">
+              <div>I am bound to the left and top at 0 and right and bottom at 500 relative to my starting point of (250, 250).</div>
+            </div>
           </Draggable>
         </div>
       );
