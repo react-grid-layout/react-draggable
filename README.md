@@ -54,6 +54,10 @@ var App = React.createClass({
 			//
 			// `grid` specifies the x and y that dragging should snap to.
 			//
+			// `minBounds` specifies the minimum x and y values.
+			//
+			// `maxBounds` specifies the maximum x and y values.
+			//
 			// `start` specifies the x and y that the dragged item should start at
 			//
 			// `zIndex` specifies the zIndex to use while dragging.
@@ -68,6 +72,8 @@ var App = React.createClass({
 				axis="x"
 				handle=".handle"
 				grid={[25, 25]}
+				minBounds={[0, 0]}
+				maxBounds={[500, 500]}
 				start={{x: 25, y: 25}}
 				zIndex={100}
 				onStart={this.handleStart}

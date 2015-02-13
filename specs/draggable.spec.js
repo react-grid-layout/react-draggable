@@ -28,6 +28,8 @@ describe('react-draggable', function () {
 					handle=".handle"
 					cancel=".cancel"
 					grid={[10, 10]}
+					minBounds={[0, 0]}
+					maxBounds={[500, 500]}
 					zIndex={1000}
 					onStart={handleStart}
 					onDrag={handleDrag}
@@ -43,6 +45,8 @@ describe('react-draggable', function () {
 			expect(drag.props.handle).toEqual('.handle');
 			expect(drag.props.cancel).toEqual('.cancel');
 			expect(drag.props.grid).toEqual([10, 10]);
+			expect(drag.props.minBounds).toEqual([0, 0]);
+			expect(drag.props.maxBounds).toEqual([500, 500]);
 			expect(drag.props.zIndex).toEqual(1000);
 			expect(drag.props.onStart).toEqual(handleStart);
 			expect(drag.props.onDrag).toEqual(handleDrag);
