@@ -152,12 +152,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * get {clientX, clientY} positions of control
 	 * */
 	function getControlPosition(e) {
-	  var position = !isTouchDevice ? e : e.touches[0];
+	  var position = (e.touches && e.touches[0]) || e;
 	  return {
 	    clientX: position.clientX,
 	    clientY: position.clientY
 	  }
 	}
+	
+	function getBoundPosition(clientX, clientY, bound, target) {
+		if (bound) {
+			if ((typeof bound !== 'string' && bound.toLowerCase() !== 'parent') &&
+					(typeof bound !== 'object')) {
+				console.warn('Bound should either "parent" or an object');
+			}
+			var par = target.parentNode;
+			var topLimit = bound.top || 0;
+			var leftLimit = bound.left || 0;
+			var rightLimit = bound.right || par.offsetWidth;
+			var bottomLimit = bound.bottom || par.offsetHeight;
+			if (clientX + target.offsetWidth > rightLimit) {
+				clientX = rightLimit - target.offsetWidth;
+			}
+			if (clientY + target.offsetHeight > bottomLimit) {
+				clientY = bottomLimit - target.offsetHeight;
+			}
+			if (clientX < leftLimit) {
+				clientX = leftLimit;
+			}
+			if (clientY < topLimit) {
+				clientY = topLimit;
+			}
+		}
+		return {
+			clientX: clientX,
+			clientY: clientY
+		};
+	}
+	
 	
 	function addEvent(el, event, handler) {
 		if (!el) { return; }
@@ -376,6 +407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				handle: null,
 				cancel: null,
 				grid: null,
+				bound: false,
 				start: {
 					x: 0,
 					y: 0
@@ -467,6 +499,9 @@ return /******/ (function(modules) { // webpackBootstrap
 			// Calculate top and left
 	    var clientX = (this.state.startX + (dragPoint.clientX - this.state.offsetX));
 	    var clientY = (this.state.startY + (dragPoint.clientY - this.state.offsetY));
+			var pos = getBoundPosition(clientX, clientY, this.props.bound, this.getDOMNode());
+			clientX = pos.clientX;
+			clientY = pos.clientY;
 	
 			// Snap to grid if prop has been provided
 			if (Array.isArray(this.props.grid)) {
@@ -509,7 +544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (this.state.dragging && !isNaN(this.props.zIndex)) {
 				style.zIndex = this.props.zIndex;
 			}
-			
+	
 			var className = CX({
 				'react-draggable': true,
 				'react-draggable-dragging': this.state.dragging
