@@ -48,6 +48,11 @@ var App = React.createClass({
 			// - 'x' limits movement to horizontal axis.
 			// - 'y' limits movement to vertical axis.
 			//
+			// `resetOnDrop` specifies whether the object's X and Y positions should reset to 
+            // their start values or not when the drag event has ended. This moves the element 
+            // to the clientX and clientY positions, allowing the user to manipulate the 
+            // dragged element as required
+			//
 			// `handle` specifies a selector to be used as the handle that initiates drag.
 			//
 			// `cancel` specifies a selector to be used to prevent drag initialization.
@@ -66,6 +71,7 @@ var App = React.createClass({
 
 			<Draggable
 				axis="x"
+                resetOnDrop={true}
 				handle=".handle"
 				grid={[25, 25]}
 				start={{x: 25, y: 25}}
