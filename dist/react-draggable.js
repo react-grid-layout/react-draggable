@@ -152,7 +152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * get {clientX, clientY} positions of control
 	 * */
 	function getControlPosition(e) {
-	  var position = !isTouchDevice ? e : e.touches[0];
+	  var position = (e.touches && e.touches[0]) || e;
 	  return {
 	    clientX: position.clientX,
 	    clientY: position.clientY
@@ -196,6 +196,28 @@ return /******/ (function(modules) { // webpackBootstrap
 			 */
 			axis: React.PropTypes.oneOf(['both', 'x', 'y']),
 	
+			/**
+			 * `resetOnDrop` specifies whether the object's X and Y positions should reset to
+	         * their start values or not when the drag event has ended. This moves the element
+	         * to the clientX and clientY positions, allowing the user to manipulate the
+	         * dragged element as required
+			 *
+			 * Example:
+			 *
+			 * ```jsx
+			 * 	var App = React.createClass({
+			 * 	    render: function () {
+			 * 	    	return (
+			 * 	    	 	<Draggable resetOnDrop={true}>
+	         *                  <div>This is some content</div>
+			 * 	    		</Draggable>
+			 * 	    	);
+			 * 	    }
+			 * 	});
+			 * ```
+			 */
+	        resetOnDrop: React.PropTypes.bool,
+
 			/**
 			 * `handle` specifies a selector to be used as the handle that initiates drag.
 			 *
@@ -380,6 +402,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					x: 0,
 					y: 0
 				},
+	            resetOnDrop: false,
 				zIndex: NaN,
 				onStart: emptyFunction,
 				onDrag: emptyFunction,
@@ -456,9 +479,17 @@ return /******/ (function(modules) { // webpackBootstrap
 			// Call event handler
 			this.props.onStop(e, createUIEvent(this));
 	
+	        //Reset the  X / Y client positions of the object to the initial ones
+	        if(this.props.resetOnDrop) {
+	            this.setState({
+	                clientX: this.props.start.x || 0,
+	                clientY: this.props.start.y || 0
+	            });
+	        }
+
 			// Remove event handlers
-	    removeEvent(window, dragEventFor['move'], this.handleDrag);
-	    removeEvent(window, dragEventFor['end'], this.handleDragEnd);
+	        removeEvent(window, dragEventFor['move'], this.handleDrag);
+	        removeEvent(window, dragEventFor['end'], this.handleDragEnd);
 		},
 	
 		handleDrag: function (e) {
@@ -580,5 +611,5 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ }
 /******/ ])
 });
-
+;
 //# sourceMappingURL=react-draggable.map
