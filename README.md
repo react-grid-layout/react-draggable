@@ -1,6 +1,13 @@
 # react-draggable [![Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable)
 
-React draggable component
+A simple component for making elements draggable.
+
+[View the Changelog](CHANGELOG.md)
+
+## Demo
+
+http://mzabriskie.github.io/react-draggable/example/
+
 
 ## Installing
 
@@ -9,10 +16,6 @@ $ npm install react-draggable
 # or
 $ bower install react-draggable
 ```
-
-## Demo
-
-http://mzabriskie.github.io/react-draggable/example/
 
 ## Example
 
