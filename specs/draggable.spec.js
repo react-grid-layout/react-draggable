@@ -44,6 +44,7 @@ describe('react-draggable', function () {
 			expect(drag.props.cancel).toEqual('.cancel');
 			expect(drag.props.grid).toEqual([10, 10]);
 			expect(drag.props.zIndex).toEqual(1000);
+			expect(drag.props.bound).toBeFalsy();
 			expect(drag.props.onStart).toEqual(handleStart);
 			expect(drag.props.onDrag).toEqual(handleDrag);
 			expect(drag.props.onStop).toEqual(handleStop);
