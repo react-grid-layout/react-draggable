@@ -31,3 +31,9 @@
 - Adding dragging className
 - Adding reactify support for browserify
 - Fixing issue with server side rendering
+
+### 0.4.1 (Apr 30, 2015)
+
+- Remove react/addons dependency (now depending on `react` directly)
+- Add MIT License file
+- Fix an issue where browser may be detected as touch-enabled but touch event isn't thrown.
