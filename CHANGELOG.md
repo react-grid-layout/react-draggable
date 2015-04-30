@@ -42,3 +42,7 @@
 
 - Add `"browser"` config to package.json for browserify imports (fix #45).
 - Remove unnecessary `emptyFunction` and `React.addons.classSet` imports.
+
+### 0.4.3 (Apr 30, 2015)
+
+- Fix React.addons error caused by faulty test.
