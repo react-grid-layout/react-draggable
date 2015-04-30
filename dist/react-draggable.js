@@ -152,7 +152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * get {clientX, clientY} positions of control
 	 * */
 	function getControlPosition(e) {
-	  var position = !isTouchDevice ? e : e.touches[0];
+	  var position = (e.touches && e.touches[0]) || e;
 	  return {
 	    clientX: position.clientX,
 	    clientY: position.clientY
@@ -509,11 +509,12 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (this.state.dragging && !isNaN(this.props.zIndex)) {
 				style.zIndex = this.props.zIndex;
 			}
-			
-			var className = CX({
-				'react-draggable': true,
-				'react-draggable-dragging': this.state.dragging
-			});
+	
+			var className = 'react-draggable';
+			if (this.state.dragging) {
+				className += ' react-draggable-dragging';
+			}
+	
 			// Reuse the child provided
 			// This makes it flexible to use whatever element is wanted (div, ul, etc)
 			return React.addons.cloneWithProps(React.Children.only(this.props.children), {
@@ -544,7 +545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2014, Facebook, Inc.
+	 * Copyright 2013-2015, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
