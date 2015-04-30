@@ -16,6 +16,16 @@ describe('react-draggable', function () {
 			expect(typeof drag.props.onStop).toEqual('function');
 		});
 
+		it('should pass style and className properly from child', function () {
+			var el = <Draggable><div className="foo" style={{color: 'black'}}/></Draggable>;
+			var renderer = TestUtils.createRenderer();
+			renderer.render(el);
+			var output = renderer.getRenderOutput();
+
+			expect(output.props.className).toEqual('foo react-draggable');
+			expect(output.props.style).toEqual({top: 0, left: 0, color: 'black'});
+		});
+
 		it('should honor props', function () {
 			function handleStart() {}
 			function handleDrag() {}
