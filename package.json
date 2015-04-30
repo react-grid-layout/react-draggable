@@ -7,11 +7,7 @@
     "test": "script/test --browsers Firefox --single-run",
     "start": "script/build"
   },
-  "browserify": {
-    "transform": [
-      "reactify"
-    ]
-  },
+  "browser": "dist/react-draggable.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/mzabriskie/react-draggable.git"
