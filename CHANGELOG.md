@@ -37,3 +37,8 @@
 - Remove react/addons dependency (now depending on `react` directly)
 - Add MIT License file
 - Fix an issue where browser may be detected as touch-enabled but touch event isn't thrown.
+
+### 0.4.2 (Apr 30, 2015)
+
+- Add `"browser"` config to package.json for browserify imports (fix #45).
+- Remove unnecessary `emptyFunction` and `React.addons.classSet` imports.
