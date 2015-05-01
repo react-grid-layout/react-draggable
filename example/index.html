@@ -3,7 +3,6 @@
 <head>
 	<meta charset="utf-8"/>
 	<title>React Draggable</title>
-	<link rel="stylesheet" type="text/css" href="../lib/styles.css"/>
 	<style type="text/css">
 		body {
 			color: #222;
@@ -50,7 +49,7 @@
 <body>
 <script src="//fb.me/react-with-addons-0.13.2.js"></script>
 <script src="//fb.me/JSXTransformer-0.13.2.js"></script>
-<script src="../dist/react-draggable.min.js"></script>
+<script src="../dist/react-draggable.js"></script>
 <script type="text/jsx">
   var Draggable = ReactDraggable;
   var App = React.createClass({
@@ -107,6 +106,16 @@
           </Draggable>
           <Draggable grid={[50, 50]}>
             <div className="box">I snap to a 50 x 50 grid</div>
+          </Draggable>
+          <Draggable>
+            <div className="box" style={{position: 'absolute', top: '400px', left: '700px'}}>
+              I already have left and top properties assigned.
+            </div>
+          </Draggable>
+          <Draggable>
+            <div className="box" style={{position: 'absolute', bottom: '100px', right: '100px'}}>
+              I already have bottom and right properties assigned.
+            </div>
           </Draggable>
         </div>
       );

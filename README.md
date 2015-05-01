@@ -46,6 +46,8 @@ var App = React.createClass({
 			// to whatever element is supplied as `this.props.children`.
 			// Only a single element is allowed or an Error will be thrown.
 			//
+			// The element is moved from its current position using absolute positioning.
+			//
 			// `axis` determines which axis the draggable can move.
 			// - 'both' allows movement horizontally and vertically (default).
 			// - 'x' limits movement to horizontal axis.
@@ -56,8 +58,6 @@ var App = React.createClass({
 			// `cancel` specifies a selector to be used to prevent drag initialization.
 			//
 			// `grid` specifies the x and y that dragging should snap to.
-			//
-			// `start` specifies the x and y that the dragged item should start at
 			//
 			// `zIndex` specifies the zIndex to use while dragging.
 			//
@@ -71,7 +71,6 @@ var App = React.createClass({
 				axis="x"
 				handle=".handle"
 				grid={[25, 25]}
-				start={{x: 25, y: 25}}
 				zIndex={100}
 				onStart={this.handleStart}
 				onDrag={this.handleDrag}
@@ -91,13 +90,28 @@ React.renderComponent(<App/>, document.body);
 ## Contributing
 
 - Fork the project
-- `$ npm install && npm start`
-- Make changes, webpack will watch and rebuild as you make changes
+- `$ npm install`
+- Make changes.
+- Run a static server in this folder to see your changes.
+  For example: `$ npm install -g static-server; static-server .` and open
+  http://localhost:9080/example.index.html
+- Run webpack in development mode to recompile changes as you make them:
+  `$ npm run dev`
 - Add appropriate tests
 - `$ npm test`
 - If tests don't pass, make them pass.
 - Update README with appropriate docs.
+- Don't include `/dist` changes. These files are updated per-release.
 - Commit and PR
+
+## Release checklist
+
+- Update CHANGELOG
+- Update version in `bower.json`
+- Update version in `package.json`
+- Run build: `$ npm run build`
+- Commit, tag, push
+- `npm publish`
 
 ## License
 

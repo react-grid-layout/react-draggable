@@ -23,7 +23,7 @@ describe('react-draggable', function () {
 			var output = renderer.getRenderOutput();
 
 			expect(output.props.className).toEqual('foo react-draggable');
-			expect(output.props.style).toEqual({top: 0, left: 0, color: 'black'});
+			expect(output.props.style).toEqual({color: 'black'});
 		});
 
 		it('should honor props', function () {
@@ -90,6 +90,7 @@ describe('react-draggable', function () {
 
 			TestUtils.Simulate.mouseDown(drag.getDOMNode());
 			expect(drag.state.dragging).toEqual(true);
+			expect(drag.state.mounted).toEqual(true);
 		});
 
 		it('should only initialize dragging onmousedown of handle', function () {

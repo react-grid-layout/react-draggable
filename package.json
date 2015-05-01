@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "script/test --browsers Firefox --single-run",
-    "start": "script/build"
+    "dev": "script/build-watch",
+    "build": "script/build"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "webpack-dev-server": "^1.4.7"
   },
   "dependencies": {
+    "classnames": "^1.2.2",
     "object-assign": "^2.0.0"
   }
 }
