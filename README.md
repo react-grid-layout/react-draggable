@@ -16,8 +16,9 @@ $ npm install react-draggable
 ```
 
 If you aren't using browserify/webpack, a
-[UMD version of react-draggable](http://mzabriskie.github.io/react-draggable/example/react-draggable.js)
-is updated in the `gh-pages` branch and used for the demo. You can generate it yourself from master by cloning this
+[UMD version of react-draggable](dist/react-draggable.js) is available. It is updated per-release only.
+
+If you want a UMD version of the latest `master` revision, you can generate it yourself from master by cloning this
 repository and running `$ make`. This will create umd dist files in the `dist/` folder.
 
 ## Details
