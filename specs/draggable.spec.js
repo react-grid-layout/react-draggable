@@ -25,7 +25,9 @@ describe('react-draggable', function () {
       var output = renderer.getRenderOutput();
 
       expect(output.props.className).toEqual('foo react-draggable');
-      expect(output.props.style).toEqual({color: 'black'});
+      expect(output.props.style.color).toEqual('black');
+      // This should get added
+      expect(output.props.style.userSelect).toEqual('none');
     });
 
     it('should honor props', function () {
@@ -84,6 +86,25 @@ describe('react-draggable', function () {
       TestUtils.Simulate.mouseUp(drag.getDOMNode());
       expect(called).toEqual(true);
     });
+
+    it('should render with translate()', function () {
+      var drag = TestUtils.renderIntoDocument(
+        <Draggable>
+          <div />
+        </Draggable>
+      );
+
+      var node = drag.getDOMNode();
+
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      // FIXME why doesn't simulate on the window work?
+      // TestUtils.Simulate.mouseMove(window, {clientX: 100, clientY: 100});
+      drag.handleDrag({clientX: 100, clientY:100}); // hack
+      TestUtils.Simulate.mouseUp(node);
+
+      var style = node.getAttribute('style');
+      expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
+    });
   });
 
   describe('interaction', function () {
@@ -92,7 +113,6 @@ describe('react-draggable', function () {
 
       TestUtils.Simulate.mouseDown(drag.getDOMNode());
       expect(drag.state.dragging).toEqual(true);
-      expect(drag.state.mounted).toEqual(true);
     });
 
     it('should only initialize dragging onmousedown of handle', function () {
