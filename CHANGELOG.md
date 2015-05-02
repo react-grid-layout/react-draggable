@@ -34,8 +34,8 @@
 
 ### 0.4.1 (Apr 30, 2015)
 
-- Remove react/addons dependency (now depending on `react` directly)
-- Add MIT License file
+- Remove react/addons dependency (now depending on `react` directly).
+- Add MIT License file.
 - Fix an issue where browser may be detected as touch-enabled but touch event isn't thrown.
 
 ### 0.4.2 (Apr 30, 2015)
@@ -46,3 +46,11 @@
 ### 0.4.3 (Apr 30, 2015)
 
 - Fix React.addons error caused by faulty test.
+
+### 0.5.0 (May 2, 2015)
+
+- Remove browserify browser config, reactify, and jsx pragma. Fixes #38
+- Use React.cloneElement instead of addons cloneWithProps (requires React 0.13)
+- Move to CSS transforms. Simplifies implementation and fixes #48, #34, #31.
+- Fixup linting and space/tab errors. Fixes #46.
+
