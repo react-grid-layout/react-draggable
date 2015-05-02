@@ -1,50 +1,51 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<title>React Draggable</title>
-	<style type="text/css">
-		body {
-			color: #222;
-			font-family: "Helvetica Neue", sans-serif;
-			font-weight: 200;
-			margin: 0 50px;
-		}
+  <meta charset="utf-8"/>
+  <title>React Draggable</title>
+  <style type="text/css">
+    body {
+      color: #222;
+      font-family: "Helvetica Neue", sans-serif;
+      font-weight: 200;
+      margin: 0 50px;
+    }
 
-		.react-draggable, .cursor {
-			cursor: move;
-		}
-		.no-cursor {
-			cursor: auto;
-		}
-		.cursor-y {
-			cursor: ns-resize;
-		}
-		.cursor-x {
-			cursor: ew-resize;
-		}
+    .react-draggable, .cursor {
+      cursor: move;
+    }
+    .no-cursor {
+      cursor: auto;
+    }
+    .cursor-y {
+      cursor: ns-resize;
+    }
+    .cursor-x {
+      cursor: ew-resize;
+    }
 
-		.react-draggable strong {
-			background: #ddd;
-			border: 1px solid #999;
-			border-radius: 3px;
-			display: block;
-			margin-bottom: 10px;
-			padding: 3px 5px;
-			text-align: center;
-		}
+    .react-draggable strong {
+      background: #ddd;
+      border: 1px solid #999;
+      border-radius: 3px;
+      display: block;
+      margin-bottom: 10px;
+      padding: 3px 5px;
+      text-align: center;
+    }
 
-		.box {
-			background: #fff;
-			border: 1px solid #999;
-			border-radius: 3px;
-			width: 150px;
-			height: 150px;
-			margin: 10px;
-			padding: 10px;
-			float: left;
-		}
-	</style>
+    .box {
+      box-sizing: border-box;
+      background: #fff;
+      border: 1px solid #999;
+      border-radius: 3px;
+      width: 180px;
+      height: 180px;
+      margin: 10px;
+      padding: 10px;
+      float: left;
+    }
+  </style>
 </head>
 <body>
 <script src="//fb.me/react-with-addons-0.13.2.js"></script>
