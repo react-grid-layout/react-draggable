@@ -3,11 +3,16 @@ var React = require('react');
 var TestUtils = require('react/lib/ReactTestUtils');
 var Draggable = require('../index');
 
-/*global describe,it,expect */
+/*global describe,it,expect,afterEach */
 describe('react-draggable', function () {
+  var drag;
+  afterEach(function() {
+    if (drag && drag.getDOMNode) drag.componentWillUnmount();
+  });
+
   describe('props', function () {
     it('should have default properties', function () {
-      var drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
+      drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
       expect(drag.props.axis).toEqual('both');
       expect(drag.props.handle).toEqual(null);
@@ -19,15 +24,13 @@ describe('react-draggable', function () {
     });
 
     it('should pass style and className properly from child', function () {
-      var el = <Draggable><div className="foo" style={{color: 'black'}}/></Draggable>;
+      drag = <Draggable><div className="foo" style={{color: 'black'}}/></Draggable>;
       var renderer = TestUtils.createRenderer();
-      renderer.render(el);
+      renderer.render(drag);
       var output = renderer.getRenderOutput();
 
       expect(output.props.className).toEqual('foo react-draggable');
       expect(output.props.style.color).toEqual('black');
-      // This should get added
-      expect(output.props.style.userSelect).toEqual('none');
     });
 
     it('should honor props', function () {
@@ -35,7 +38,7 @@ describe('react-draggable', function () {
       function handleDrag() {}
       function handleStop() {}
 
-      var drag = TestUtils.renderIntoDocument(
+      drag = TestUtils.renderIntoDocument(
         <Draggable
           axis="y"
           handle=".handle"
@@ -64,7 +67,7 @@ describe('react-draggable', function () {
 
     it('should call onStart when dragging begins', function () {
       var called = false;
-      var drag = TestUtils.renderIntoDocument(
+      drag = TestUtils.renderIntoDocument(
         <Draggable onStart={function () { called = true; }}>
           <div/>
         </Draggable>
@@ -76,7 +79,7 @@ describe('react-draggable', function () {
 
     it('should call onStop when dragging ends', function () {
       var called = false;
-      var drag = TestUtils.renderIntoDocument(
+      drag = TestUtils.renderIntoDocument(
         <Draggable onStop={function () { called = true; }}>
           <div/>
         </Draggable>
@@ -88,7 +91,7 @@ describe('react-draggable', function () {
     });
 
     it('should render with translate()', function () {
-      var drag = TestUtils.renderIntoDocument(
+      drag = TestUtils.renderIntoDocument(
         <Draggable>
           <div />
         </Draggable>
@@ -105,18 +108,37 @@ describe('react-draggable', function () {
       var style = node.getAttribute('style');
       expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
     });
+
+    it('should add and remove user-select styles', function () {
+      var userSelectStyle = ';user-select: none;-webkit-user-select:none;-moz-user-select:none;' +
+        '-o-user-select:none;-ms-user-select:none;';
+
+      drag = TestUtils.renderIntoDocument(
+        <Draggable>
+          <div />
+        </Draggable>
+      );
+
+      var node = drag.getDOMNode();
+
+      expect(document.body.getAttribute('style')).toEqual('');
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      expect(document.body.getAttribute('style')).toEqual(userSelectStyle);
+      TestUtils.Simulate.mouseUp(node);
+      expect(document.body.getAttribute('style')).toEqual('');
+    });
   });
 
   describe('interaction', function () {
     it('should initialize dragging onmousedown', function () {
-      var drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
+      drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
       TestUtils.Simulate.mouseDown(drag.getDOMNode());
       expect(drag.state.dragging).toEqual(true);
     });
 
     it('should only initialize dragging onmousedown of handle', function () {
-      var drag = TestUtils.renderIntoDocument(
+      drag = TestUtils.renderIntoDocument(
         <Draggable handle=".handle">
           <div>
             <div className="handle">Handle</div>
@@ -133,7 +155,7 @@ describe('react-draggable', function () {
     });
 
     it('should not initialize dragging onmousedown of cancel', function () {
-      var drag = TestUtils.renderIntoDocument(
+      drag = TestUtils.renderIntoDocument(
         <Draggable cancel=".cancel">
           <div>
             <div className="cancel">Cancel</div>
@@ -150,7 +172,7 @@ describe('react-draggable', function () {
     });
 
     it('should discontinue dragging onmouseup', function () {
-      var drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
+      drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
       TestUtils.Simulate.mouseDown(drag.getDOMNode());
       expect(drag.state.dragging).toEqual(true);
@@ -162,7 +184,7 @@ describe('react-draggable', function () {
 
   describe('validation', function () {
     it('should result with invariant when there isn\'t any children', function () {
-      var drag = (<Draggable/>);
+      drag = (<Draggable/>);
 
       var error = false;
       try {
@@ -175,7 +197,7 @@ describe('react-draggable', function () {
     });
 
     it('should result with invariant if there\'s more than a single child', function () {
-      var drag = (<Draggable><div/><div/></Draggable>);
+      drag = (<Draggable><div/><div/></Draggable>);
 
       var error = false;
       try {
