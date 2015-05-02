@@ -54,3 +54,10 @@
 - Move to CSS transforms. Simplifies implementation and fixes #48, #34, #31.
 - Fixup linting and space/tab errors. Fixes #46.
 
+### 0.6.0 (May 2, 2015)
+
+- Breaking change: Cancel dragging when onDrag or onStart handlers return an explicit `false`.
+- Fix sluggish movement when `grid` option was active.
+- Example updates.
+- Move `user-select:none` hack to document.body for better highlight prevention.
+- Add `bounds` option to restrict dragging within parent or within coordinates.

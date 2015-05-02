@@ -188,31 +188,103 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	
-	function snapToGrid(draggable, clientX, clientY) {
-	  var stateX = parseInt(draggable.state.clientX, 10);
-	  var stateY = parseInt(draggable.state.clientY, 10);
-	  var directionX = clientX < stateX ? -1 : 1;
-	  var directionY = clientY < stateY ? -1 : 1;
+	function outerHeight(node) {
+	  // This is deliberately excluding margin for our calculations, since we are using
+	  // offsetTop which is including margin. See getBoundPosition
+	  var height = node.clientHeight;
+	  var computedStyle = window.getComputedStyle(node);
+	  height += int(computedStyle.borderTopWidth);
+	  height += int(computedStyle.borderBottomWidth);
+	  return height;
+	}
 	
-	  clientX = Math.abs(clientX - stateX) >= draggable.props.grid[0] ?
-	      (stateX + (draggable.props.grid[0] * directionX)) :
-	      stateX;
+	function outerWidth(node) {
+	  // This is deliberately excluding margin for our calculations, since we are using
+	  // offsetLeft which is including margin. See getBoundPosition
+	  var width = node.clientWidth;
+	  var computedStyle = window.getComputedStyle(node);
+	  width += int(computedStyle.borderLeftWidth);
+	  width += int(computedStyle.borderRightWidth);
+	  return width;
+	}
+	function innerHeight(node) {
+	  var height = node.clientHeight;
+	  var computedStyle = window.getComputedStyle(node);
+	  height -= int(computedStyle.paddingTop);
+	  height -= int(computedStyle.paddingBottom);
+	  return height;
+	}
 	
-	  clientY = Math.abs(clientY - stateY) >= draggable.props.grid[1] ?
-	      (stateY + (draggable.props.grid[1] * directionY)) :
-	      stateY;
+	function innerWidth(node) {
+	  var width = node.clientWidth;
+	  var computedStyle = window.getComputedStyle(node);
+	  width -= int(computedStyle.paddingLeft);
+	  width -= int(computedStyle.paddingRight);
+	  return width;
+	}
+	
+	function isNum(num) {
+	  return typeof num === 'number' && !isNaN(num);
+	}
+	
+	function int(a) {
+	  return parseInt(a, 10);
+	}
+	
+	function getBoundPosition(draggable, clientX, clientY) {
+	  var bounds = JSON.parse(JSON.stringify(draggable.props.bounds));
+	  var node = draggable.getDOMNode();
+	  var parent = node.parentNode;
+	
+	  if (bounds === 'parent') {
+	    var nodeStyle = window.getComputedStyle(node);
+	    var parentStyle = window.getComputedStyle(parent);
+	    // Compute bounds. This is a pain with padding and offsets but this gets it exactly right.
+	    bounds = {
+	      left: -node.offsetLeft + int(parentStyle.paddingLeft) +
+	            int(nodeStyle.borderLeftWidth) + int(nodeStyle.marginLeft),
+	      top: -node.offsetTop + int(parentStyle.paddingTop) +
+	            int(nodeStyle.borderTopWidth) + int(nodeStyle.marginTop),
+	      right: innerWidth(parent) - outerWidth(node) - node.offsetLeft,
+	      bottom: innerHeight(parent) - outerHeight(node) - node.offsetTop
+	    };
+	  } else {
+	    if (isNum(bounds.right)) bounds.right -= outerWidth(node);
+	    if (isNum(bounds.bottom)) bounds.bottom -= outerHeight(node);
+	  }
+	
+	  // Keep x and y below right and bottom limits...
+	  if (isNum(bounds.right)) clientX = Math.min(clientX, bounds.right);
+	  if (isNum(bounds.bottom)) clientY = Math.min(clientY, bounds.bottom);
+	
+	  // But above left and top limits.
+	  if (isNum(bounds.left)) clientX = Math.max(clientX, bounds.left);
+	  if (isNum(bounds.top)) clientY = Math.max(clientY, bounds.top);
 	
 	  return [clientX, clientY];
 	}
 	
+	function snapToGrid(grid, pendingX, pendingY) {
+	  var x = Math.round(pendingX / grid[0]) * grid[0];
+	  var y = Math.round(pendingY / grid[1]) * grid[1];
+	  return [x, y];
+	}
+	
 	// Useful for preventing blue highlights all over everything when dragging.
-	var userSelectStyle = {
-	  WebkitUserSelect: 'none',
-	  MozUserSelect: 'none',
-	  msUserSelect: 'none',
-	  OUserSelect: 'none',
-	  userSelect: 'none',
-	};
+	var userSelectStyle = ';user-select: none;-webkit-user-select:none;-moz-user-select:none;' +
+	  '-o-user-select:none;-ms-user-select:none;';
+	
+	function addUserSelectStyles(draggable) {
+	  if (!draggable.props.enableUserSelectHack) return;
+	  var style = document.body.getAttribute('style') || '';
+	  document.body.setAttribute('style', style + userSelectStyle);
+	}
+	
+	function removeUserSelectStyles(draggable) {
+	  if (!draggable.props.enableUserSelectHack) return;
+	  var style = document.body.getAttribute('style') || '';
+	  document.body.setAttribute('style', style.replace(userSelectStyle, ''));
+	}
 	
 	function createCSSTransform(style) {
 	  if (!style.x && !style.y) return {};
@@ -251,6 +323,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Defaults to 'both'.
 	     */
 	    axis: React.PropTypes.oneOf(['both', 'x', 'y']),
+	
+	    /**
+	     * `bounds` determines the range of movement available to the element.
+	     * Available values are:
+	     *
+	     * 'parent' restricts movement within the Draggable's parent node.
+	     *
+	     * Alternatively, pass an object with the following properties, all of which are optional:
+	     *
+	     * {left: LEFT_BOUND, right: RIGHT_BOUND, bottom: BOTTOM_BOUND, top: TOP_BOUND}
+	     *
+	     * All values are in px.
+	     *
+	     * Example:
+	     *
+	     * ```jsx
+	     *   var App = React.createClass({
+	     *       render: function () {
+	     *         return (
+	     *            <Draggable bounds={{right: 300, bottom: 300}}>
+	     *              <div>Content</div>
+	     *           </Draggable>
+	     *         );
+	     *       }
+	     *   });
+	     * ```
+	     */
+	    bounds: React.PropTypes.oneOfType([
+	      React.PropTypes.shape({
+	        left: React.PropTypes.Number,
+	        right: React.PropTypes.Number,
+	        top: React.PropTypes.Number,
+	        bottom: React.PropTypes.Number
+	      }),
+	      React.PropTypes.oneOf(['parent', false])
+	    ]),
+	
+	    /**
+	     * By default, we add 'user-select:none' attributes to the document body
+	     * to prevent ugly text selection during drag. If this is causing problems
+	     * for your app, set this to `false`.
+	     */
+	    enableUserSelectHack: React.PropTypes.bool,
 	
 	    /**
 	     * `handle` specifies a selector to be used as the handle that initiates drag.
@@ -336,6 +451,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    /**
 	     * Called when dragging starts.
+	     * If this function returns the boolean false, dragging will be canceled.
 	     *
 	     * Example:
 	     *
@@ -356,6 +472,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    /**
 	     * Called while dragging.
+	     * If this function returns the boolean false, dragging will be canceled.
 	     *
 	     * Example:
 	     *
@@ -405,15 +522,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Remove any leftover event handlers
 	    removeEvent(window, dragEventFor['move'], this.handleDrag);
 	    removeEvent(window, dragEventFor['end'], this.handleDragEnd);
+	    removeUserSelectStyles(this);
 	  },
 	
 	  getDefaultProps: function () {
 	    return {
 	      axis: 'both',
+	      bounds: false,
 	      handle: null,
 	      cancel: null,
 	      grid: null,
 	      zIndex: NaN,
+	      enableUserSelectHack: true,
 	      onStart: emptyFunction,
 	      onDrag: emptyFunction,
 	      onStop: emptyFunction,
@@ -451,7 +571,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 	
+	    // Call event handler. If it returns explicit false, cancel.
+	    var shouldStart = this.props.onStart(e, createUIEvent(this));
+	    if (shouldStart === false) return;
+	
 	    var dragPoint = getControlPosition(e);
+	
+	    // Add a style to the body to disable user-select. This prevents text from
+	    // being selected all over the page.
+	    addUserSelectStyles(this);
 	
 	    // Initiate dragging. Set the current x and y as offsets
 	    // so we know how much we've moved during the drag. This allows us
@@ -462,8 +590,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      offsetY: dragPoint.clientY - this.state.clientY
 	    });
 	
-	    // Call event handler
-	    this.props.onStart(e, createUIEvent(this));
 	
 	    // Add event handlers
 	    addEvent(window, dragEventFor['move'], this.handleDrag);
@@ -475,6 +601,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!this.state.dragging) {
 	      return;
 	    }
+	
+	    removeUserSelectStyles(this);
 	
 	    // Turn off dragging
 	    this.setState({
@@ -498,18 +626,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    // Snap to grid if prop has been provided
 	    if (Array.isArray(this.props.grid)) {
-	      var coords = snapToGrid(this, clientX, clientY);
+	      var coords = snapToGrid(this.props.grid, clientX, clientY);
 	      clientX = coords[0], clientY = coords[1];
 	    }
+	
+	    if (this.props.bounds) {
+	      var pos = getBoundPosition(this, clientX, clientY);
+	      clientX = pos[0], clientY = pos[1];
+	    }
+	
+	    // Call event handler. If it returns explicit false, cancel.
+	    var shouldUpdate = this.props.onDrag(e, createUIEvent(this));
+	    if (shouldUpdate === false) return this.handleDragEnd();
 	
 	    // Update transform
 	    this.setState({
 	      clientX: clientX,
 	      clientY: clientY
 	    });
-	
-	    // Call event handler
-	    this.props.onDrag(e, createUIEvent(this));
 	  },
 	
 	  render: function () {
@@ -532,7 +666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.state.clientY :
 	        0
 	    });
-	    var style = assign({}, userSelectStyle, childStyle, transform);
+	    var style = assign({}, childStyle, transform);
 	
 	    // Set zIndex if currently dragging and prop has been provided
 	    if (this.state.dragging && !isNaN(this.props.zIndex)) {
