@@ -6,16 +6,19 @@ A simple component for making elements draggable.
 
 ## Demo
 
-http://mzabriskie.github.io/react-draggable/example/
+[View Demo](http://mzabriskie.github.io/react-draggable/example/)
 
 
 ## Installing
 
 ```bash
 $ npm install react-draggable
-# or
-$ bower install react-draggable
 ```
+
+If you aren't using browserify/webpack, a
+[UMD version of react-draggable](http://mzabriskie.github.io/react-draggable/example/react-draggable.js)
+is updated in the `gh-pages` branch and used for the demo. You can generate it yourself from master by cloning this
+repository and running `$ make`. This will create umd dist files in the `dist/` folder.
 
 ## Details
 
@@ -101,28 +104,19 @@ React.renderComponent(<App/>, document.body);
 ## Contributing
 
 - Fork the project
-- `$ npm install`
+- Run the project in development mode: `$ make dev`
 - Make changes.
-- Run a static server in this folder to see your changes.
-  For example: `$ npm install -g static-server; static-server .` and open
-  http://localhost:9080/example.index.html
-- Run webpack in development mode to recompile changes as you make them:
-  `$ npm run dev`
 - Add appropriate tests
-- `$ npm test`
+- `$ make test`
 - If tests don't pass, make them pass.
 - Update README with appropriate docs.
-- Don't include `/dist` changes. These files are updated per-release.
 - Commit and PR
 
 ## Release checklist
 
 - Update CHANGELOG
-- Update version in `bower.json`
-- Update version in `package.json`
-- Run build: `$ npm run build`
-- Commit, tag, push
-- `npm publish`
+- `make release-patch`, `make release-minor`, or `make-release-major`
+- `make publish`
 
 ## License
 
