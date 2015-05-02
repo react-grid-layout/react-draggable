@@ -17,6 +17,7 @@ describe('react-draggable', function () {
       expect(drag.props.axis).toEqual('both');
       expect(drag.props.handle).toEqual(null);
       expect(drag.props.cancel).toEqual(null);
+      expect(drag.props.bounds).toBeFalsy();
       expect(isNaN(drag.props.zIndex)).toEqual(true);
       expect(typeof drag.props.onStart).toEqual('function');
       expect(typeof drag.props.onDrag).toEqual('function');

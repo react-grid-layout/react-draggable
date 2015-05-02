@@ -108,14 +108,26 @@
           <Draggable grid={[50, 50]}>
             <div className="box">I snap to a 50 x 50 grid</div>
           </Draggable>
-          <Draggable>
-            <div className="box" style={{position: 'absolute', top: '400px', left: '700px'}}>
-              I already have left and top properties assigned.
-            </div>
+          <Draggable bounds={{top: 0, left: 0, right: 300, bottom: 300}} zIndex={5}>
+            <div className="box">I can only be moved within 300px bounds.</div>
           </Draggable>
+          <div className="box" style={{height: '500px', width: '500px', position: 'relative'}}>
+            <Draggable bounds="parent">
+              <div className="box">
+                I can only be moved within my offsetParent.<br /><br />
+                Both parent padding and child margin work properly.
+              </div>
+            </Draggable>
+            <Draggable bounds="parent">
+              <div className="box">
+                I also can only be moved within my offsetParent.<br /><br />
+                Both parent padding and child margin work properly.
+              </div>
+            </Draggable>
+          </div>
           <Draggable>
             <div className="box" style={{position: 'absolute', bottom: '100px', right: '100px'}}>
-              I already have bottom and right properties assigned.
+              I already have an absolute position.
             </div>
           </Draggable>
         </div>

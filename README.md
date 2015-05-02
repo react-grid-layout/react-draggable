@@ -74,6 +74,11 @@ var App = React.createClass({
 			//
 			// `grid` specifies the x and y that dragging should snap to.
 			//
+			// `bounds` specifies movement boundaries. Pass:
+			// - 'parent' restricts movement within the node's offsetParent
+			//	 (nearest node with position relative or absolute), or
+			// - An object with left, top, right, and bottom properties.
+			//
 			// `zIndex` specifies the zIndex to use while dragging.
 			//
 			// `onStart` is called when dragging starts.
