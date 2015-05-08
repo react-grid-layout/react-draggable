@@ -80,6 +80,10 @@ var App = React.createClass({
 			// - An object with left, top, right, and bottom properties. These indicate how far in each direction
 			//   the draggable can be moved. See example/index.html for more on this.
 			//
+			// `start` specifies the x and y that the dragged item should start at. This is generally not necessary
+			//   to use (you can use absolute or relative positioning of the child directly), but can be helpful
+			//   for uniformity in your callbacks and with css transforms.
+			//
 			// `zIndex` specifies the zIndex to use while dragging.
 			//
 			// `onStart` is called when dragging starts.

@@ -130,6 +130,11 @@
               I already have an absolute position.
             </div>
           </Draggable>
+          <Draggable start={{x: 25, y: 25}}>
+            <div className="box">
+              {"I have a start position of {x: 25, y: 25}, so I'm slightly offset."}
+            </div>
+          </Draggable>
         </div>
       );
     }
