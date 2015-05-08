@@ -248,9 +248,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      right: innerWidth(parent) - outerWidth(node) - node.offsetLeft,
 	      bottom: innerHeight(parent) - outerHeight(node) - node.offsetTop
 	    };
-	  } else {
-	    if (isNum(bounds.right)) bounds.right -= outerWidth(node);
-	    if (isNum(bounds.bottom)) bounds.bottom -= outerHeight(node);
 	  }
 	
 	  // Keep x and y below right and bottom limits...
