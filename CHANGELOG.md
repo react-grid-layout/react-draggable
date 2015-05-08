@@ -67,3 +67,9 @@
 - Breaking change: `bounds` with coordinates was confusing because it was using the item's width/height,
   which was not intuitive. When providing coordinates, `bounds` now simply restricts movement in each
   direction by that many pixels.
+
+### 0.7.1 (May 7, 2015)
+
+- The `start` param is back. Pass `{x: Number, y: Number}` to kickoff the CSS transform. Useful in certain
+  cases for simpler callback math (so you don't have to know its existing relative position and add it to
+  the dragged position). Fixes #52.
