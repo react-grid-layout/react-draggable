@@ -73,3 +73,7 @@
 - The `start` param is back. Pass `{x: Number, y: Number}` to kickoff the CSS transform. Useful in certain
   cases for simpler callback math (so you don't have to know its existing relative position and add it to
   the dragged position). Fixes #52.
+
+### 0.7.2 (May 8, 2015)
+
+- Added `moveOnStartChange` property. See README.
