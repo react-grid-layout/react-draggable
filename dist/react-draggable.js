@@ -65,8 +65,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var React = __webpack_require__(2);
 	var emptyFunction = function(){};
-	var assign = __webpack_require__(3);
-	var classNames = __webpack_require__(4);
+	var assign = __webpack_require__(4);
+	var classNames = __webpack_require__(3);
 	
 	//
 	// Helpers. See Element definition below this section.
@@ -450,6 +450,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }),
 	
 	    /**
+	     * `moveOnStartChange`, if true (default false) will move the element if the `start`
+	     * property changes.
+	     */
+	    moveOnStartChange: React.PropTypes.bool,
+	
+	
+	    /**
 	     * `zIndex` specifies the zIndex to use while dragging.
 	     *
 	     * Example:
@@ -537,6 +544,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onMouseDown: React.PropTypes.func,
 	  },
 	
+	  componentWillReceiveProps: function(newProps) {
+	    // React to changes in the 'start' param.
+	    if (newProps.moveOnStartChange && newProps.start &&
+	        (newProps.start.x !== this.state.initialStart.x || newProps.start.y !== this.state.initialStart.y)) {
+	      this.setState(this.getInitialState(newProps));
+	    }
+	  },
+	
 	  componentWillUnmount: function() {
 	    // Remove any leftover event handlers
 	    removeEvent(window, dragEventFor['move'], this.handleDrag);
@@ -551,6 +566,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      handle: null,
 	      cancel: null,
 	      grid: null,
+	      moveOnStartChange: false,
 	      start: {x: 0, y: 0},
 	      zIndex: NaN,
 	      enableUserSelectHack: true,
@@ -561,7 +577,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	
-	  getInitialState: function () {
+	  getInitialState: function (props) {
+	    // Handle call from CWRP
+	    props = props || this.props;
 	    return {
 	      // Whether or not we are currently dragging.
 	      dragging: false,
@@ -570,7 +588,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      offsetX: 0, offsetY: 0,
 	
 	      // Current transform x and y.
-	      clientX: this.props.start.x, clientY: this.props.start.y
+	      clientX: props.start.x, clientY: props.start.y,
+	
+	      initialStart: props.start
 	    };
 	  },
 	
@@ -727,38 +747,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-	
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-	
-		return Object(val);
-	}
-	
-	module.exports = Object.assign || function (target, source) {
-		var from;
-		var keys;
-		var to = ToObject(target);
-	
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-	
-			for (var i = 0; i < keys.length; i++) {
-				to[keys[i]] = from[keys[i]];
-			}
-		}
-	
-		return to;
-	};
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	  Copyright (c) 2015 Jed Watson.
 	  Licensed under the MIT License (MIT), see
@@ -802,6 +790,38 @@ return /******/ (function(modules) { // webpackBootstrap
 			return classNames;
 		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	}
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+	
+		return Object(val);
+	}
+	
+	module.exports = Object.assign || function (target, source) {
+		var from;
+		var keys;
+		var to = ToObject(target);
+	
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+	
+			for (var i = 0; i < keys.length; i++) {
+				to[keys[i]] = from[keys[i]];
+			}
+		}
+	
+		return to;
+	};
 
 
 /***/ }
