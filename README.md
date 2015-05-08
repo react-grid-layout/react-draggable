@@ -77,7 +77,8 @@ var App = React.createClass({
 			// `bounds` specifies movement boundaries. Pass:
 			// - 'parent' restricts movement within the node's offsetParent
 			//	 (nearest node with position relative or absolute), or
-			// - An object with left, top, right, and bottom properties.
+			// - An object with left, top, right, and bottom properties. These indicate how far in each direction
+			//   the draggable can be moved. See example/index.html for more on this.
 			//
 			// `zIndex` specifies the zIndex to use while dragging.
 			//
