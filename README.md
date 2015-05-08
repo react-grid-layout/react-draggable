@@ -84,6 +84,9 @@ var App = React.createClass({
 			//   to use (you can use absolute or relative positioning of the child directly), but can be helpful
 			//   for uniformity in your callbacks and with css transforms.
 			//
+			// `moveOnStartChange`, if true (default false), will move the element if there is a change in `start`.
+			//   We set this by default to `false` because it can cause unwanted effects if you are not aware of it.
+			//
 			// `zIndex` specifies the zIndex to use while dragging.
 			//
 			// `onStart` is called when dragging starts.
@@ -95,6 +98,8 @@ var App = React.createClass({
 			<Draggable
 				axis="x"
 				handle=".handle"
+				start={{x: 0, y: 0}}
+				moveOnStartChange={false}
 				grid={[25, 25]}
 				zIndex={100}
 				onStart={this.handleStart}
