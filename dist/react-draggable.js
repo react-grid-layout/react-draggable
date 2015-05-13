@@ -65,8 +65,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var React = __webpack_require__(2);
 	var emptyFunction = function(){};
-	var assign = __webpack_require__(4);
-	var classNames = __webpack_require__(3);
+	var assign = __webpack_require__(3);
+	var classNames = __webpack_require__(4);
 	
 	//
 	// Helpers. See Element definition below this section.
@@ -546,8 +546,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  componentWillReceiveProps: function(newProps) {
 	    // React to changes in the 'start' param.
-	    if (newProps.moveOnStartChange && newProps.start &&
-	        (newProps.start.x !== this.state.initialStart.x || newProps.start.y !== this.state.initialStart.y)) {
+	    if (newProps.moveOnStartChange && newProps.start) {
 	      this.setState(this.getInitialState(newProps));
 	    }
 	  },
@@ -588,9 +587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      offsetX: 0, offsetY: 0,
 	
 	      // Current transform x and y.
-	      clientX: props.start.x, clientY: props.start.y,
-	
-	      initialStart: props.start
+	      clientX: props.start.x, clientY: props.start.y
 	    };
 	  },
 	
@@ -747,6 +744,38 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+	
+		return Object(val);
+	}
+	
+	module.exports = Object.assign || function (target, source) {
+		var from;
+		var keys;
+		var to = ToObject(target);
+	
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+	
+			for (var i = 0; i < keys.length; i++) {
+				to[keys[i]] = from[keys[i]];
+			}
+		}
+	
+		return to;
+	};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	  Copyright (c) 2015 Jed Watson.
 	  Licensed under the MIT License (MIT), see
@@ -790,38 +819,6 @@ return /******/ (function(modules) { // webpackBootstrap
 			return classNames;
 		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	}
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-	
-		return Object(val);
-	}
-	
-	module.exports = Object.assign || function (target, source) {
-		var from;
-		var keys;
-		var to = ToObject(target);
-	
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-	
-			for (var i = 0; i < keys.length; i++) {
-				to[keys[i]] = from[keys[i]];
-			}
-		}
-	
-		return to;
-	};
 
 
 /***/ }

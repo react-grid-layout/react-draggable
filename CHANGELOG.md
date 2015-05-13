@@ -77,3 +77,8 @@
 ### 0.7.2 (May 8, 2015)
 
 - Added `moveOnStartChange` property. See README.
+
+### 0.7.3 (May 13, 2015)
+
+- Removed a `moveOnStartChange` optimization that was causing problems when attempting to move a `<Draggable>` back
+  to its initial position. See https://github.com/STRML/react-grid-layout/issues/56
