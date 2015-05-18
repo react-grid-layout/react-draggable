@@ -82,3 +82,8 @@
 
 - Removed a `moveOnStartChange` optimization that was causing problems when attempting to move a `<Draggable>` back
   to its initial position. See https://github.com/STRML/react-grid-layout/issues/56
+
+### 0.7.4 (May 18, 2015)
+
+- Fix a bug where a quick drag out of bounds to `0,0` would cause the element to remain in an inaccurate position,
+  because the translation was removed from the CSS. See #55.
