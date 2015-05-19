@@ -87,3 +87,9 @@
 
 - Fix a bug where a quick drag out of bounds to `0,0` would cause the element to remain in an inaccurate position,
   because the translation was removed from the CSS. See #55.
+
+### 0.8.0 (May 19, 2015)
+
+- Touch/mouse events rework. Fixes #51, #37, and #43, as well as IE11 support.
+- Moved mousemove/mouseup and touch event handlers to document from window. Fixes IE9/10 support.
+  IE8 is still not supported, as it is not supported by React.
