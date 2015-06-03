@@ -48,7 +48,7 @@ Props:
 **`cancel`**: specifies a selector to be used to prevent drag initialization.
 
 **`grid`**: specifies the x and y that dragging should snap to.
- 
+
 **`bounds`**: specifies movement boundaries. Accepted values:
 - `parent` restricts movement within the node's offsetParent (nearest node with position relative or absolute), or
 - An object with `left, top, right, and bottom` properties. These indicate how far in each direction the draggable can be moved. See [example/index.html](https://github.com/mzabriskie/react-draggable/blob/master/example/index.html) for more on this.
@@ -113,6 +113,21 @@ var App = React.createClass({
 React.renderComponent(<App/>, document.body);
 ```
 
+## State Problems?
+
+`<Draggable>` is a stateful component. This means that it is storing its current drag offsets in its internal state.
+This can cause problems with certain integrations. For example, if you change the position of the element manually,
+`<Draggable>` can get into trouble as it assumes a translation in the DOM. If you see an element jump around the page
+when you click it, this is affecting you.
+
+This is an unfortunate side-effect of dragging, which is inherently stateful.
+
+If you move the element manually, you have two options:
+
+1. Feed the `<Draggable>` an `x` and `y` parameter in the `start` param, and change it as you go while setting
+`moveOnStartChange` to `true`, or,
+2. When moving the `<Draggable>`, ref the element and
+[call `resetState()`](https://github.com/STRML/react-resizable/blob/master/lib/Resizable.jsx#L48).
 
 
 ## Contributing
