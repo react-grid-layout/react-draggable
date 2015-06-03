@@ -676,6 +676,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.handleDragStart.apply(this, arguments);
 	  },
 	
+	  // Intended for use by a parent component. Resets internal state on this component. Useful for
+	  // <Resizable> and other components in case this element is manually resized and start/moveOnStartChange
+	  // don't work for you.
+	  resetState: function() {
+	    this.setState({
+	      offsetX: 0, offsetY: 0, clientX: 0, clientY: 0
+	    });
+	  },
+	
 	  render: function () {
 	    // Create style object. We extend from existing styles so we don't
 	    // remove anything already set (like background, color, etc).

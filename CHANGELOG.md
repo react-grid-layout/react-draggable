@@ -93,3 +93,7 @@
 - Touch/mouse events rework. Fixes #51, #37, and #43, as well as IE11 support.
 - Moved mousemove/mouseup and touch event handlers to document from window. Fixes IE9/10 support.
   IE8 is still not supported, as it is not supported by React.
+
+### 0.8.1 (June 3, 2015)
+
+- Add `resetState()` instance method for use by parents. See README ("State Problems?").
