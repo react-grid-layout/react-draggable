@@ -111,8 +111,8 @@ describe('react-draggable', function () {
     });
 
     it('should add and remove user-select styles', function () {
-      var userSelectStyle = ';user-select: none;-webkit-user-select:none;-moz-user-select:none;' +
-        '-o-user-select:none;-ms-user-select:none;';
+      // Karma runs in firefox in our tests
+      var userSelectStyle = ';user-select: none;-moz-user-select: none;';
 
       drag = TestUtils.renderIntoDocument(
         <Draggable>
