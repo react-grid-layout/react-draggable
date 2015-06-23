@@ -12,7 +12,13 @@ module.exports = {
   },
 	module: {
 		loaders: [
-			{test: /\.js$/, loader: 'jsx-loader'}
+			{
+        test: /\.(?:js|es).?$/,
+        loader: 'babel-loader'
+      }
 		]
-	}
+	},
+  resolve: {
+    extensions: ["", ".webpack.js", ".web.js", ".js", ".es6"]
+  }
 };

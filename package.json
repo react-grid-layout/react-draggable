@@ -2,7 +2,7 @@
   "name": "react-draggable",
   "version": "0.8.1",
   "description": "React draggable component",
-  "main": "index.js",
+  "main": "dist/react-draggable.js",
   "scripts": {
     "test": "make test",
     "dev": "make dev",
@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/mzabriskie/react-draggable",
   "devDependencies": {
-    "jsx-loader": "^0.13.2",
+    "babel-core": "^5.6.4",
+    "babel-loader": "^5.1.4",
     "karma": "^0.12.19",
     "karma-chrome-launcher": "^0.1.4",
     "karma-cli": "0.0.4",
@@ -41,6 +42,6 @@
   },
   "dependencies": {
     "classnames": "^1.2.2",
-    "object-assign": "^2.0.0"
+    "object-assign": "^3.0.0"
   }
 }
