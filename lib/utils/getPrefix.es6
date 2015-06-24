@@ -1,7 +1,7 @@
 export default (function() {
   if (typeof window === 'undefined') return '';
   // Thanks David Walsh
-  var styles = window.getComputedStyle(document.documentElement, ''),
+  let styles = window.getComputedStyle(document.documentElement, ''),
   pre = (Array.prototype.slice
         .call(styles)
         .join('')

@@ -3,13 +3,13 @@ import React from 'react';
 import {innerWidth, innerHeight, outerWidth, outerHeight} from './domFns';
 
 export function getBoundPosition(draggable, clientX, clientY) {
-  var bounds = JSON.parse(JSON.stringify(draggable.props.bounds));
-  var node = React.findDOMNode(draggable);
-  var parent = node.parentNode;
+  let bounds = JSON.parse(JSON.stringify(draggable.props.bounds));
+  let node = React.findDOMNode(draggable);
+  let parent = node.parentNode;
 
   if (bounds === 'parent') {
-    var nodeStyle = window.getComputedStyle(node);
-    var parentStyle = window.getComputedStyle(parent);
+    let nodeStyle = window.getComputedStyle(node);
+    let parentStyle = window.getComputedStyle(parent);
     // Compute bounds. This is a pain with padding and offsets but this gets it exactly right.
     bounds = {
       left: -node.offsetLeft + int(parentStyle.paddingLeft) +
@@ -33,8 +33,8 @@ export function getBoundPosition(draggable, clientX, clientY) {
 }
 
 export function snapToGrid(grid, pendingX, pendingY) {
-  var x = Math.round(pendingX / grid[0]) * grid[0];
-  var y = Math.round(pendingY / grid[1]) * grid[1];
+  let x = Math.round(pendingX / grid[0]) * grid[0];
+  let y = Math.round(pendingY / grid[1]) * grid[1];
   return [x, y];
 }
 
@@ -48,7 +48,7 @@ export function canDragY(draggable) {
 
 // Get {clientX, clientY} positions from event.
 export function getControlPosition(e) {
-  var position = (e.targetTouches && e.targetTouches[0]) || e;
+  let position = (e.targetTouches && e.targetTouches[0]) || e;
   return {
     clientX: position.clientX,
     clientY: position.clientY

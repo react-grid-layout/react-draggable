@@ -1,13 +1,18 @@
-'use strict';
 var React = require('react');
 var TestUtils = require('react/lib/ReactTestUtils');
 var Draggable = require('../index');
+var DraggableCore = require('../index').DraggableCore;
+var _ = require('lodash');
 
 /*global describe,it,expect,afterEach */
 describe('react-draggable', function () {
   var drag;
+
   afterEach(function() {
-    if (drag && drag.getDOMNode) drag.componentWillUnmount();
+    try {
+      React.findDOMNode(drag);
+      drag.componentWillUnmount();
+    } catch(e) { return; }
   });
 
   describe('props', function () {
@@ -25,13 +30,35 @@ describe('react-draggable', function () {
     });
 
     it('should pass style and className properly from child', function () {
-      drag = <Draggable><div className="foo" style={{color: 'black'}}/></Draggable>;
+      drag = (<Draggable><div className="foo" style={{color: 'black'}}/></Draggable>);
+
+      expect(renderToHTML(drag)).toEqual('<div class="foo" ' +
+        'style="touch-action:none;color:black;transform:translate(0px,0px);-moz-transform:translate(0px,0px);" ' +
+        'data-reactid=".1"></div>');
+    });
+
+    // NOTE: this runs a shallow renderer, which DOES NOT actually render <DraggableCore>
+    it('should pass handle on to <DraggableCore>', function () {
+      drag = <Draggable handle=".foo"><div /></Draggable>;
       var renderer = TestUtils.createRenderer();
       renderer.render(drag);
       var output = renderer.getRenderOutput();
 
-      expect(output.props.className).toEqual('foo react-draggable');
-      expect(output.props.style.color).toEqual('black');
+      var expected = (
+        <DraggableCore {...Draggable.defaultProps} handle=".foo" className="react-draggable"
+          style={{
+            'transform': 'translate(0px,0px)',
+            'MozTransform': 'translate(0px,0px)'
+          }}>
+          <div />
+        </DraggableCore>
+      );
+      // Not easy to actually test equality here. The functions are autobound so we can't test those easily.
+      var toOmit = ['onStart', 'onStop', 'onDrag'];
+      expect(_.isEqual(
+        _.omit(output.props, toOmit),
+        _.omit(expected.props, toOmit))
+      ).toEqual(true);
     });
 
     it('should honor props', function () {
@@ -74,7 +101,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode());
+      TestUtils.Simulate.mouseDown(React.findDOMNode(drag));
       expect(called).toEqual(true);
     });
 
@@ -86,27 +113,30 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode());
-      TestUtils.Simulate.mouseUp(drag.getDOMNode());
+      TestUtils.Simulate.mouseDown(React.findDOMNode(drag));
+      TestUtils.Simulate.mouseUp(React.findDOMNode(drag));
       expect(called).toEqual(true);
     });
 
     it('should render with translate()', function () {
+      var dragged = false;
       drag = TestUtils.renderIntoDocument(
-        <Draggable>
+        <Draggable onDrag={function() { dragged = true; }}>
           <div />
         </Draggable>
       );
 
-      var node = drag.getDOMNode();
+      var node = React.findDOMNode(drag);
 
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      // FIXME why doesn't simulate on the window work?
-      // TestUtils.Simulate.mouseMove(window, {clientX: 100, clientY: 100});
-      drag.handleDrag({clientX: 100, clientY:100}); // hack
+      // Simulate a movement; can't use TestUtils here because it uses react's event system only,
+      // but <DraggableCore> attaches event listeners directly to the document.
+      var e = new MouseEvent('mousemove', {clientX: 100, clientY: 100});
+      document.dispatchEvent(e);
       TestUtils.Simulate.mouseUp(node);
 
       var style = node.getAttribute('style');
+      expect(dragged).toEqual(true);
       expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
     });
 
@@ -120,7 +150,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      var node = drag.getDOMNode();
+      var node = React.findDOMNode(drag);
 
       expect(document.body.getAttribute('style')).toEqual('');
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
@@ -134,7 +164,7 @@ describe('react-draggable', function () {
     it('should initialize dragging onmousedown', function () {
       drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode());
+      TestUtils.Simulate.mouseDown(React.findDOMNode(drag));
       expect(drag.state.dragging).toEqual(true);
     });
 
@@ -148,10 +178,10 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.content'));
+      TestUtils.Simulate.mouseDown(React.findDOMNode(drag).querySelector('.content'));
       expect(drag.state.dragging).toEqual(false);
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.handle'));
+      TestUtils.Simulate.mouseDown(React.findDOMNode(drag).querySelector('.handle'));
       expect(drag.state.dragging).toEqual(true);
     });
 
@@ -165,20 +195,20 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.cancel'));
+      TestUtils.Simulate.mouseDown(React.findDOMNode(drag).querySelector('.cancel'));
       expect(drag.state.dragging).toEqual(false);
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.content'));
+      TestUtils.Simulate.mouseDown(React.findDOMNode(drag).querySelector('.content'));
       expect(drag.state.dragging).toEqual(true);
     });
 
     it('should discontinue dragging onmouseup', function () {
       drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode());
+      TestUtils.Simulate.mouseDown(React.findDOMNode(drag));
       expect(drag.state.dragging).toEqual(true);
 
-      TestUtils.Simulate.mouseUp(drag.getDOMNode());
+      TestUtils.Simulate.mouseUp(React.findDOMNode(drag));
       expect(drag.state.dragging).toEqual(false);
     });
   });
@@ -211,3 +241,7 @@ describe('react-draggable', function () {
     });
   });
 });
+
+function renderToHTML(component) {
+  return React.findDOMNode(TestUtils.renderIntoDocument(component)).outerHTML;
+}

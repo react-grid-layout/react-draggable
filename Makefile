@@ -2,11 +2,14 @@
 # Thanks @andreypopp
 
 BIN = ./node_modules/.bin
-SRC = $(wildcard lib/*.js)
-LIB = $(SRC:lib/%.js=dist/%.js)
-MIN = $(SRC:lib/%.js=dist/%.min.js)
+DIST = dist
+LIB = $(DIST)/react-draggable.js
+MIN = $(DIST)/react-draggable.min.js
 
-.PHONY: test dev
+.PHONY: test dev build clean
+
+clean:
+	rm -rf dist
 
 build: $(LIB) $(MIN)
 
@@ -14,13 +17,12 @@ build: $(LIB) $(MIN)
 install link:
 	@npm $@
 
-# FIXME
-dist/%.min.js: $(BIN)
-	@$(BIN)/uglifyjs dist/react-draggable.js \
-	  --output dist/react-draggable.min.js \
-	  --source-map dist/react-draggable.min.map \
-	  --source-map-url react-draggable.min.map \
-	  --in-source-map dist/react-draggable.map \
+dist/%.min.js: $(LIB) $(BIN)
+	@$(BIN)/uglifyjs $< \
+	  --output $@ \
+	  --source-map $@.map \
+	  --source-map-url $(basename $@.map) \
+	  --in-source-map $<.map \
 	  --compress warnings=false
 
 dist/%.js: $(BIN)
@@ -59,6 +61,6 @@ release-minor: test build
 release-major: test build
 	@$(call release,major)
 
-publish:
+publish: build
 	git push --tags origin HEAD:master
 	npm publish

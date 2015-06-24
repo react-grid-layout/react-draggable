@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import classNames from 'classnames';
 import assign from 'object-assign';
@@ -7,6 +5,7 @@ import {autobind} from './utils/shims';
 import {createUIEvent, createCSSTransform} from './utils/domFns';
 import {canDragX, canDragY, getBoundPosition, snapToGrid} from './utils/positionFns';
 import DraggableCore from './DraggableCore';
+import log from './utils/log';
 
 //
 // Define <Draggable>
@@ -27,10 +26,10 @@ export default class Draggable extends DraggableCore {
   }
 
   onDragStart(e, coreEvent) {
-    console.log('Draggable: onDragStart: %j', coreEvent.position);
+    log('Draggable: onDragStart: %j', coreEvent.position);
 
     // Short-circuit if user's callback killed it.
-    let shouldStart = this.props.onStart(e, coreEvent);
+    let shouldStart = this.props.onStart(e, createUIEvent(this, coreEvent));
     // Kills start event on core as well, so move handlers are never bound.
     if (shouldStart === false) return false;
 
@@ -41,39 +40,42 @@ export default class Draggable extends DraggableCore {
 
   onDrag(e, coreEvent) {
     if (!this.state.dragging) return false;
-    console.log('Draggable: onDrag: %j', coreEvent.position);
+    log('Draggable: onDrag: %j', coreEvent.position);
 
     // Short-circuit if user's callback killed it.
-    let shouldUpdate = this.props.onDrag(e, coreEvent);
+    let shouldUpdate = this.props.onDrag(e, createUIEvent(this, coreEvent));
     if (shouldUpdate === false) return false;
 
-    var clientX = this.state.clientX + coreEvent.position.deltaX;
-    var clientY = this.state.clientY + coreEvent.position.deltaY;
+    let newState = {
+      clientX: this.state.clientX + coreEvent.position.deltaX,
+      clientY: this.state.clientY + coreEvent.position.deltaY
+    };
 
     // Snap to grid if prop has been provided
     if (Array.isArray(this.props.grid)) {
-      [clientX, clientY] = snapToGrid(this.props.grid, clientX, clientY);
+      newState.lastX = (this.state.lastX || newState.clientX) + coreEvent.position.deltaX;
+      newState.lastY = (this.state.lastY || newState.clientY) + coreEvent.position.deltaY;
+      // Eslint bug, it thinks newState.clientY is undefined
+      /*eslint no-undef:0*/
+      [newState.clientX, newState.clientY] = snapToGrid(this.props.grid, newState.lastX, newState.lastY);
     }
 
     // Keep within bounds.
     if (this.props.bounds) {
-      [clientX, clientY] = getBoundPosition(this, clientX, clientY);
+      [newState.clientX, newState.clientY] = getBoundPosition(this, newState.clientX, newState.clientY);
     }
 
-    // TODO create drag event using createUIEvent and call back with it
-    // this.props.onDrag(createUIEvent(e));
-
-    this.setState({clientX, clientY});
+    this.setState(newState);
   }
 
-  onDragEnd(e, coreEvent) {
+  onDragStop(e, coreEvent) {
     if (!this.state.dragging) return false;
 
     // Short-circuit if user's callback killed it.
-    let shouldStop = this.props.onStop(e, coreEvent);
+    let shouldStop = this.props.onStop(e, createUIEvent(this, coreEvent));
     if (shouldStop === false) return false;
 
-    console.log('Draggable: onDragEnd: %j', coreEvent.position);
+    log('Draggable: onDragStop: %j', coreEvent.position);
 
     this.setState({
       dragging: false
@@ -86,7 +88,7 @@ export default class Draggable extends DraggableCore {
     // without worrying about whether or not it is relatively or absolutely positioned.
     // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
     // has a clean slate.
-    var style = createCSSTransform({
+    let style = createCSSTransform({
       // Set left if horizontal drag is enabled
       x: canDragX(this) ?
         this.state.clientX :
@@ -104,7 +106,7 @@ export default class Draggable extends DraggableCore {
     }
 
     // Mark with class while dragging
-    var className = classNames((this.props.children.props.className || ''), 'react-draggable', {
+    let className = classNames((this.props.children.props.className || ''), 'react-draggable', {
       'react-draggable-dragging': this.state.dragging,
       'react-draggable-dragged': this.state.dragged
     });
@@ -113,7 +115,7 @@ export default class Draggable extends DraggableCore {
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     return (
       <DraggableCore {...this.props} style={style} className={className}
-                     onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragEnd}>
+                     onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragStop}>
         {React.Children.only(this.props.children)}
       </DraggableCore>
     );
@@ -147,7 +149,7 @@ Draggable.propTypes = assign({}, DraggableCore.propTypes, {
    * Example:
    *
    * ```jsx
-   *   var App = React.createClass({
+   *   let App = React.createClass({
    *       render: function () {
    *         return (
    *            <Draggable bounds={{right: 300, bottom: 300}}>
@@ -174,7 +176,7 @@ Draggable.propTypes = assign({}, DraggableCore.propTypes, {
    * Example:
    *
    * ```jsx
-   *   var App = React.createClass({
+   *   let App = React.createClass({
    *       render: function () {
    *           return (
    *               <Draggable grid={[25, 25]}>
@@ -193,7 +195,7 @@ Draggable.propTypes = assign({}, DraggableCore.propTypes, {
    * Example:
    *
    * ```jsx
-   *      var App = React.createClass({
+   *      let App = React.createClass({
    *          render: function () {
    *              return (
    *                  <Draggable start={{x: 25, y: 25}}>
@@ -215,7 +217,7 @@ Draggable.propTypes = assign({}, DraggableCore.propTypes, {
    * Example:
    *
    * ```jsx
-   *   var App = React.createClass({
+   *   let App = React.createClass({
    *       render: function () {
    *           return (
    *               <Draggable zIndex={100}>

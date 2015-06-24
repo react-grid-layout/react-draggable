@@ -3,7 +3,7 @@ import browserPrefix from './getPrefix';
 import assign from 'object-assign';
 import React from 'react';
 
-var matchesSelectorFunc = '';
+let matchesSelectorFunc = '';
 export function matchesSelector(el, selector) {
   if (!matchesSelectorFunc) {
     matchesSelectorFunc = findInArray([
@@ -45,8 +45,8 @@ export function removeEvent(el, event, handler) {
 export function outerHeight(node) {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetTop which is including margin. See getBoundPosition
-  var height = node.clientHeight;
-  var computedStyle = window.getComputedStyle(node);
+  let height = node.clientHeight;
+  let computedStyle = window.getComputedStyle(node);
   height += int(computedStyle.borderTopWidth);
   height += int(computedStyle.borderBottomWidth);
   return height;
@@ -55,23 +55,23 @@ export function outerHeight(node) {
 export function outerWidth(node) {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetLeft which is including margin. See getBoundPosition
-  var width = node.clientWidth;
-  var computedStyle = window.getComputedStyle(node);
+  let width = node.clientWidth;
+  let computedStyle = window.getComputedStyle(node);
   width += int(computedStyle.borderLeftWidth);
   width += int(computedStyle.borderRightWidth);
   return width;
 }
 export function innerHeight(node) {
-  var height = node.clientHeight;
-  var computedStyle = window.getComputedStyle(node);
+  let height = node.clientHeight;
+  let computedStyle = window.getComputedStyle(node);
   height -= int(computedStyle.paddingTop);
   height -= int(computedStyle.paddingBottom);
   return height;
 }
 
 export function innerWidth(node) {
-  var width = node.clientWidth;
-  var computedStyle = window.getComputedStyle(node);
+  let width = node.clientWidth;
+  let computedStyle = window.getComputedStyle(node);
   width -= int(computedStyle.paddingLeft);
   width -= int(computedStyle.paddingRight);
   return width;
@@ -79,9 +79,9 @@ export function innerWidth(node) {
 
 export function createCSSTransform(style) {
   // Replace unitless items with px
-  var x = style.x + 'px';
-  var y = style.y + 'px';
-  var out = {transform: 'translate(' + x + ',' + y + ')'};
+  let x = style.x + 'px';
+  let y = style.y + 'px';
+  let out = {transform: 'translate(' + x + ',' + y + ')'};
   // Add single prefixed property as well
   if (browserPrefix) {
     out[browserPrefix + 'Transform'] = out.transform;
@@ -92,29 +92,29 @@ export function createCSSTransform(style) {
 // User-select Hacks:
 //
 // Useful for preventing blue highlights all over everything when dragging.
-var userSelectStyle = ';user-select: none;';
+let userSelectStyle = ';user-select: none;';
 if (browserPrefix) {
   userSelectStyle += '-' + browserPrefix.toLowerCase() + '-user-select: none;';
 }
 
 export function addUserSelectStyles() {
-  var style = document.body.getAttribute('style') || '';
+  let style = document.body.getAttribute('style') || '';
   document.body.setAttribute('style', style + userSelectStyle);
 }
 
 export function removeUserSelectStyles() {
-  var style = document.body.getAttribute('style') || '';
+  let style = document.body.getAttribute('style') || '';
   document.body.setAttribute('style', style.replace(userSelectStyle, ''));
 }
 
 export function styleHacks(draggable) {
   // Create style object. We extend from existing styles so we don't
   // remove anything already set (like background, color, etc).
-  var childStyle = draggable.props.children.props.style || {};
+  let childStyle = draggable.props.children.props.style || {};
 
   // Workaround IE pointer events; see #51
   // https://github.com/mzabriskie/react-draggable/issues/51#issuecomment-103488278
-  var touchHacks = {
+  let touchHacks = {
     touchAction: 'none'
   };
 
@@ -124,8 +124,8 @@ export function styleHacks(draggable) {
 // Create an event exposed by <DraggableCore>
 export function createCoreEvent(draggable, clientX, clientY) {
   // State changes are often (but not always!) async. We want the latest value.
-  var state = draggable._pendingState || draggable.state;
-  var isStart = !Number.isFinite(state.lastX);
+  let state = draggable._pendingState || draggable.state;
+  let isStart = !Number.isFinite(state.lastX);
 
   return {
     node: React.findDOMNode(draggable),
@@ -146,14 +146,12 @@ export function createCoreEvent(draggable, clientX, clientY) {
 }
 
 // Create an event exposed by <Draggable>
-export function createUIEvent(draggable) {
-  // State changes are often (but not always!) async. We want the latest value.
-  var state = draggable._pendingState || draggable.state;
+export function createUIEvent(draggable, coreEvent) {
   return {
     node: React.findDOMNode(draggable),
     position: {
-      top: state.clientY,
-      left: state.clientX
+      top: coreEvent.position.clientY,
+      left: coreEvent.position.clientX
     }
   };
 }

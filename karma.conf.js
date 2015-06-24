@@ -20,8 +20,15 @@ module.exports = function(config) {
 			cache: true,
 			module: {
 				loaders: [
-					{test: /\.js$/, loader: 'jsx-loader'}
+					{
+						test: /\.(?:js|es).?$/,
+						loader: 'babel-loader',
+						exclude: /(node_modules)/
+					}
 				]
+			},
+			resolve: {
+				extensions: ["", ".webpack.js", ".web.js", ".js", ".es6"]
 			}
 		},
 
