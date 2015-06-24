@@ -1,62 +1,62 @@
 module.exports = function(config) {
-	config.set({
+  config.set({
 
-		basePath: '',
+    basePath: '',
 
-		frameworks: ['jasmine'],
+    frameworks: ['jasmine'],
 
-		files: [
-			'specs/main.js'
-		],
+    files: [
+      'specs/main.js'
+    ],
 
-		exclude: [
-		],
+    exclude: [
+    ],
 
-		preprocessors: {
-			'specs/main.js': ['webpack']
-		},
+    preprocessors: {
+      'specs/main.js': ['webpack']
+    },
 
-		webpack: {
-			cache: true,
-			module: {
-				loaders: [
-					{
-						test: /\.(?:js|es).?$/,
-						loader: 'babel-loader',
-						exclude: /(node_modules)/
-					}
-				]
-			},
-			resolve: {
-				extensions: ["", ".webpack.js", ".web.js", ".js", ".es6"]
-			}
-		},
+    webpack: {
+      cache: true,
+      module: {
+        loaders: [
+          {
+            test: /\.(?:js|es).?$/,
+            loader: 'babel-loader',
+            exclude: /(node_modules)/
+          }
+        ]
+      },
+      resolve: {
+        extensions: ["", ".webpack.js", ".web.js", ".js", ".es6"]
+      }
+    },
 
-		webpackServer: {
-			stats: {
-				colors: true
-			}
-		},
+    webpackServer: {
+      stats: {
+        colors: true
+      }
+    },
 
-		reporters: ['progress'],
+    reporters: ['progress'],
 
-		port: 9876,
+    port: 9876,
 
-		colors: true,
+    colors: true,
 
-		logLevel: config.LOG_INFO,
+    logLevel: config.LOG_INFO,
 
-		autoWatch: false,
+    autoWatch: false,
 
-		browsers: ['Chrome'],
+    browsers: ['PhantomJS', 'Firefox'],
 
-		singleRun: false,
+    singleRun: false,
 
-		plugins: [
-			require('karma-jasmine'),
-			require('karma-chrome-launcher'),
-			require('karma-firefox-launcher'),
-			require('karma-webpack')
-		]
-	});
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-phantomjs-launcher'),
+      require('karma-firefox-launcher'),
+      require('karma-webpack')
+    ]
+  });
 };

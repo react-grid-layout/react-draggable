@@ -29,7 +29,7 @@ dist/%.js: $(BIN)
 	@$(BIN)/webpack --devtool source-map
 
 test: $(BIN)
-	@$(BIN)/karma start --browsers Firefox --single-run
+	@$(BIN)/karma start --single-run
 
 dev: $(BIN)
 	script/build-watch
@@ -52,15 +52,15 @@ define release
 	git tag "v$$NEXT_VERSION" -m "release v$$NEXT_VERSION"
 endef
 
-release-patch: test build
+release-patch: test clean build
 	@$(call release,patch)
 
-release-minor: test build
+release-minor: test clean build
 	@$(call release,minor)
 
-release-major: test build
+release-major: test clean build
 	@$(call release,major)
 
-publish: build
+publish: clean build
 	git push --tags origin HEAD:master
 	npm publish

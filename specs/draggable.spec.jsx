@@ -3,6 +3,8 @@ var TestUtils = require('react/lib/ReactTestUtils');
 var Draggable = require('../index');
 var DraggableCore = require('../index').DraggableCore;
 var _ = require('lodash');
+var browserPrefix = require('../lib/utils/getPrefix.es6');
+var dashedBrowserPrefix = browserPrefix ? '-' + browserPrefix.toLowerCase() + '-' : '';
 
 /*global describe,it,expect,afterEach */
 describe('react-draggable', function () {
@@ -33,8 +35,8 @@ describe('react-draggable', function () {
       drag = (<Draggable><div className="foo" style={{color: 'black'}}/></Draggable>);
 
       expect(renderToHTML(drag)).toEqual('<div class="foo" ' +
-        'style="touch-action:none;color:black;transform:translate(0px,0px);-moz-transform:translate(0px,0px);" ' +
-        'data-reactid=".1"></div>');
+        'style="touch-action:none;color:black;transform:translate(0px,0px);' + dashedBrowserPrefix +
+        'transform:translate(0px,0px);" data-reactid=".1"></div>');
     });
 
     // NOTE: this runs a shallow renderer, which DOES NOT actually render <DraggableCore>
@@ -48,7 +50,7 @@ describe('react-draggable', function () {
         <DraggableCore {...Draggable.defaultProps} handle=".foo" className="react-draggable"
           style={{
             'transform': 'translate(0px,0px)',
-            'MozTransform': 'translate(0px,0px)'
+            [browserPrefix + 'Transform']: 'translate(0px,0px)'
           }}>
           <div />
         </DraggableCore>
@@ -131,8 +133,12 @@ describe('react-draggable', function () {
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
       // Simulate a movement; can't use TestUtils here because it uses react's event system only,
       // but <DraggableCore> attaches event listeners directly to the document.
-      var e = new MouseEvent('mousemove', {clientX: 100, clientY: 100});
-      document.dispatchEvent(e);
+      // Would love to new MouseEvent() here but it doesn't work with PhantomJS / old browsers.
+      // var e = new MouseEvent('mousemove', {clientX: 100, clientY: 100});
+      var evt = document.createEvent('MouseEvents');
+      evt.initMouseEvent('mousemove', true, true, window,
+          0, 0, 0, 100, 100, false, false, false, false, 0, null);
+      document.dispatchEvent(evt);
       TestUtils.Simulate.mouseUp(node);
 
       var style = node.getAttribute('style');
@@ -142,7 +148,7 @@ describe('react-draggable', function () {
 
     it('should add and remove user-select styles', function () {
       // Karma runs in firefox in our tests
-      var userSelectStyle = ';user-select: none;-moz-user-select: none;';
+      var userSelectStyle = ';user-select: none;' + dashedBrowserPrefix + 'user-select: none;';
 
       drag = TestUtils.renderIntoDocument(
         <Draggable>

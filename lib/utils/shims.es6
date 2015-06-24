@@ -22,7 +22,9 @@ let lifeCycleMethods = ['constructor', 'componentWillMount', 'componentDidMount'
 // ES6 classes don't autobind their methods
 export function autobind(component) {
   let toBind = Object.getOwnPropertyNames(Object.getPrototypeOf(component));
-  for (let key of toBind) {
+  // Not using for...of here because it requires a full core-js shim to work everywhere.
+  for (var i = 0; i < toBind.length; i++) {
+    var key = toBind[i];
     if (!isFunction(component[key]) || lifeCycleMethods.indexOf(key) !== -1) continue;
     component[key] = component[key].bind(component);
   }

@@ -1,4 +1,4 @@
-import {findInArray, isFunction, int} from './shims';
+import {findInArray, isFunction, isNum, int} from './shims';
 import browserPrefix from './getPrefix';
 import assign from 'object-assign';
 import React from 'react';
@@ -125,7 +125,7 @@ export function styleHacks(draggable) {
 export function createCoreEvent(draggable, clientX, clientY) {
   // State changes are often (but not always!) async. We want the latest value.
   let state = draggable._pendingState || draggable.state;
-  let isStart = !Number.isFinite(state.lastX);
+  let isStart = !isNum(state.lastX);
 
   return {
     node: React.findDOMNode(draggable),
