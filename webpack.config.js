@@ -10,7 +10,13 @@ module.exports = {
     libraryTarget: 'umd'
 	},
   externals: {
-    'react': 'React'
+    'react': {
+      'commonjs': 'react',
+      'commonjs2': 'react',
+      'amd': 'react',
+      // React dep should be available as window.React, not window.react
+      'root': 'React'
+    }
   },
 	module: {
 		loaders: [
@@ -22,11 +28,11 @@ module.exports = {
 		]
 	},
   resolve: {
-    extensions: ["", ".webpack.js", ".web.js", ".js", ".es6"]
+    extensions: ['', '.webpack.js', '.web.js', '.js', '.es6']
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env": {
+      'process.env': {
         DRAGGABLE_DEBUG: process.env.DRAGGABLE_DEBUG
       }
     })
