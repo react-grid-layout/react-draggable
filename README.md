@@ -129,6 +129,12 @@ If you move the element manually, you have two options:
 2. When moving the `<Draggable>`, ref the element and
 [call `resetState()`](https://github.com/STRML/react-resizable/blob/master/lib/Resizable.jsx#L48).
 
+## Dragging images
+
+The HTML5 Drag & Drop API can interact strangely with `<Draggable>`, especially on `<img>` tags.
+
+If you want an `<img>` to be draggable, set `<img draggable="false" />`. See the
+[corresponding issue](https://github.com/mzabriskie/react-draggable/issues/69).
 
 ## Contributing
 
