@@ -22,6 +22,7 @@ export default class Draggable extends DraggableCore {
       // Current transform x and y.
       clientX: props.start.x, clientY: props.start.y
     };
+    log('Draggable: initializing state: %j, and props: %j', this.state, props);
     autobind(this);
   }
 
@@ -171,6 +172,25 @@ Draggable.propTypes = assign({}, DraggableCore.propTypes, {
   ]),
 
   /**
+   * `disabled`, if true, stops the <Draggable> from dragging. It will stay where it is.
+   *
+   * Example:
+   *
+   * ```jsx
+   *   let App = React.createClass({
+   *       render: function () {
+   *           return (
+   *               <Draggable disabled={true}>
+   *                   <div>I can't be dragged</div>
+   *               </Draggable>
+   *           );
+   *       }
+   *   });
+   * ```
+   */
+  disabled: React.PropTypes.bool,
+
+  /**
    * `grid` specifies the x and y that dragging should snap to.
    *
    * Example:
@@ -234,6 +254,7 @@ Draggable.propTypes = assign({}, DraggableCore.propTypes, {
 Draggable.defaultProps = assign({}, DraggableCore.defaultProps, {
   axis: 'both',
   bounds: false,
+  disabled: false,
   grid: null,
   start: {x: 0, y: 0},
   zIndex: NaN
