@@ -91,7 +91,7 @@ describe('react-draggable', function () {
       expect(called).toEqual(true);
     });
 
-    it('should render with translate()', function () {
+    it('should render with translate3d()', function () {
       drag = TestUtils.renderIntoDocument(
         <Draggable>
           <div />
@@ -107,7 +107,7 @@ describe('react-draggable', function () {
       TestUtils.Simulate.mouseUp(node);
 
       var style = node.getAttribute('style');
-      expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
+      expect(style.indexOf('transform: translate3d(100px, 100px, 0px);')).not.toEqual(-1);
     });
 
     it('should add and remove user-select styles', function () {
