@@ -36,6 +36,14 @@ an intermediate wrapper (`<Draggable><span>...</span></Draggable>`) in this case
 The `<Draggable/>` component transparently adds draggable to whatever element is supplied as `this.props.children`.
 **Note**: Only a single element is allowed or an Error will be thrown.
 
+In addition, the child element must provide support for the following props:
+- `style` is used to give the transform css to the child.
+- `className` is used to apply the proper classes to the object being dragged.
+- `onMouseDown` is used along with onMouseUp to keep track of dragging state.
+- `onMouseUp` is used along with onMouseDown to keep track of dragging state.
+- `onTouchStart` is used along with onTouchEnd to keep track of dragging state.
+- `onTouchEnd` is used along with onTouchStart to keep track of dragging state.
+
 Props:
 
 **`axis`**: determines which axis the draggable can move. Accepted values:
