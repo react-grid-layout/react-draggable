@@ -44,6 +44,8 @@ In addition, the child element must provide support for the following props:
 - `onTouchStart` is used along with onTouchEnd to keep track of dragging state.
 - `onTouchEnd` is used along with onTouchStart to keep track of dragging state.
 
+React.DOM elements support the above six properties by default, so you may use those elements as children without any changes. If you wish to use a React component you created, you might find [this React page](https://facebook.github.io/react/docs/transferring-props.html) helpful.
+
 Props:
 
 **`axis`**: determines which axis the draggable can move. Accepted values:
