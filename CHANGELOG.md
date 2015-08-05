@@ -23,3 +23,15 @@
 ### 0.3.0 (Oct 21, 2014)
 
 - Adding support for touch devices
+
+### 0.3.1 (Apr 2, 2015)
+
+- Add `moveOnStartChange` prop.
+- Remove deprecated React @jsx pragma.
+- Remove react/addons.
+- Fix a bug when browsers report touch enabled.
+- ... See changelog for more.
+
+### 0.3.2 (Aug 4, 2015)
+
+- Remove emptyFunction import.
