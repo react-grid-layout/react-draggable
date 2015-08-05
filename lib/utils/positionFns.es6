@@ -3,6 +3,9 @@ import React from 'react';
 import {innerWidth, innerHeight, outerWidth, outerHeight} from './domFns';
 
 export function getBoundPosition(draggable, clientX, clientY) {
+  // If no bounds, short-circuit and move on
+  if (!draggable.props.bounds) return [clientX, clientY];
+
   let bounds = JSON.parse(JSON.stringify(draggable.props.bounds));
   let node = React.findDOMNode(draggable);
   let parent = node.parentNode;
