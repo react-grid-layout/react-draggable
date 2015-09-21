@@ -97,3 +97,11 @@
 ### 0.8.1 (June 3, 2015)
 
 - Add `resetState()` instance method for use by parents. See README ("State Problems?").
+
+### 0.8.2 (Sep 21, 2015)
+
+- Handle scrolling while dragging. (#60)
+- Add multi-touch support. (#68)
+- IE fixes.
+- Documentation updates. (#77)
+

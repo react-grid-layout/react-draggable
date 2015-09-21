@@ -67,6 +67,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var emptyFunction = function(){};
 	var assign = __webpack_require__(3);
 	var classNames = __webpack_require__(4);
+	var browserPrefix = __webpack_require__(5)();
 	
 	//
 	// Helpers. See Element definition below this section.
@@ -84,14 +85,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	}
 	
-	function canDragY(draggable) {
-	  return draggable.props.axis === 'both' ||
-	      draggable.props.axis === 'y';
+	function canDragX(draggable) {
+	  return draggable.props.axis === 'both' || draggable.props.axis === 'x';
 	}
 	
-	function canDragX(draggable) {
-	  return draggable.props.axis === 'both' ||
-	      draggable.props.axis === 'x';
+	function canDragY(draggable) {
+	  return draggable.props.axis === 'both' || draggable.props.axis === 'y';
 	}
 	
 	function isFunction(func) {
@@ -105,18 +104,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	
+	var matchesSelectorFunc = '';
 	function matchesSelector(el, selector) {
-	  var method = findInArray([
-	    'matches',
-	    'webkitMatchesSelector',
-	    'mozMatchesSelector',
-	    'msMatchesSelector',
-	    'oMatchesSelector'
-	  ], function(method){
-	    return isFunction(el[method]);
-	  });
+	  if (!matchesSelectorFunc) {
+	    matchesSelectorFunc = findInArray([
+	      'matches',
+	      'webkitMatchesSelector',
+	      'mozMatchesSelector',
+	      'msMatchesSelector',
+	      'oMatchesSelector'
+	    ], function(method){
+	      return isFunction(el[method]);
+	    });
+	  }
 	
-	  return el[method].call(el, selector);
+	  return el[matchesSelectorFunc].call(el, selector);
 	}
 	
 	/**
@@ -136,13 +138,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	// Default to mouse events
-	var dragEventFor = eventsFor['mouse'];
+	var dragEventFor = eventsFor.mouse;
 	
 	/**
 	 * get {clientX, clientY} positions of control
 	 * */
 	function getControlPosition(e) {
-	  var position = (e.touches && e.touches[0]) || e;
+	  var position = (e.targetTouches && e.targetTouches[0]) || e;
 	  return {
 	    clientX: position.clientX,
 	    clientY: position.clientY
@@ -251,8 +253,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	// Useful for preventing blue highlights all over everything when dragging.
-	var userSelectStyle = ';user-select: none;-webkit-user-select:none;-moz-user-select:none;' +
-	  '-o-user-select:none;-ms-user-select:none;';
+	var userSelectStyle = ';user-select: none;';
+	if (browserPrefix) {
+	  userSelectStyle += '-' + browserPrefix.toLowerCase() + '-user-select: none;';
+	}
 	
 	function addUserSelectStyles(draggable) {
 	  if (!draggable.props.enableUserSelectHack) return;
@@ -270,13 +274,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // Replace unitless items with px
 	  var x = style.x + 'px';
 	  var y = style.y + 'px';
-	  return {
-	    transform: 'translate(' + x + ',' + y + ')',
-	    WebkitTransform: 'translate(' + x + ',' + y + ')',
-	    OTransform: 'translate(' + x + ',' + y + ')',
-	    msTransform: 'translate(' + x + ',' + y + ')',
-	    MozTransform: 'translate(' + x + ',' + y + ')'
-	  };
+	  var out = {transform: 'translate(' + x + ',' + y + ')'};
+	  // Add single prefixed property as well
+	  if (browserPrefix) {
+	    out[browserPrefix + 'Transform'] = out.transform;
+	  }
+	  return out;
 	}
 	
 	
@@ -523,7 +526,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * A workaround option which can be passed if onMouseDown needs to be accessed,
 	     * since it'll always be blocked (due to that there's internal use of onMouseDown)
 	     */
-	    onMouseDown: React.PropTypes.func,
+	    onMouseDown: React.PropTypes.func
 	  },
 	
 	  componentWillReceiveProps: function(newProps) {
@@ -535,8 +538,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  componentWillUnmount: function() {
 	    // Remove any leftover event handlers
-	    removeEvent(document, dragEventFor['move'], this.handleDrag);
-	    removeEvent(document, dragEventFor['end'], this.handleDragEnd);
+	    removeEvent(document, dragEventFor.move, this.handleDrag);
+	    removeEvent(document, dragEventFor.end, this.handleDragEnd);
 	    removeUserSelectStyles(this);
 	  },
 	
@@ -574,6 +577,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	
 	  handleDragStart: function (e) {
+	    // Set touch identifier in component state if this is a touch event
+	    if(e.targetTouches){
+	      this.setState({touchIdentifier: e.targetTouches[0].identifier});
+	    }
+	    
 	    // Make it possible to attach event handlers on top of this one
 	    this.props.onMouseDown(e);
 	
@@ -599,13 +607,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({
 	      dragging: true,
 	      offsetX: dragPoint.clientX - this.state.clientX,
-	      offsetY: dragPoint.clientY - this.state.clientY
+	      offsetY: dragPoint.clientY - this.state.clientY,
+	      scrollX: document.body.scrollLeft,
+	      scrollY: document.body.scrollTop
 	    });
 	
 	
 	    // Add event handlers
-	    addEvent(document, dragEventFor['move'], this.handleDrag);
-	    addEvent(document, dragEventFor['end'], this.handleDragEnd);
+	    addEvent(document, 'scroll', this.handleScroll);
+	    addEvent(document, dragEventFor.move, this.handleDrag);
+	    addEvent(document, dragEventFor.end, this.handleDragEnd);
 	  },
 	
 	  handleDragEnd: function (e) {
@@ -613,6 +624,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!this.state.dragging) {
 	      return;
 	    }
+	
+	    // Short circuit if this is not the correct touch event
+	    if(e.changedTouches && (e.changedTouches[0].identifier != this.state.touchIdentifier)){
+	     return;
+	    } 
 	
 	    removeUserSelectStyles(this);
 	
@@ -625,11 +641,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.props.onStop(e, createUIEvent(this));
 	
 	    // Remove event handlers
-	    removeEvent(document, dragEventFor['move'], this.handleDrag);
-	    removeEvent(document, dragEventFor['end'], this.handleDragEnd);
+	    removeEvent(document, 'scroll', this.handleScroll);
+	    removeEvent(document, dragEventFor.move, this.handleDrag);
+	    removeEvent(document, dragEventFor.end, this.handleDragEnd);
 	  },
 	
 	  handleDrag: function (e) {
+	    // Return if this is a touch event, but not the correct one for this element
+	    if(e.targetTouches && (e.targetTouches[0].identifier != this.state.touchIdentifier)){
+	      return;
+	    }
 	    var dragPoint = getControlPosition(e);
 	
 	    // Calculate X and Y
@@ -639,12 +660,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Snap to grid if prop has been provided
 	    if (Array.isArray(this.props.grid)) {
 	      var coords = snapToGrid(this.props.grid, clientX, clientY);
-	      clientX = coords[0], clientY = coords[1];
+	      clientX = coords[0];
+	      clientY = coords[1];
 	    }
 	
 	    if (this.props.bounds) {
 	      var pos = getBoundPosition(this, clientX, clientY);
-	      clientX = pos[0], clientY = pos[1];
+	      clientX = pos[0];
+	      clientY = pos[1];
 	    }
 	
 	    // Call event handler. If it returns explicit false, cancel.
@@ -658,11 +681,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  },
 	
+	  handleScroll: function(e) {
+	    var s = this.state, x = document.body.scrollLeft, y = document.body.scrollTop;
+	    var offsetX = x - s.scrollX, offsetY = y - s.scrollY;
+	    this.setState({
+	      scrollX: x,
+	      scrollY: y,
+	      clientX: s.clientX + offsetX,
+	      clientY: s.clientY + offsetY,
+	      offsetX: s.offsetX - offsetX,
+	      offsetY: s.offsetY - offsetY
+	    });
+	  },
+	
 	  onMouseDown: function(ev) {
 	    // Prevent 'ghost click' which happens 300ms after touchstart if the event isn't cancelled.
 	    // We don't cancel the event on touchstart because of #37; we might want to make a scrollable item draggable.
 	    // More on ghost clicks: http://ariatemplates.com/blog/2014/05/ghost-clicks-in-mobile-browsers/
-	    if (dragEventFor == eventsFor['touch']) {
+	    if (dragEventFor === eventsFor.touch) {
 	      return ev.preventDefault();
 	    }
 	
@@ -671,7 +707,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  onTouchStart: function(ev) {
 	    // We're on a touch device now, so change the event handlers
-	    dragEventFor = eventsFor['touch'];
+	    dragEventFor = eventsFor.touch;
 	
 	    return this.handleDragStart.apply(this, arguments);
 	  },
@@ -698,12 +734,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Set left if horizontal drag is enabled
 	      x: canDragX(this) ?
 	        this.state.clientX :
-	        0,
+	        this.props.start.x,
 	
 	      // Set top if vertical drag is enabled
 	      y: canDragY(this) ?
 	        this.state.clientY :
-	        0
+	        this.props.start.y
 	    });
 	
 	    // Workaround IE pointer events; see #51
@@ -741,18 +777,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
+	/* eslint-disable no-unused-vars */
 	'use strict';
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 	
-	function ToObject(val) {
-		if (val == null) {
+	function toObject(val) {
+		if (val === null || val === undefined) {
 			throw new TypeError('Object.assign cannot be called with null or undefined');
 		}
 	
@@ -761,15 +800,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	module.exports = Object.assign || function (target, source) {
 		var from;
-		var keys;
-		var to = ToObject(target);
+		var to = toObject(target);
+		var symbols;
 	
 		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
+			from = Object(arguments[s]);
 	
-			for (var i = 0; i < keys.length; i++) {
-				to[keys[i]] = from[keys[i]];
+			for (var key in from) {
+				if (hasOwnProperty.call(from, key)) {
+					to[key] = from[key];
+				}
+			}
+	
+			if (Object.getOwnPropertySymbols) {
+				symbols = Object.getOwnPropertySymbols(from);
+				for (var i = 0; i < symbols.length; i++) {
+					if (propIsEnumerable.call(from, symbols[i])) {
+						to[symbols[i]] = from[symbols[i]];
+					}
+				}
 			}
 		}
 	
@@ -781,49 +830,74 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	  Copyright (c) 2015 Jed Watson.
 	  Licensed under the MIT License (MIT), see
 	  http://jedwatson.github.io/classnames
 	*/
 	
-	function classNames() {
-		var classes = '';
-		var arg;
+	(function () {
+		'use strict';
 	
-		for (var i = 0; i < arguments.length; i++) {
-			arg = arguments[i];
-			if (!arg) {
-				continue;
-			}
+		function classNames () {
 	
-			if ('string' === typeof arg || 'number' === typeof arg) {
-				classes += ' ' + arg;
-			} else if (Object.prototype.toString.call(arg) === '[object Array]') {
-				classes += ' ' + classNames.apply(null, arg);
-			} else if ('object' === typeof arg) {
-				for (var key in arg) {
-					if (!arg.hasOwnProperty(key) || !arg[key]) {
-						continue;
+			var classes = '';
+	
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+	
+				var argType = typeof arg;
+	
+				if ('string' === argType || 'number' === argType) {
+					classes += ' ' + arg;
+	
+				} else if (Array.isArray(arg)) {
+					classes += ' ' + classNames.apply(null, arg);
+	
+				} else if ('object' === argType) {
+					for (var key in arg) {
+						if (arg.hasOwnProperty(key) && arg[key]) {
+							classes += ' ' + key;
+						}
 					}
-					classes += ' ' + key;
 				}
 			}
+	
+			return classes.substr(1);
 		}
-		return classes.substr(1);
-	}
 	
-	// safely export classNames for node / browserify
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = classNames;
-	}
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if (true){
+			// AMD. Register as an anonymous module.
+			!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
 	
-	// safely export classNames for RequireJS
-	if (true) {
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
-			return classNames;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}
+	}());
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	module.exports = function() {
+	  if (typeof window === 'undefined') return '';
+	  // Thanks David Walsh
+	  var styles = window.getComputedStyle(document.documentElement, ''),
+	  pre = (Array.prototype.slice
+	        .call(styles)
+	        .join('')
+	        .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+	      )[1];
+	  // 'ms' is not titlecased
+	  if (pre === 'ms') return pre;
+	  return pre.slice(0, 1).toUpperCase() + pre.slice(1);
+	};
 
 
 /***/ }
