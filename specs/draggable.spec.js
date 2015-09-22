@@ -91,7 +91,7 @@ describe('react-draggable', function () {
       expect(called).toEqual(true);
     });
 
-    it('should render with translate()', function () {
+    it('should render with style translate() for DOM nodes', function () {
       drag = TestUtils.renderIntoDocument(
         <Draggable>
           <div />
@@ -108,7 +108,51 @@ describe('react-draggable', function () {
 
       var style = node.getAttribute('style');
       expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
+      
     });
+
+    it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
+       drag = TestUtils.renderIntoDocument(
+          <Draggable>
+            <svg />
+          </Draggable>
+      );
+
+      var node = drag.getDOMNode();
+      expect(drag.state.isElementSVG).toEqual(true);
+
+    });
+
+    it('should detect if an element is NOT an instanceof SVGElement and set state.isElementSVG to false', function() {
+       drag = TestUtils.renderIntoDocument(
+          <Draggable>
+            <div />
+          </Draggable>
+      );
+
+      var node = drag.getDOMNode();
+      expect(drag.state.isElementSVG).toEqual(false);
+
+    });
+
+    it('should render with transform translate() for SVG nodes', function () {
+      drag = TestUtils.renderIntoDocument(
+          <Draggable>
+            <svg />
+          </Draggable>
+      );
+
+      var node = drag.getDOMNode();
+
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      drag.handleDrag({clientX: 100, clientY:100});
+      TestUtils.Simulate.mouseUp(node);
+
+      var transform = node.getAttribute('transform');
+      expect(transform.indexOf('translate(100,100)')).not.toEqual(-1);
+      
+    });
+
 
     it('should add and remove user-select styles', function () {
       // Karma runs in firefox in our tests
