@@ -67,6 +67,8 @@ Props:
 
 **`moveOnStartChange`**: if true (it defaults false), will move the element if there is a change in `start`. We set this by default to `false` because it can cause unwanted effects if you are not aware of it.
 
+**`scrollableAncestor`**: the ancestor (DOM element) that is listened for scroll events (defaults to document).
+
 **`zIndex`**: specifies the zIndex to use while dragging.
 
 **`onStart`**: called when dragging starts.
