@@ -230,12 +230,12 @@ export default class Draggable extends DraggableCore {
       // Set left if horizontal drag is enabled
       x: canDragX(this) ?
         this.state.clientX :
-        0,
+        this.props.start.x,
 
       // Set top if vertical drag is enabled
       y: canDragY(this) ?
         this.state.clientY :
-        0
+        this.props.start.y
     });
 
     // zIndex option
