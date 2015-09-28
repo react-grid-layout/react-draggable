@@ -31,6 +31,137 @@ let dragEventFor = eventsFor.mouse;
 
 export default class DraggableCore extends React.Component {
 
+  static propTypes = {
+    /**
+     * By default, we add 'user-select:none' attributes to the document body
+     * to prevent ugly text selection during drag. If this is causing problems
+     * for your app, set this to `false`.
+     */
+    enableUserSelectHack: React.PropTypes.bool,
+
+    /**
+     * `handle` specifies a selector to be used as the handle that initiates drag.
+     *
+     * Example:
+     *
+     * ```jsx
+     *   let App = React.createClass({
+     *       render: function () {
+     *         return (
+     *            <Draggable handle=".handle">
+     *              <div>
+     *                  <div className="handle">Click me to drag</div>
+     *                  <div>This is some other content</div>
+     *              </div>
+     *           </Draggable>
+     *         );
+     *       }
+     *   });
+     * ```
+     */
+    handle: React.PropTypes.string,
+
+    /**
+     * `cancel` specifies a selector to be used to prevent drag initialization.
+     *
+     * Example:
+     *
+     * ```jsx
+     *   let App = React.createClass({
+     *       render: function () {
+     *           return(
+     *               <Draggable cancel=".cancel">
+     *                   <div>
+     *                     <div className="cancel">You can't drag from here</div>
+     *            <div>Dragging here works fine</div>
+     *                   </div>
+     *               </Draggable>
+     *           );
+     *       }
+     *   });
+     * ```
+     */
+    cancel: React.PropTypes.string,
+
+    /**
+     * Called when dragging starts.
+     * If this function returns the boolean false, dragging will be canceled.
+     *
+     * Example:
+     *
+     * ```js
+     *  function (event, ui) {}
+     * ```
+     *
+     * `event` is the Event that was triggered.
+     * `ui` is an object:
+     *
+     * ```js
+     *  {
+     *    position: {top: 0, left: 0}
+     *  }
+     * ```
+     */
+    onStart: React.PropTypes.func,
+
+    /**
+     * Called while dragging.
+     * If this function returns the boolean false, dragging will be canceled.
+     *
+     * Example:
+     *
+     * ```js
+     *  function (event, ui) {}
+     * ```
+     *
+     * `event` is the Event that was triggered.
+     * `ui` is an object:
+     *
+     * ```js
+     *  {
+     *    position: {top: 0, left: 0}
+     *  }
+     * ```
+     */
+    onDrag: React.PropTypes.func,
+
+    /**
+     * Called when dragging stops.
+     *
+     * Example:
+     *
+     * ```js
+     *  function (event, ui) {}
+     * ```
+     *
+     * `event` is the Event that was triggered.
+     * `ui` is an object:
+     *
+     * ```js
+     *  {
+     *    position: {top: 0, left: 0}
+     *  }
+     * ```
+     */
+    onStop: React.PropTypes.func,
+
+    /**
+     * A workaround option which can be passed if onMouseDown needs to be accessed,
+     * since it'll always be blocked (due to that there's internal use of onMouseDown)
+     */
+    onMouseDown: React.PropTypes.func
+  }
+
+  static defaultProps = {
+    handle: null,
+    cancel: null,
+    enableUserSelectHack: true,
+    onStart: function(){},
+    onDrag: function(){},
+    onStop: function(){},
+    onMouseDown: function(){}
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -217,134 +348,3 @@ export default class DraggableCore extends React.Component {
     });
   }
 }
-
-DraggableCore.propTypes = {
-  /**
-   * By default, we add 'user-select:none' attributes to the document body
-   * to prevent ugly text selection during drag. If this is causing problems
-   * for your app, set this to `false`.
-   */
-  enableUserSelectHack: React.PropTypes.bool,
-
-  /**
-   * `handle` specifies a selector to be used as the handle that initiates drag.
-   *
-   * Example:
-   *
-   * ```jsx
-   *   let App = React.createClass({
-   *       render: function () {
-   *         return (
-   *            <Draggable handle=".handle">
-   *              <div>
-   *                  <div className="handle">Click me to drag</div>
-   *                  <div>This is some other content</div>
-   *              </div>
-   *           </Draggable>
-   *         );
-   *       }
-   *   });
-   * ```
-   */
-  handle: React.PropTypes.string,
-
-  /**
-   * `cancel` specifies a selector to be used to prevent drag initialization.
-   *
-   * Example:
-   *
-   * ```jsx
-   *   let App = React.createClass({
-   *       render: function () {
-   *           return(
-   *               <Draggable cancel=".cancel">
-   *                   <div>
-   *                     <div className="cancel">You can't drag from here</div>
-   *            <div>Dragging here works fine</div>
-   *                   </div>
-   *               </Draggable>
-   *           );
-   *       }
-   *   });
-   * ```
-   */
-  cancel: React.PropTypes.string,
-
-  /**
-   * Called when dragging starts.
-   * If this function returns the boolean false, dragging will be canceled.
-   *
-   * Example:
-   *
-   * ```js
-   *  function (event, ui) {}
-   * ```
-   *
-   * `event` is the Event that was triggered.
-   * `ui` is an object:
-   *
-   * ```js
-   *  {
-   *    position: {top: 0, left: 0}
-   *  }
-   * ```
-   */
-  onStart: React.PropTypes.func,
-
-  /**
-   * Called while dragging.
-   * If this function returns the boolean false, dragging will be canceled.
-   *
-   * Example:
-   *
-   * ```js
-   *  function (event, ui) {}
-   * ```
-   *
-   * `event` is the Event that was triggered.
-   * `ui` is an object:
-   *
-   * ```js
-   *  {
-   *    position: {top: 0, left: 0}
-   *  }
-   * ```
-   */
-  onDrag: React.PropTypes.func,
-
-  /**
-   * Called when dragging stops.
-   *
-   * Example:
-   *
-   * ```js
-   *  function (event, ui) {}
-   * ```
-   *
-   * `event` is the Event that was triggered.
-   * `ui` is an object:
-   *
-   * ```js
-   *  {
-   *    position: {top: 0, left: 0}
-   *  }
-   * ```
-   */
-  onStop: React.PropTypes.func,
-
-  /**
-   * A workaround option which can be passed if onMouseDown needs to be accessed,
-   * since it'll always be blocked (due to that there's internal use of onMouseDown)
-   */
-  onMouseDown: React.PropTypes.func
-};
-
-DraggableCore.defaultProps = {
-  handle: null,
-  cancel: null,
-  enableUserSelectHack: true,
-  onStart: function(){},
-  onDrag: function(){},
-  onStop: function(){},
-  onMouseDown: function(){}
-};

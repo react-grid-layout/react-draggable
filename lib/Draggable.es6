@@ -13,6 +13,143 @@ import log from './utils/log';
 
 export default class Draggable extends DraggableCore {
 
+  static propTypes = assign({}, DraggableCore.propTypes, {
+    /**
+     * `axis` determines which axis the draggable can move.
+     *
+     * 'both' allows movement horizontally and vertically.
+     * 'x' limits movement to horizontal axis.
+     * 'y' limits movement to vertical axis.
+     *
+     * Defaults to 'both'.
+     */
+    axis: React.PropTypes.oneOf(['both', 'x', 'y']),
+
+    /**
+     * `bounds` determines the range of movement available to the element.
+     * Available values are:
+     *
+     * 'parent' restricts movement within the Draggable's parent node.
+     *
+     * Alternatively, pass an object with the following properties, all of which are optional:
+     *
+     * {left: LEFT_BOUND, right: RIGHT_BOUND, bottom: BOTTOM_BOUND, top: TOP_BOUND}
+     *
+     * All values are in px.
+     *
+     * Example:
+     *
+     * ```jsx
+     *   let App = React.createClass({
+     *       render: function () {
+     *         return (
+     *            <Draggable bounds={{right: 300, bottom: 300}}>
+     *              <div>Content</div>
+     *           </Draggable>
+     *         );
+     *       }
+     *   });
+     * ```
+     */
+    bounds: React.PropTypes.oneOfType([
+      React.PropTypes.shape({
+        left: React.PropTypes.Number,
+        right: React.PropTypes.Number,
+        top: React.PropTypes.Number,
+        bottom: React.PropTypes.Number
+      }),
+      React.PropTypes.oneOf(['parent', false])
+    ]),
+
+    /**
+     * `disabled`, if true, stops the <Draggable> from dragging. It will stay where it is.
+     *
+     * Example:
+     *
+     * ```jsx
+     *   let App = React.createClass({
+     *       render: function () {
+     *           return (
+     *               <Draggable disabled={true}>
+     *                   <div>I can't be dragged</div>
+     *               </Draggable>
+     *           );
+     *       }
+     *   });
+     * ```
+     */
+    disabled: React.PropTypes.bool,
+
+    /**
+     * `grid` specifies the x and y that dragging should snap to.
+     *
+     * Example:
+     *
+     * ```jsx
+     *   let App = React.createClass({
+     *       render: function () {
+     *           return (
+     *               <Draggable grid={[25, 25]}>
+     *                   <div>I snap to a 25 x 25 grid</div>
+     *               </Draggable>
+     *           );
+     *       }
+     *   });
+     * ```
+     */
+    grid: React.PropTypes.arrayOf(React.PropTypes.number),
+
+    /**
+     * `start` specifies the x and y that the dragged item should start at
+     *
+     * Example:
+     *
+     * ```jsx
+     *      let App = React.createClass({
+     *          render: function () {
+     *              return (
+     *                  <Draggable start={{x: 25, y: 25}}>
+     *                      <div>I start with transformX: 25px and transformY: 25px;</div>
+     *                  </Draggable>
+     *              );
+     *          }
+     *      });
+     * ```
+     */
+    start: React.PropTypes.shape({
+      x: React.PropTypes.number,
+      y: React.PropTypes.number
+    }),
+
+    /**
+     * `zIndex` specifies the zIndex to use while dragging.
+     *
+     * Example:
+     *
+     * ```jsx
+     *   let App = React.createClass({
+     *       render: function () {
+     *           return (
+     *               <Draggable zIndex={100}>
+     *                   <div>I have a zIndex</div>
+     *               </Draggable>
+     *           );
+     *       }
+     *   });
+     * ```
+     */
+    zIndex: React.PropTypes.number
+  })
+
+  static defaultProps = assign({}, DraggableCore.defaultProps, {
+    axis: 'both',
+    bounds: false,
+    disabled: false,
+    grid: null,
+    start: {x: 0, y: 0},
+    zIndex: NaN
+  })
+
   constructor(props) {
     super(props);
     this.state = {
@@ -122,149 +259,3 @@ export default class Draggable extends DraggableCore {
     );
   }
 }
-
-Draggable.propTypes = assign({}, DraggableCore.propTypes, {
-  /**
-   * `axis` determines which axis the draggable can move.
-   *
-   * 'both' allows movement horizontally and vertically.
-   * 'x' limits movement to horizontal axis.
-   * 'y' limits movement to vertical axis.
-   *
-   * Defaults to 'both'.
-   */
-  axis: React.PropTypes.oneOf(['both', 'x', 'y']),
-
-  /**
-   * `bounds` determines the range of movement available to the element.
-   * Available values are:
-   *
-   * 'parent' restricts movement within the Draggable's parent node.
-   *
-   * Alternatively, pass an object with the following properties, all of which are optional:
-   *
-   * {left: LEFT_BOUND, right: RIGHT_BOUND, bottom: BOTTOM_BOUND, top: TOP_BOUND}
-   *
-   * All values are in px.
-   *
-   * Example:
-   *
-   * ```jsx
-   *   let App = React.createClass({
-   *       render: function () {
-   *         return (
-   *            <Draggable bounds={{right: 300, bottom: 300}}>
-   *              <div>Content</div>
-   *           </Draggable>
-   *         );
-   *       }
-   *   });
-   * ```
-   */
-  bounds: React.PropTypes.oneOfType([
-    React.PropTypes.shape({
-      left: React.PropTypes.Number,
-      right: React.PropTypes.Number,
-      top: React.PropTypes.Number,
-      bottom: React.PropTypes.Number
-    }),
-    React.PropTypes.oneOf(['parent', false])
-  ]),
-
-  /**
-   * `disabled`, if true, stops the <Draggable> from dragging. It will stay where it is.
-   *
-   * Example:
-   *
-   * ```jsx
-   *   let App = React.createClass({
-   *       render: function () {
-   *           return (
-   *               <Draggable disabled={true}>
-   *                   <div>I can't be dragged</div>
-   *               </Draggable>
-   *           );
-   *       }
-   *   });
-   * ```
-   */
-  disabled: React.PropTypes.bool,
-
-  /**
-   * `grid` specifies the x and y that dragging should snap to.
-   *
-   * Example:
-   *
-   * ```jsx
-   *   let App = React.createClass({
-   *       render: function () {
-   *           return (
-   *               <Draggable grid={[25, 25]}>
-   *                   <div>I snap to a 25 x 25 grid</div>
-   *               </Draggable>
-   *           );
-   *       }
-   *   });
-   * ```
-   */
-  grid: React.PropTypes.arrayOf(React.PropTypes.number),
-
-  /**
-   * `start` specifies the x and y that the dragged item should start at
-   *
-   * Example:
-   *
-   * ```jsx
-   *      let App = React.createClass({
-   *          render: function () {
-   *              return (
-   *                  <Draggable start={{x: 25, y: 25}}>
-   *                      <div>I start with transformX: 25px and transformY: 25px;</div>
-   *                  </Draggable>
-   *              );
-   *          }
-   *      });
-   * ```
-   */
-  start: React.PropTypes.shape({
-    x: React.PropTypes.number,
-    y: React.PropTypes.number
-  }),
-
-  /**
-   * `zIndex` specifies the zIndex to use while dragging.
-   *
-   * Example:
-   *
-   * ```jsx
-   *   let App = React.createClass({
-   *       render: function () {
-   *           return (
-   *               <Draggable zIndex={100}>
-   *                   <div>I have a zIndex</div>
-   *               </Draggable>
-   *           );
-   *       }
-   *   });
-   * ```
-   */
-  zIndex: React.PropTypes.number
-});
-
-Draggable.defaultProps = assign({}, DraggableCore.defaultProps, {
-  axis: 'both',
-  bounds: false,
-  disabled: false,
-  grid: null,
-  start: {x: 0, y: 0},
-  zIndex: NaN
-});
-
-//
-// Helpers.
-//
-
-
-//
-// End Helpers.
-//
