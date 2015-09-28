@@ -1,7 +1,7 @@
 # Mostly lifted from https://andreypopp.com/posts/2013-05-16-makefile-recipes-for-node-js.html
 # Thanks @andreypopp
 
-BIN = ./node_modules/.bin
+BIN := $(shell npm bin)
 DIST = dist
 LIB = $(DIST)/react-draggable.js
 MIN = $(DIST)/react-draggable.min.js

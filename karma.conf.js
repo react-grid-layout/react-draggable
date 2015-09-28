@@ -18,17 +18,18 @@ module.exports = function(config) {
 
     webpack: {
       cache: true,
+      devtool: 'eval',
       module: {
         loaders: [
           {
             test: /\.(?:js|es).?$/,
-            loader: 'babel-loader',
+            loader: 'babel-loader?cacheDirectory',
             exclude: /(node_modules)/
           }
         ]
       },
       resolve: {
-        extensions: ["", ".webpack.js", ".web.js", ".js", ".es6"]
+        extensions: ['', '.webpack.js', '.web.js', '.js', '.es6']
       }
     },
 
