@@ -22,6 +22,7 @@ describe('react-draggable', function () {
       expect(typeof drag.props.onStart).toEqual('function');
       expect(typeof drag.props.onDrag).toEqual('function');
       expect(typeof drag.props.onStop).toEqual('function');
+      expect(typeof drag.props.isSVG).toEqual('boolean');
     });
 
     it('should pass style and className properly from child', function () {
@@ -48,7 +49,8 @@ describe('react-draggable', function () {
           zIndex={1000}
           onStart={handleStart}
           onDrag={handleDrag}
-          onStop={handleStop}>
+          onStop={handleStop}
+          isSVG={false}>
           <div>
             <div className="handle"/>
             <div className="cancel"/>
@@ -64,6 +66,7 @@ describe('react-draggable', function () {
       expect(drag.props.onStart).toEqual(handleStart);
       expect(drag.props.onDrag).toEqual(handleDrag);
       expect(drag.props.onStop).toEqual(handleStop);
+      expect(drag.props.isSVG).toEqual(false);
     });
 
     it('should call onStart when dragging begins', function () {
@@ -91,7 +94,7 @@ describe('react-draggable', function () {
       expect(called).toEqual(true);
     });
 
-    it('should render with translate()', function () {
+    it('should render with style translate() for DOM nodes', function () {
       drag = TestUtils.renderIntoDocument(
         <Draggable>
           <div />
@@ -108,6 +111,25 @@ describe('react-draggable', function () {
 
       var style = node.getAttribute('style');
       expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
+      
+    });
+    it('should render with transform translate() for SVG nodes', function () {
+      drag = TestUtils.renderIntoDocument(
+          <Draggable isSVG={true}>
+            <svg />
+          </Draggable>
+      );
+
+      var node = drag.getDOMNode();
+
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      drag.handleDrag({clientX: 100, clientY:100});
+      TestUtils.Simulate.mouseUp(node);
+
+      var transform = node.getAttribute('transform');
+      console.log(transform);
+      expect(transform.indexOf('translate(100,100)')).not.toEqual(-1);
+      
     });
 
     it('should add and remove user-select styles', function () {
