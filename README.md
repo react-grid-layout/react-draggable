@@ -65,7 +65,7 @@ Props:
 
 **`start`**: specifies the `x` and `y` that the dragged item should start at. This is generally not necessary to use (you can use absolute or relative positioning of the child directly), but can be helpful for uniformity in your callbacks and with css transforms.
 
-**`moveOnStartChange`**: if true (it defaults false), will move the element if there is a change in `start`. We set this by default to `false` because it can cause unwanted effects if you are not aware of it.
+**`moveOnStartChange`**: if true (it defaults false), will move the element if there is a change in `start`. It won't work if the start is changed in the middle of a drag. We set this by default to `false` because it can cause unwanted effects if you are not aware of it.
 
 **`zIndex`**: specifies the zIndex to use while dragging.
 
@@ -138,6 +138,8 @@ If you move the element manually, you have two options:
 `moveOnStartChange` to `true`, or,
 2. When moving the `<Draggable>`, ref the element and
 [call `resetState()`](https://github.com/STRML/react-resizable/blob/master/lib/Resizable.jsx#L48).
+
+You **can't** update the `start` position during a drag. See [#94](https://github.com/mzabriskie/react-draggable/issues/94).
 
 ## Dragging images
 
