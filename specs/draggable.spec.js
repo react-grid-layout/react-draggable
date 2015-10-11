@@ -22,6 +22,7 @@ describe('react-draggable', function () {
       expect(typeof drag.props.onStart).toEqual('function');
       expect(typeof drag.props.onDrag).toEqual('function');
       expect(typeof drag.props.onStop).toEqual('function');
+      expect(drag.props.disableImgDraggable).toEqual(false);
     });
 
     it('should pass style and className properly from child', function () {
@@ -127,6 +128,36 @@ describe('react-draggable', function () {
       expect(document.body.getAttribute('style')).toEqual(userSelectStyle);
       TestUtils.Simulate.mouseUp(node);
       expect(document.body.getAttribute('style')).toEqual('');
+    });
+
+    it('should leave draggable=true on img children when disableImgDraggable is false (or omitted)', function () {
+      drag = TestUtils.renderIntoDocument(
+        <Draggable>
+          <div>
+            <img className="img1" />
+            <span className="span"><img className="img2" /></span>
+          </div>
+        </Draggable>
+      );
+
+      expect(drag.getDOMNode().querySelector(".img1").draggable).toEqual(true);
+      expect(drag.getDOMNode().querySelector(".img2").draggable).toEqual(true);
+      expect(drag.getDOMNode().querySelector(".span").draggable).toEqual(false);
+    });
+
+    it('should set draggable=false on img children when disableImgDraggable is true', function () {
+      drag = TestUtils.renderIntoDocument(
+        <Draggable disableImgDraggable={true}>
+          <div>
+            <img className="img1" />
+            <span className="span"><img className="img2" /></span>
+          </div>
+        </Draggable>
+      );
+
+      expect(drag.getDOMNode().querySelector(".img1").draggable).toEqual(false);
+      expect(drag.getDOMNode().querySelector(".img2").draggable).toEqual(false);
+      expect(drag.getDOMNode().querySelector(".span").draggable).toEqual(false);
     });
   });
 

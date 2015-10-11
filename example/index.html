@@ -146,6 +146,12 @@
               {"I have a start position of {x: 25, y: 25}, so I'm slightly offset."}
             </div>
           </Draggable>
+          <Draggable disableImgDraggable={true} {...drags}>
+            <div className="box">
+              Images inside me behave properly because I use disableImgDraggable.
+              <span><img src="http://avatars0.githubusercontent.com/u/199035?v=3&s=50" /></span>
+            </div>
+          </Draggable>
         </div>
       );
     }
