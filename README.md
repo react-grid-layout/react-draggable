@@ -151,6 +151,7 @@ If you want an `<img>` to be draggable, set `<img draggable="false" />`. See the
 ## Contributing
 
 - Fork the project
+- Install static-server: `$ npm install -g static-server`
 - Run the project in development mode: `$ make dev`
 - Make changes.
 - Add appropriate tests
