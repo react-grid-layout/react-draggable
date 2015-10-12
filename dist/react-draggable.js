@@ -581,7 +581,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if(e.targetTouches){
 	      this.setState({touchIdentifier: e.targetTouches[0].identifier});
 	    }
-	    
+	
 	    // Make it possible to attach event handlers on top of this one
 	    this.props.onMouseDown(e);
 	
@@ -628,7 +628,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Short circuit if this is not the correct touch event
 	    if(e.changedTouches && (e.changedTouches[0].identifier != this.state.touchIdentifier)){
 	     return;
-	    } 
+	    }
 	
 	    removeUserSelectStyles(this);
 	
@@ -672,7 +672,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    // Call event handler. If it returns explicit false, cancel.
 	    var shouldUpdate = this.props.onDrag(e, createUIEvent(this));
-	    if (shouldUpdate === false) return this.handleDragEnd();
+	    if (shouldUpdate === false) return this.handleDragEnd({});
 	
 	    // Update transform
 	    this.setState({
