@@ -22,7 +22,6 @@ describe('react-draggable', function () {
       expect(typeof drag.props.onStart).toEqual('function');
       expect(typeof drag.props.onDrag).toEqual('function');
       expect(typeof drag.props.onStop).toEqual('function');
-      expect(typeof drag.props.isSVG).toEqual('boolean');
     });
 
     it('should pass style and className properly from child', function () {
@@ -49,8 +48,7 @@ describe('react-draggable', function () {
           zIndex={1000}
           onStart={handleStart}
           onDrag={handleDrag}
-          onStop={handleStop}
-          isSVG={false}>
+          onStop={handleStop}>
           <div>
             <div className="handle"/>
             <div className="cancel"/>
@@ -66,7 +64,6 @@ describe('react-draggable', function () {
       expect(drag.props.onStart).toEqual(handleStart);
       expect(drag.props.onDrag).toEqual(handleDrag);
       expect(drag.props.onStop).toEqual(handleStop);
-      expect(drag.props.isSVG).toEqual(false);
     });
 
     it('should call onStart when dragging begins', function () {
@@ -113,9 +110,34 @@ describe('react-draggable', function () {
       expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
       
     });
+
+    it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
+       drag = TestUtils.renderIntoDocument(
+          <Draggable>
+            <svg />
+          </Draggable>
+      );
+
+      var node = drag.getDOMNode();
+      expect(drag.state.isElementSVG).toEqual(true);
+
+    });
+
+    it('should detect if an element is NOT an instanceof SVGElement and set state.isElementSVG to false', function() {
+       drag = TestUtils.renderIntoDocument(
+          <Draggable>
+            <div />
+          </Draggable>
+      );
+
+      var node = drag.getDOMNode();
+      expect(drag.state.isElementSVG).toEqual(false);
+
+    });
+
     it('should render with transform translate() for SVG nodes', function () {
       drag = TestUtils.renderIntoDocument(
-          <Draggable isSVG={true}>
+          <Draggable>
             <svg />
           </Draggable>
       );
@@ -127,10 +149,10 @@ describe('react-draggable', function () {
       TestUtils.Simulate.mouseUp(node);
 
       var transform = node.getAttribute('transform');
-      console.log(transform);
       expect(transform.indexOf('translate(100,100)')).not.toEqual(-1);
       
     });
+
 
     it('should add and remove user-select styles', function () {
       // Karma runs in firefox in our tests

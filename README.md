@@ -69,8 +69,6 @@ Props:
 
 **`zIndex`**: specifies the zIndex to use while dragging.
 
-**`isSVG`**: specifies if the element is an instance of SVGElement (IE fix)
-
 **`onStart`**: called when dragging starts.
 
 **`onDrag`**: called while dragging.
