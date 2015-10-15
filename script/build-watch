@@ -6,11 +6,14 @@ function finish {
   kill $SERVER_PID
 }
 
-webpack --watch --devtool inline-source-map &
+BIN = ../node_modules/.bin
+
+
+$BIN/webpack --watch --devtool inline-source-map &
 WEBPACK_PID=$!
 
 # # Run a static server and run the example in it.
-static-server . &
+$BIN/static-server . &
 SERVER_PID=$!
 
 # Open browser
