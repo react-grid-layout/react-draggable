@@ -282,6 +282,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return out;
 	}
 	
+	function createSVGTransform(args) {
+	  return 'translate(' + args.x + ',' + args.y + ')';
+	}
 	
 	//
 	// End Helpers.
@@ -526,13 +529,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * A workaround option which can be passed if onMouseDown needs to be accessed,
 	     * since it'll always be blocked (due to that there's internal use of onMouseDown)
 	     */
-	    onMouseDown: React.PropTypes.func
+	    onMouseDown: React.PropTypes.func,
 	  },
 	
 	  componentWillReceiveProps: function(newProps) {
 	    // React to changes in the 'start' param.
 	    if (newProps.moveOnStartChange && newProps.start) {
 	      this.setState(this.getInitialState(newProps));
+	    }
+	  },
+	
+	  componentDidMount: function() {
+	    // Check to see if the element passed is an instanceof SVGElement
+	    if( React.findDOMNode(this) instanceof SVGElement) {
+	        this.setState({ isElementSVG: true });
 	    }
 	  },
 	
@@ -557,7 +567,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onStart: emptyFunction,
 	      onDrag: emptyFunction,
 	      onStop: emptyFunction,
-	      onMouseDown: emptyFunction
+	      onMouseDown: emptyFunction,
 	    };
 	  },
 	
@@ -572,7 +582,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      offsetX: 0, offsetY: 0,
 	
 	      // Current transform x and y.
-	      clientX: props.start.x, clientY: props.start.y
+	      clientX: props.start.x, clientY: props.start.y,
+	
+	      // Can only determine if is SVG after mounted
+	      isElementSVG: false
+	
 	    };
 	  },
 	
@@ -730,17 +744,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // without worrying about whether or not it is relatively or absolutely positioned.
 	    // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
 	    // has a clean slate.
-	    var transform = createCSSTransform({
-	      // Set left if horizontal drag is enabled
-	      x: canDragX(this) ?
-	        this.state.clientX :
-	        this.props.start.x,
+	    var transform = this.state.isElementSVG ? null :
+	        createCSSTransform({
+	          // Set left if horizontal drag is enabled
+	          x: canDragX(this) ?
+	            this.state.clientX :
+	            this.props.start.x,
 	
-	      // Set top if vertical drag is enabled
-	      y: canDragY(this) ?
-	        this.state.clientY :
-	        this.props.start.y
-	    });
+	          // Set top if vertical drag is enabled
+	          y: canDragY(this) ?
+	            this.state.clientY :
+	            this.props.start.y
+	        });
+	
+	
+	    var svgTransform = !this.state.isElementSVG ? null :
+	        createSVGTransform({
+	          // Set left if horizontal drag is enabled
+	          x: canDragX(this) ?
+	            this.state.clientX :
+	            this.props.start.x,
+	
+	          // Set top if vertical drag is enabled
+	          y: canDragY(this) ?
+	            this.state.clientY :
+	            this.props.start.y
+	        });
+	
 	
 	    // Workaround IE pointer events; see #51
 	    // https://github.com/mzabriskie/react-draggable/issues/51#issuecomment-103488278
@@ -764,6 +794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // This makes it flexible to use whatever element is wanted (div, ul, etc)
 	    return React.cloneElement(React.Children.only(this.props.children), {
 	      style: style,
+	      transform: svgTransform,
 	      className: className,
 	
 	      onMouseDown: this.onMouseDown,

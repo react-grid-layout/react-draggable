@@ -108,3 +108,7 @@
 ### 0.8.3 (Oct 12, 2015)
 
 - Bugfix: Short-circuiting drag throws due to `e.changedTouches` check.
+
+### 0.8.4 (Oct 15, 2015)
+
+- Bugfix: SVG elements now properly use `transform` attribute instead of `style`. Thanks @martinRoss
