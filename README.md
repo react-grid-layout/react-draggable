@@ -81,6 +81,7 @@ Props:
 ```js
 /** @jsx React.DOM */
 var React = require('react'),
+	ReactDOM = require('react-dom'),
 	Draggable = require('react-draggable');
 
 var App = React.createClass({
@@ -120,7 +121,7 @@ var App = React.createClass({
 	}
 });
 
-React.renderComponent(<App/>, document.body);
+ReactDOM.render(<App/>, document.body);
 ```
 
 ## State Problems?
