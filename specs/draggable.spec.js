@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
-var TestUtils = require('react/lib/ReactTestUtils');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 var Draggable = require('../index');
 
 /*global describe,it,expect,afterEach */
@@ -74,7 +75,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode());
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
       expect(called).toEqual(true);
     });
 
@@ -86,8 +87,8 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode());
-      TestUtils.Simulate.mouseUp(drag.getDOMNode());
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
+      TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag));
       expect(called).toEqual(true);
     });
 
@@ -98,7 +99,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      var node = drag.getDOMNode();
+      var node = ReactDOM.findDOMNode(drag);
 
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
       // FIXME why doesn't simulate on the window work?
@@ -118,7 +119,7 @@ describe('react-draggable', function () {
           </Draggable>
       );
 
-      var node = drag.getDOMNode();
+      var node = ReactDOM.findDOMNode(drag);
       expect(drag.state.isElementSVG).toEqual(true);
 
     });
@@ -130,7 +131,7 @@ describe('react-draggable', function () {
           </Draggable>
       );
 
-      var node = drag.getDOMNode();
+      var node = ReactDOM.findDOMNode(drag);
       expect(drag.state.isElementSVG).toEqual(false);
 
     });
@@ -142,7 +143,7 @@ describe('react-draggable', function () {
           </Draggable>
       );
 
-      var node = drag.getDOMNode();
+      var node = ReactDOM.findDOMNode(drag);
 
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
       drag.handleDrag({clientX: 100, clientY:100});
@@ -164,7 +165,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      var node = drag.getDOMNode();
+      var node = ReactDOM.findDOMNode(drag);
 
       expect(document.body.getAttribute('style')).toEqual('');
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
@@ -178,7 +179,7 @@ describe('react-draggable', function () {
     it('should initialize dragging onmousedown', function () {
       drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode());
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
       expect(drag.state.dragging).toEqual(true);
     });
 
@@ -192,10 +193,10 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.content'));
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag).querySelector('.content'));
       expect(drag.state.dragging).toEqual(false);
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.handle'));
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag).querySelector('.handle'));
       expect(drag.state.dragging).toEqual(true);
     });
 
@@ -209,20 +210,20 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.cancel'));
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag).querySelector('.cancel'));
       expect(drag.state.dragging).toEqual(false);
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode().querySelector('.content'));
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag).querySelector('.content'));
       expect(drag.state.dragging).toEqual(true);
     });
 
     it('should discontinue dragging onmouseup', function () {
       drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
-      TestUtils.Simulate.mouseDown(drag.getDOMNode());
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
       expect(drag.state.dragging).toEqual(true);
 
-      TestUtils.Simulate.mouseUp(drag.getDOMNode());
+      TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag));
       expect(drag.state.dragging).toEqual(false);
     });
   });
