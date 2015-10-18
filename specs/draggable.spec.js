@@ -108,7 +108,7 @@ describe('react-draggable', function () {
 
       var style = node.getAttribute('style');
       expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
-      
+
     });
 
     it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
@@ -150,7 +150,7 @@ describe('react-draggable', function () {
 
       var transform = node.getAttribute('transform');
       expect(transform.indexOf('translate(100,100)')).not.toEqual(-1);
-      
+
     });
 
 
