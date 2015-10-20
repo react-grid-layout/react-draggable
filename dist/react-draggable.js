@@ -567,12 +567,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onStart: emptyFunction,
 	      onDrag: emptyFunction,
 	      onStop: emptyFunction,
-	      onMouseDown: emptyFunction,
+	      onMouseDown: emptyFunction
 	    };
 	  },
 	
 	  getInitialState: function (props) {
 	    // Handle call from CWRP
+	    var currentState = this.state;
 	    props = props || this.props;
 	    return {
 	      // Whether or not we are currently dragging.
@@ -584,9 +585,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Current transform x and y.
 	      clientX: props.start.x, clientY: props.start.y,
 	
-	      // Can only determine if is SVG after mounted
-	      isElementSVG: false
-	
+	      // Determines if the element is an svg or not. Default to false.
+	      isElementSVG: currentState && currentState.isElementSVG !== undefined ?
+	        currentState.isElementSVG :
+	        false
 	    };
 	  },
 	
@@ -745,7 +747,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
 	    // has a clean slate.
 	    var transform = this.state.isElementSVG ? null :
-	        createCSSTransform({
+	      createCSSTransform({
 	          // Set left if horizontal drag is enabled
 	          x: canDragX(this) ?
 	            this.state.clientX :
@@ -758,6 +760,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	
 	
+	    // This is primarily for IE as it ignores the CSS transform applied above
+	    // and only respects the real transform attribute.
 	    var svgTransform = !this.state.isElementSVG ? null :
 	        createSVGTransform({
 	          // Set left if horizontal drag is enabled
@@ -926,6 +930,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
 	      )[1];
 	  // 'ms' is not titlecased
+	  if(pre === undefined || pre === null) return '';
 	  if (pre === 'ms') return pre;
 	  return pre.slice(0, 1).toUpperCase() + pre.slice(1);
 	};

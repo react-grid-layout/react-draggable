@@ -112,3 +112,8 @@
 ### 0.8.4 (Oct 15, 2015)
 
 - Bugfix: SVG elements now properly use `transform` attribute instead of `style`. Thanks @martinRoss
+
+### 0.8.5 (Oct 20, 2015)
+
+- Bugfix: isElementSVG no longer can be overwritten by getInitialState (#83)
+- Bugfix: Fix for element prefixes in JSDOM
