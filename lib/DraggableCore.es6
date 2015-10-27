@@ -35,6 +35,14 @@ export default class DraggableCore extends React.Component {
 
   static propTypes = {
     /**
+     * `allowAnyClick` allows dragging using any mouse button.
+     * By default, we only accept the left button.
+     *
+     * Defaults to `false`.
+     */
+    allowAnyClick: PropTypes.bool,
+
+    /**
      * `disabled`, if true, stops the <Draggable> from dragging. All handlers,
      * with the exception of `onMouseDown`, will not fire.
      *
@@ -182,6 +190,7 @@ export default class DraggableCore extends React.Component {
   };
 
   static defaultProps = {
+    allowAnyClick: false, // by default only accept left click
     cancel: null,
     disabled: false,
     enableUserSelectHack: true,
@@ -212,6 +221,9 @@ export default class DraggableCore extends React.Component {
   handleDragStart = (e) => {
     // Make it possible to attach event handlers on top of this one.
     this.props.onMouseDown(e);
+
+    // Only accept left-clicks.
+    if (!this.props.allowAnyClick && typeof e.button === 'number' && e.button !== 0) return false;
 
     // Short circuit if handle or cancel prop was provided and selector doesn't match.
     if (this.props.disabled ||

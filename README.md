@@ -92,6 +92,9 @@ cancel: string,
 // Example: '.handle'
 handle: string,
 
+// If set to `true`, will allow dragging on non left-button clicks.
+allowAnyClick: boolean,
+
 // Determines which axis the draggable can move. Accepted values:
 // - `both` allows movement horizontally and vertically (default).
 // - `x` limits movement to horizontal axis.
