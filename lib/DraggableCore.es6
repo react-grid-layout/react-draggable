@@ -2,6 +2,7 @@ import {default as React, PropTypes} from 'react';
 import {matchesSelector, createCoreEvent, addEvent, removeEvent, addUserSelectStyles,
         removeUserSelectStyles, styleHacks} from './utils/domFns';
 import {getControlPosition} from './utils/positionFns';
+import {dontSetMe} from './utils/shims';
 import log from './utils/log';
 
 // Simple abstraction for dragging events names.
@@ -150,7 +151,14 @@ export default class DraggableCore extends React.Component {
      * A workaround option which can be passed if onMouseDown needs to be accessed,
      * since it'll always be blocked (due to that there's internal use of onMouseDown)
      */
-    onMouseDown: PropTypes.func
+    onMouseDown: PropTypes.func,
+
+    /**
+     * These properties should be defined on the child, not here.
+     */
+    className: dontSetMe,
+    style: dontSetMe,
+    transform: dontSetMe
   };
 
   static defaultProps = {
@@ -334,8 +342,7 @@ export default class DraggableCore extends React.Component {
     // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     return React.cloneElement(React.Children.only(this.props.children), {
-      style: styleHacks(this),
-      transform: this.props.transform,
+      style: styleHacks(this.props.children.props.style),
 
       // Note: mouseMove handler is attached to document so it will still function
       // when the user drags quickly and leaves the bounds of the element.

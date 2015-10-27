@@ -114,18 +114,14 @@ export function removeUserSelectStyles() {
   document.body.setAttribute('style', style.replace(userSelectStyle, ''));
 }
 
-export function styleHacks(draggable) {
-  // Create style object. We extend from existing styles so we don't
-  // remove anything already set (like background, color, etc).
-  let childStyle = draggable.props.children.props.style || {};
-
+export function styleHacks(childStyle = {}) {
   // Workaround IE pointer events; see #51
   // https://github.com/mzabriskie/react-draggable/issues/51#issuecomment-103488278
   let touchHacks = {
     touchAction: 'none'
   };
 
-  return assign(touchHacks, childStyle, draggable.props.style);
+  return assign(touchHacks, childStyle);
 }
 
 // Create an event exposed by <DraggableCore>

@@ -16,3 +16,9 @@ export function isNum(num) {
 export function int(a) {
   return parseInt(a, 10);
 }
+
+export function dontSetMe(props, propName, componentName) {
+  if (props[propName]) {
+    throw new Error(`Invalid prop ${propName} passed to ${componentName} - do not set this, set it on the child.`);
+  }
+}

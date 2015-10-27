@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import assign from 'object-assign';
 import {createUIEvent, createTransform} from './utils/domFns';
 import {canDragX, canDragY, getBoundPosition, snapToGrid} from './utils/positionFns';
+import {dontSetMe} from './utils/shims';
 import DraggableCore from './DraggableCore';
 import log from './utils/log';
 
@@ -140,7 +141,14 @@ export default class Draggable extends DraggableCore {
      *   });
      * ```
      */
-    zIndex: PropTypes.number
+    zIndex: PropTypes.number,
+
+    /**
+     * These properties should be defined on the child, not here.
+     */
+    className: dontSetMe,
+    style: dontSetMe,
+    transform: dontSetMe
   });
 
   static defaultProps = assign({}, DraggableCore.defaultProps, {
@@ -265,9 +273,12 @@ export default class Draggable extends DraggableCore {
     // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     return (
-      <DraggableCore {...this.props} style={style} className={className} transform={svgTransform}
-                     onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragStop}>
-        {React.Children.only(this.props.children)}
+      <DraggableCore {...this.props} onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragStop}>
+        {React.cloneElement(React.Children.only(this.props.children), {
+          className: className,
+          style: assign({}, this.props.children.props.style, style),
+          transform: svgTransform
+        })}
       </DraggableCore>
     );
   }

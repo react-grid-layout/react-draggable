@@ -11,6 +11,10 @@ var dashedBrowserPrefix = browserPrefix ? '-' + browserPrefix.toLowerCase() + '-
 describe('react-draggable', function () {
   var drag;
 
+  beforeEach(function() {
+    spyOn(console, 'error');
+  });
+
   afterEach(function() {
     try {
       ReactDOM.findDOMNode(drag);
@@ -35,7 +39,7 @@ describe('react-draggable', function () {
     it('should pass style and className properly from child', function () {
       drag = (<Draggable><div className="foo" style={{color: 'black'}}/></Draggable>);
 
-      expect(renderToHTML(drag)).toEqual('<div class="foo" ' +
+      expect(renderToHTML(drag)).toEqual('<div class="foo react-draggable" ' +
         'style="touch-action:none;color:black;transform:translate(0px,0px);' + dashedBrowserPrefix +
         'transform:translate(0px,0px);" data-reactid=".1"></div>');
     });
@@ -48,13 +52,14 @@ describe('react-draggable', function () {
       var output = renderer.getRenderOutput();
 
       var expected = (
-        <DraggableCore {...Draggable.defaultProps} handle=".foo" className="react-draggable"
-          style={{
-            'transform': 'translate(0px,0px)',
-            [browserPrefix + 'Transform']: 'translate(0px,0px)'
-          }}
-          transform={null}>
-          <div />
+        <DraggableCore {...Draggable.defaultProps} handle=".foo">
+          <div
+            className="react-draggable"
+            style={{
+              'transform': 'translate(0px,0px)',
+              [browserPrefix + 'Transform']: 'translate(0px,0px)'
+            }}
+            transform={null} />
         </DraggableCore>
       );
       // Not easy to actually test equality here. The functions are bound as static props so we can't test those easily.
@@ -80,7 +85,7 @@ describe('react-draggable', function () {
           onStart={handleStart}
           onDrag={handleDrag}
           onStop={handleStop}>
-          <div>
+          <div className="foo bar">
             <div className="handle"/>
             <div className="cancel"/>
           </div>
@@ -95,6 +100,30 @@ describe('react-draggable', function () {
       expect(drag.props.onStart).toEqual(handleStart);
       expect(drag.props.onDrag).toEqual(handleDrag);
       expect(drag.props.onStop).toEqual(handleStop);
+    });
+
+    it('should throw when setting className', function () {
+      drag = (<Draggable className="foo"><span /></Draggable>);
+
+      TestUtils.renderIntoDocument(drag);
+
+      expect(console.error).toHaveBeenCalledWith('Warning: Failed propType: Invalid prop className passed to Draggable - do not set this, set it on the child.');
+    });
+
+    it('should throw when setting style', function () {
+      drag = (<Draggable style={{color: 'red'}}><span /></Draggable>);
+
+      TestUtils.renderIntoDocument(drag);
+
+      expect(console.error).toHaveBeenCalledWith('Warning: Failed propType: Invalid prop style passed to Draggable - do not set this, set it on the child.');
+    });
+
+    it('should throw when setting transform', function () {
+      drag = (<Draggable transform="translate(100, 100)"><span /></Draggable>);
+
+      TestUtils.renderIntoDocument(drag);
+
+      expect(console.error).toHaveBeenCalledWith('Warning: Failed propType: Invalid prop transform passed to Draggable - do not set this, set it on the child.');
     });
 
     it('should call onStart when dragging begins', function () {
