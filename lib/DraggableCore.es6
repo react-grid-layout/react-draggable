@@ -253,7 +253,7 @@ export default class DraggableCore extends React.Component {
     // Call event handler. If it returns explicit false, trigger end.
     let shouldUpdate = this.props.onDrag(e, coreEvent);
     if (shouldUpdate === false) {
-      this.handleDragStop();
+      this.handleDragStop({});
       return;
     }
 
