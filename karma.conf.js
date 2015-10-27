@@ -3,7 +3,7 @@ module.exports = function(config) {
 
     basePath: '',
 
-    frameworks: ['jasmine'],
+    frameworks: ['phantomjs-shim', 'jasmine'],
 
     files: [
       'specs/main.js'
@@ -49,7 +49,7 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['PhantomJS', 'Firefox'],
+    browsers: ['PhantomJS', 'Firefox', 'Chrome'],
 
     singleRun: false,
 
@@ -57,7 +57,9 @@ module.exports = function(config) {
       require('karma-jasmine'),
       require('karma-phantomjs-launcher'),
       require('karma-firefox-launcher'),
-      require('karma-webpack')
+      require('karma-chrome-launcher'),
+      require('karma-webpack'),
+      require('karma-phantomjs-shim')
     ]
   });
 };
