@@ -1,12 +1,15 @@
 # Mostly lifted from https://andreypopp.com/posts/2013-05-16-makefile-recipes-for-node-js.html
 # Thanks @andreypopp
 
-BIN = ./node_modules/.bin
-SRC = $(wildcard lib/*.js)
-LIB = $(SRC:lib/%.js=dist/%.js)
-MIN = $(SRC:lib/%.js=dist/%.min.js)
+BIN := $(shell npm bin)
+DIST = dist
+LIB = $(DIST)/react-draggable.js
+MIN = $(DIST)/react-draggable.min.js
 
-.PHONY: test dev
+.PHONY: test dev build clean
+
+clean:
+	rm -rf dist
 
 build: $(LIB) $(MIN)
 
@@ -14,20 +17,19 @@ build: $(LIB) $(MIN)
 install link:
 	@npm $@
 
-# FIXME
-dist/%.min.js: $(BIN)
-	@$(BIN)/uglifyjs dist/react-draggable.js \
-	  --output dist/react-draggable.min.js \
-	  --source-map dist/react-draggable.min.map \
-	  --source-map-url react-draggable.min.map \
-	  --in-source-map dist/react-draggable.map \
+dist/%.min.js: $(LIB) $(BIN)
+	@$(BIN)/uglifyjs $< \
+	  --output $@ \
+	  --source-map $@.map \
+	  --source-map-url $(basename $@.map) \
+	  --in-source-map $<.map \
 	  --compress warnings=false
 
 dist/%.js: $(BIN)
 	@$(BIN)/webpack --devtool source-map
 
 test: $(BIN)
-	@$(BIN)/karma start --browsers Firefox --single-run
+	@$(BIN)/karma start --single-run
 
 dev: $(BIN)
 	script/build-watch
@@ -50,15 +52,15 @@ define release
 	git tag "v$$NEXT_VERSION" -m "release v$$NEXT_VERSION"
 endef
 
-release-patch: test build
+release-patch: test clean build
 	@$(call release,patch)
 
-release-minor: test build
+release-minor: test clean build
 	@$(call release,minor)
 
-release-major: test build
+release-major: test clean build
 	@$(call release,major)
 
-publish:
+publish: clean build
 	git push --tags origin HEAD:master
 	npm publish

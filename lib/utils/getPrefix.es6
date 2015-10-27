@@ -1,7 +1,7 @@
-module.exports = function() {
+export default (function() {
   if (typeof window === 'undefined') return '';
   // Thanks David Walsh
-  var styles = window.getComputedStyle(document.documentElement, ''),
+  let styles = window.getComputedStyle(document.documentElement, ''),
   pre = (Array.prototype.slice
         .call(styles)
         .join('')
@@ -10,5 +10,6 @@ module.exports = function() {
   // 'ms' is not titlecased
   if(pre === undefined || pre === null) return '';
   if (pre === 'ms') return pre;
+  if (pre === undefined || pre === null) return '';
   return pre.slice(0, 1).toUpperCase() + pre.slice(1);
-};
+})();

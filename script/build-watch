@@ -6,10 +6,7 @@ function finish {
   kill $SERVER_PID
 }
 
-BIN = ../node_modules/.bin
-
-
-$BIN/webpack --watch --devtool inline-source-map &
+DRAGGABLE_DEBUG=true webpack --watch --devtool inline-source-map &
 WEBPACK_PID=$!
 
 # # Run a static server and run the example in it.
