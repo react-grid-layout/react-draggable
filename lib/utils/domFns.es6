@@ -155,6 +155,8 @@ export function createUIEvent(draggable, coreEvent) {
     position: {
       top: coreEvent.position.clientY,
       left: coreEvent.position.clientX
-    }
+    },
+    deltaX: coreEvent.position.deltaX,
+    deltaY: coreEvent.position.deltaY
   };
 }

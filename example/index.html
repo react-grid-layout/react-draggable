@@ -48,15 +48,16 @@
   </style>
 </head>
 <body>
-<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react-with-addons.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.29/browser.min.js"></script>
 <script src="../dist/react-draggable.js"></script>
-<script type="text/jsx">
+<script type="text/babel">
   var Draggable = ReactDraggable;
   var App = React.createClass({
     getInitialState: function () {
       return {
-        position: {
+        deltaPosition: {
           top: 0, left: 0
         },
         activeDrags: 0
@@ -64,8 +65,12 @@
     },
 
     handleDrag: function (e, ui) {
+      var {left, top} = this.state.position;
       this.setState({
-        position: ui.position
+        deltaPosition: {
+          left: left + ui.deltaX,
+          top: top + ui.deltaY,
+        }
       });
     },
 
@@ -79,6 +84,7 @@
 
     render: function () {
       var drags = {onStart: this.onStart, onStop: this.onStop};
+      var {top. left} = this.state.deltaPosition;
       return (
         <div>
           <h1>React Draggable</h1>
@@ -97,8 +103,8 @@
           </Draggable>
           <Draggable onDrag={this.handleDrag} {...drags}>
             <div className="box">
-              <div>I track my position</div>
-              <div>top: {this.state.position.top.toFixed(0)}, left: {this.state.position.left.toFixed(0)}</div>
+              <div>I track my deltas</div>
+              <div>top: {top.toFixed(0)}, left: {left.toFixed(0)}</div>
             </div>
           </Draggable>
           <Draggable handle="strong" {...drags}>
