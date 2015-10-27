@@ -64,7 +64,14 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['PhantomJS', 'Firefox', 'Chrome'],
+    browsers: ['PhantomJS', 'Firefox', process.env.TRAVIS ? 'Chrome_travis_ci' : 'Chrome'],
+
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
 
     singleRun: false,
 
