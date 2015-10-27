@@ -151,6 +151,18 @@ describe('react-draggable', function () {
       expect(called).toEqual(true);
     });
 
+    it('should not call onStart when dragging begins and disabled', function () {
+      var called = false;
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onStart={function () { called = true; }} disabled={true}>
+          <div/>
+        </Draggable>
+      );
+
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
+      expect(called).toEqual(false);
+    });
+
     it('should render with style translate() for DOM nodes', function () {
       var dragged = false;
       drag = TestUtils.renderIntoDocument(

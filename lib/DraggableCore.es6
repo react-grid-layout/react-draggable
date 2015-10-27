@@ -35,6 +35,26 @@ export default class DraggableCore extends React.Component {
 
   static propTypes = {
     /**
+     * `disabled`, if true, stops the <Draggable> from dragging. All handlers,
+     * with the exception of `onMouseDown`, will not fire.
+     *
+     * Example:
+     *
+     * ```jsx
+     *   let App = React.createClass({
+     *       render: function () {
+     *           return (
+     *               <Draggable disabled={true}>
+     *                   <div>I can't be dragged</div>
+     *               </Draggable>
+     *           );
+     *       }
+     *   });
+     * ```
+     */
+    disabled: PropTypes.bool,
+
+    /**
      * By default, we add 'user-select:none' attributes to the document body
      * to prevent ugly text selection during drag. If this is causing problems
      * for your app, set this to `false`.
@@ -162,9 +182,10 @@ export default class DraggableCore extends React.Component {
   };
 
   static defaultProps = {
-    handle: null,
     cancel: null,
+    disabled: false,
     enableUserSelectHack: true,
+    handle: null,
     transform: null,
     onStart: function(){},
     onDrag: function(){},
@@ -193,7 +214,8 @@ export default class DraggableCore extends React.Component {
     this.props.onMouseDown(e);
 
     // Short circuit if handle or cancel prop was provided and selector doesn't match.
-    if ((this.props.handle && !matchesSelector(e.target, this.props.handle)) ||
+    if (this.props.disabled ||
+      (this.props.handle && !matchesSelector(e.target, this.props.handle)) ||
       (this.props.cancel && matchesSelector(e.target, this.props.cancel))) {
       return;
     }
