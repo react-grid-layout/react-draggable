@@ -1,5 +1,4 @@
-import React from 'react';
-import {autobind} from './utils/shims';
+import {default as React, PropTypes} from 'react';
 import {matchesSelector, createCoreEvent, addEvent, removeEvent, addUserSelectStyles,
         removeUserSelectStyles, styleHacks} from './utils/domFns';
 import {getControlPosition} from './utils/positionFns';
@@ -31,13 +30,15 @@ let dragEventFor = eventsFor.mouse;
 
 export default class DraggableCore extends React.Component {
 
+  static displayName = 'DraggableCore';
+
   static propTypes = {
     /**
      * By default, we add 'user-select:none' attributes to the document body
      * to prevent ugly text selection during drag. If this is causing problems
      * for your app, set this to `false`.
      */
-    enableUserSelectHack: React.PropTypes.bool,
+    enableUserSelectHack: PropTypes.bool,
 
     /**
      * `handle` specifies a selector to be used as the handle that initiates drag.
@@ -59,7 +60,7 @@ export default class DraggableCore extends React.Component {
      *   });
      * ```
      */
-    handle: React.PropTypes.string,
+    handle: PropTypes.string,
 
     /**
      * `cancel` specifies a selector to be used to prevent drag initialization.
@@ -81,7 +82,7 @@ export default class DraggableCore extends React.Component {
      *   });
      * ```
      */
-    cancel: React.PropTypes.string,
+    cancel: PropTypes.string,
 
     /**
      * Called when dragging starts.
@@ -102,7 +103,7 @@ export default class DraggableCore extends React.Component {
      *  }
      * ```
      */
-    onStart: React.PropTypes.func,
+    onStart: PropTypes.func,
 
     /**
      * Called while dragging.
@@ -123,7 +124,7 @@ export default class DraggableCore extends React.Component {
      *  }
      * ```
      */
-    onDrag: React.PropTypes.func,
+    onDrag: PropTypes.func,
 
     /**
      * Called when dragging stops.
@@ -143,35 +144,31 @@ export default class DraggableCore extends React.Component {
      *  }
      * ```
      */
-    onStop: React.PropTypes.func,
+    onStop: PropTypes.func,
 
     /**
      * A workaround option which can be passed if onMouseDown needs to be accessed,
      * since it'll always be blocked (due to that there's internal use of onMouseDown)
      */
-    onMouseDown: React.PropTypes.func
-  }
+    onMouseDown: PropTypes.func
+  };
 
   static defaultProps = {
     handle: null,
     cancel: null,
     enableUserSelectHack: true,
+    transform: null,
     onStart: function(){},
     onDrag: function(){},
     onStop: function(){},
     onMouseDown: function(){}
-  }
+  };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      dragging: false,
-      // Used while dragging to determine deltas.
-      lastX: null, lastY: null
-    };
-    // ES6 classes don't autobind members like React.createClass() does.
-    autobind(this);
-  }
+  state = {
+    dragging: false,
+    // Used while dragging to determine deltas.
+    lastX: null, lastY: null
+  };
 
   componentWillUnmount() {
     // Remove any leftover event handlers. Remove both touch and mouse handlers in case
@@ -183,7 +180,7 @@ export default class DraggableCore extends React.Component {
     if (this.props.enableUserSelectHack) removeUserSelectStyles();
   }
 
-  handleDragStart(e) {
+  handleDragStart = (e) => {
     // Make it possible to attach event handlers on top of this one.
     this.props.onMouseDown(e);
 
@@ -238,9 +235,9 @@ export default class DraggableCore extends React.Component {
     // is a touch-capable device.
     addEvent(document, dragEventFor.move, this.handleDrag);
     addEvent(document, dragEventFor.stop, this.handleDragStop);
-  }
+  };
 
-  handleDrag(e) {
+  handleDrag = (e) => {
     // Return if this is a touch event, but not the correct one for this element
     if (e.targetTouches && (e.targetTouches[0].identifier !== this.state.touchIdentifier)) return;
 
@@ -261,9 +258,9 @@ export default class DraggableCore extends React.Component {
       lastX: clientX,
       lastY: clientY
     });
-  }
+  };
 
-  handleDragStop(e) {
+  handleDragStop = (e) => {
     if (!this.state.dragging) return;
 
     // Short circuit if this is not the correct touch event. `changedTouches` contains all
@@ -293,11 +290,11 @@ export default class DraggableCore extends React.Component {
     removeEvent(document, 'scroll', this.handleScroll);
     removeEvent(document, dragEventFor.move, this.handleDrag);
     removeEvent(document, dragEventFor.stop, this.handleDragStop);
-  }
+  };
 
   // When the user scrolls, adjust internal state so the draggable moves along the page properly.
   // This only fires when a drag is active.
-  handleScroll() {
+  handleScroll = () => {
     let s = this.state, x = document.body.scrollLeft, y = document.body.scrollTop;
 
     // Create the usual event, but make the scroll offset our deltas.
@@ -311,10 +308,10 @@ export default class DraggableCore extends React.Component {
     });
 
     this.props.onDrag(coreEvent);
-  }
+  };
 
   // On mousedown, consider the drag started.
-  onMouseDown(e) {
+  onMouseDown = (e) => {
     // HACK: Prevent 'ghost click' which happens 300ms after touchstart if the event isn't cancelled.
     // We don't cancel the event on touchstart because of #37; we might want to make a scrollable item draggable.
     // More on ghost clicks: http://ariatemplates.com/blog/2014/05/ghost-clicks-in-mobile-browsers/
@@ -323,21 +320,22 @@ export default class DraggableCore extends React.Component {
     }
 
     return this.handleDragStart(e);
-  }
+  };
 
   // Same as onMouseDown (start drag), but now consider this a touch device.
-  onTouchStart(e) {
+  onTouchStart = (e) => {
     // We're on a touch device now, so change the event handlers
     dragEventFor = eventsFor.touch;
 
     return this.handleDragStart(e);
-  }
+  };
 
   render() {
     // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     return React.cloneElement(React.Children.only(this.props.children), {
       style: styleHacks(this),
+      transform: this.props.transform,
 
       // Note: mouseMove handler is attached to document so it will still function
       // when the user drags quickly and leaves the bounds of the element.

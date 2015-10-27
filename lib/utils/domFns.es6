@@ -1,10 +1,10 @@
 import {findInArray, isFunction, isNum, int} from './shims';
 import browserPrefix from './getPrefix';
 import assign from 'object-assign';
-import React from 'react';
+import ReactDOM from 'react-dom';
 
 let matchesSelectorFunc = '';
-export function matchesSelector(el, selector) {
+export function matchesSelector(el: Node, selector: string) {
   if (!matchesSelectorFunc) {
     matchesSelectorFunc = findInArray([
       'matches',
@@ -20,7 +20,7 @@ export function matchesSelector(el, selector) {
   return el[matchesSelectorFunc].call(el, selector);
 }
 
-export function addEvent(el, event, handler) {
+export function addEvent(el: ?Node, event: string, handler: Function) {
   if (!el) { return; }
   if (el.attachEvent) {
     el.attachEvent('on' + event, handler);
@@ -31,7 +31,7 @@ export function addEvent(el, event, handler) {
   }
 }
 
-export function removeEvent(el, event, handler) {
+export function removeEvent(el: ?Node, event: string, handler: Function) {
   if (!el) { return; }
   if (el.detachEvent) {
     el.detachEvent('on' + event, handler);
@@ -42,7 +42,7 @@ export function removeEvent(el, event, handler) {
   }
 }
 
-export function outerHeight(node) {
+export function outerHeight(node: Node) {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetTop which is including margin. See getBoundPosition
   let height = node.clientHeight;
@@ -52,7 +52,7 @@ export function outerHeight(node) {
   return height;
 }
 
-export function outerWidth(node) {
+export function outerWidth(node: Node) {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetLeft which is including margin. See getBoundPosition
   let width = node.clientWidth;
@@ -61,7 +61,7 @@ export function outerWidth(node) {
   width += int(computedStyle.borderRightWidth);
   return width;
 }
-export function innerHeight(node) {
+export function innerHeight(node: Node) {
   let height = node.clientHeight;
   let computedStyle = window.getComputedStyle(node);
   height -= int(computedStyle.paddingTop);
@@ -69,7 +69,7 @@ export function innerHeight(node) {
   return height;
 }
 
-export function innerWidth(node) {
+export function innerWidth(node: Node) {
   let width = node.clientWidth;
   let computedStyle = window.getComputedStyle(node);
   width -= int(computedStyle.paddingLeft);
@@ -77,16 +77,23 @@ export function innerWidth(node) {
   return width;
 }
 
-export function createCSSTransform(style) {
+export function createTransform(position: Object, isSVG: ?boolean) {
+  if (isSVG) return createSVGTransform(position);
+  return createCSSTransform(position);
+}
+
+export function createCSSTransform({x, y}: {x: number, y: number}) {
   // Replace unitless items with px
-  let x = style.x + 'px';
-  let y = style.y + 'px';
-  let out = {transform: 'translate(' + x + ',' + y + ')'};
+  let out = {transform: 'translate(' + x + 'px,' + y + 'px)'};
   // Add single prefixed property as well
   if (browserPrefix) {
     out[browserPrefix + 'Transform'] = out.transform;
   }
   return out;
+}
+
+export function createSVGTransform({x, y}: {x: number, y: number}) {
+  return 'translate(' + x + ',' + y + ')';
 }
 
 // User-select Hacks:
@@ -128,7 +135,7 @@ export function createCoreEvent(draggable, clientX, clientY) {
   let isStart = !isNum(state.lastX);
 
   return {
-    node: React.findDOMNode(draggable),
+    node: ReactDOM.findDOMNode(draggable),
     position: isStart ?
       // If this is our first move, use the clientX and clientY as last coords.
       {
@@ -148,7 +155,7 @@ export function createCoreEvent(draggable, clientX, clientY) {
 // Create an event exposed by <Draggable>
 export function createUIEvent(draggable, coreEvent) {
   return {
-    node: React.findDOMNode(draggable),
+    node: ReactDOM.findDOMNode(draggable),
     position: {
       top: coreEvent.position.clientY,
       left: coreEvent.position.clientX

@@ -1,5 +1,5 @@
 import {isNum, int} from './shims';
-import React from 'react';
+import ReactDOM from 'react-dom';
 import {innerWidth, innerHeight, outerWidth, outerHeight} from './domFns';
 
 export function getBoundPosition(draggable, clientX, clientY) {
@@ -7,7 +7,7 @@ export function getBoundPosition(draggable, clientX, clientY) {
   if (!draggable.props.bounds) return [clientX, clientY];
 
   let bounds = JSON.parse(JSON.stringify(draggable.props.bounds));
-  let node = React.findDOMNode(draggable);
+  let node = ReactDOM.findDOMNode(draggable);
   let parent = node.parentNode;
 
   if (bounds === 'parent') {

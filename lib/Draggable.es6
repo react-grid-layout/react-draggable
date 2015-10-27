@@ -1,8 +1,8 @@
-import React from 'react';
+import {default as React, PropTypes} from 'react';
+import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import assign from 'object-assign';
-import {autobind} from './utils/shims';
-import {createUIEvent, createCSSTransform} from './utils/domFns';
+import {createUIEvent, createTransform} from './utils/domFns';
 import {canDragX, canDragY, getBoundPosition, snapToGrid} from './utils/positionFns';
 import DraggableCore from './DraggableCore';
 import log from './utils/log';
@@ -12,6 +12,8 @@ import log from './utils/log';
 //
 
 export default class Draggable extends DraggableCore {
+
+  static displayName = 'Draggable';
 
   static propTypes = assign({}, DraggableCore.propTypes, {
     /**
@@ -23,7 +25,7 @@ export default class Draggable extends DraggableCore {
      *
      * Defaults to 'both'.
      */
-    axis: React.PropTypes.oneOf(['both', 'x', 'y']),
+    axis: PropTypes.oneOf(['both', 'x', 'y']),
 
     /**
      * `bounds` determines the range of movement available to the element.
@@ -51,14 +53,14 @@ export default class Draggable extends DraggableCore {
      *   });
      * ```
      */
-    bounds: React.PropTypes.oneOfType([
-      React.PropTypes.shape({
-        left: React.PropTypes.Number,
-        right: React.PropTypes.Number,
-        top: React.PropTypes.Number,
-        bottom: React.PropTypes.Number
+    bounds: PropTypes.oneOfType([
+      PropTypes.shape({
+        left: PropTypes.Number,
+        right: PropTypes.Number,
+        top: PropTypes.Number,
+        bottom: PropTypes.Number
       }),
-      React.PropTypes.oneOf(['parent', false])
+      PropTypes.oneOf(['parent', false])
     ]),
 
     /**
@@ -78,7 +80,7 @@ export default class Draggable extends DraggableCore {
      *   });
      * ```
      */
-    disabled: React.PropTypes.bool,
+    disabled: PropTypes.bool,
 
     /**
      * `grid` specifies the x and y that dragging should snap to.
@@ -97,7 +99,7 @@ export default class Draggable extends DraggableCore {
      *   });
      * ```
      */
-    grid: React.PropTypes.arrayOf(React.PropTypes.number),
+    grid: PropTypes.arrayOf(PropTypes.number),
 
     /**
      * `start` specifies the x and y that the dragged item should start at
@@ -116,9 +118,9 @@ export default class Draggable extends DraggableCore {
      *      });
      * ```
      */
-    start: React.PropTypes.shape({
-      x: React.PropTypes.number,
-      y: React.PropTypes.number
+    start: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number
     }),
 
     /**
@@ -138,8 +140,8 @@ export default class Draggable extends DraggableCore {
      *   });
      * ```
      */
-    zIndex: React.PropTypes.number
-  })
+    zIndex: PropTypes.number
+  });
 
   static defaultProps = assign({}, DraggableCore.defaultProps, {
     axis: 'both',
@@ -148,22 +150,27 @@ export default class Draggable extends DraggableCore {
     grid: null,
     start: {x: 0, y: 0},
     zIndex: NaN
-  })
+  });
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      // Whether or not we are currently dragging.
-      dragging: false,
+  state = {
+    // Whether or not we are currently dragging.
+    dragging: false,
 
-      // Current transform x and y.
-      clientX: props.start.x, clientY: props.start.y
-    };
-    log('Draggable: initializing state: %j, and props: %j', this.state, props);
-    autobind(this);
+    // Current transform x and y.
+    clientX: this.props.start.x, clientY: this.props.start.y,
+
+    // Can only determine if SVG after mounting
+    isElementSVG: false
+  };
+
+  componentDidMount() {
+    // Check to see if the element passed is an instanceof SVGElement
+    if(ReactDOM.findDOMNode(this) instanceof SVGElement) {
+      this.setState({ isElementSVG: true });
+    }
   }
 
-  onDragStart(e, coreEvent) {
+  onDragStart = (e, coreEvent) => {
     log('Draggable: onDragStart: %j', coreEvent.position);
 
     // Short-circuit if user's callback killed it.
@@ -174,9 +181,9 @@ export default class Draggable extends DraggableCore {
     this.setState({
       dragging: true
     });
-  }
+  };
 
-  onDrag(e, coreEvent) {
+  onDrag = (e, coreEvent) => {
     if (!this.state.dragging) return false;
     log('Draggable: onDrag: %j', coreEvent.position);
 
@@ -204,9 +211,9 @@ export default class Draggable extends DraggableCore {
     }
 
     this.setState(newState);
-  }
+  };
 
-  onDragStop(e, coreEvent) {
+  onDragStop = (e, coreEvent) => {
     if (!this.state.dragging) return false;
 
     // Short-circuit if user's callback killed it.
@@ -218,15 +225,15 @@ export default class Draggable extends DraggableCore {
     this.setState({
       dragging: false
     });
-  }
+  };
 
   render() {
-
+    let style, svgTransform = null;
     // Add a CSS transform to move the element around. This allows us to move the element around
     // without worrying about whether or not it is relatively or absolutely positioned.
     // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
     // has a clean slate.
-    let style = createCSSTransform({
+    style = createTransform({
       // Set left if horizontal drag is enabled
       x: canDragX(this) ?
         this.state.clientX :
@@ -236,7 +243,13 @@ export default class Draggable extends DraggableCore {
       y: canDragY(this) ?
         this.state.clientY :
         this.props.start.y
-    });
+    }, this.state.isElementSVG);
+
+    // If this element was SVG, we use the `transform` attribute.
+    if (this.state.isElementSVG) {
+      svgTransform = style;
+      style = {};
+    }
 
     // zIndex option
     if (this.state.dragging && !isNaN(this.props.zIndex)) {
@@ -252,7 +265,7 @@ export default class Draggable extends DraggableCore {
     // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     return (
-      <DraggableCore {...this.props} style={style} className={className}
+      <DraggableCore {...this.props} style={style} className={className} transform={svgTransform}
                      onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragStop}>
         {React.Children.only(this.props.children)}
       </DraggableCore>
