@@ -16,7 +16,8 @@ module.exports = {
       'amd': 'react',
       // React dep should be available as window.React, not window.react
       'root': 'React'
-    }
+    },
+    'react-dom': 'react-dom'
   },
 	module: {
 		loaders: [

@@ -1,3 +1,5 @@
+var webpack = require('webpack');
+
 module.exports = function(config) {
   config.set({
 
@@ -23,11 +25,24 @@ module.exports = function(config) {
         loaders: [
           {
             test: /\.(?:js|es).?$/,
-            loader: 'babel-loader?cacheDirectory',
+            loader: 'babel-loader',
+            query: {
+              cacheDirectory: true,
+              plugins: [
+                'typecheck'
+              ]
+            },
             exclude: /(node_modules)/
           }
         ]
       },
+      plugins: [
+        new webpack.DefinePlugin({
+          'process.env': {
+            NODE_ENV: '"test"'
+          }
+        })
+      ],
       resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.js', '.es6']
       }
