@@ -776,6 +776,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var styles = window.getComputedStyle(document.documentElement, ''),
 	      pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
 	  // 'ms' is not titlecased
+	  if (pre === undefined || pre === null) return '';
 	  if (pre === 'ms') return pre;
 	  if (pre === undefined || pre === null) return '';
 	  return pre.slice(0, 1).toUpperCase() + pre.slice(1);
@@ -940,6 +941,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.handleDragStart = function (e) {
 	      // Make it possible to attach event handlers on top of this one.
 	      _this.props.onMouseDown(e);
+	
+	      // Only accept left-clicks.
+	      if (!_this.props.allowAnyClick && typeof e.button === 'number' && e.button !== 0) return false;
 	
 	      // Short circuit if handle or cancel prop was provided and selector doesn't match.
 	      if (_this.props.disabled || _this.props.handle && !(0, _utilsDomFns.matchesSelector)(e.target, _this.props.handle) || _this.props.cancel && (0, _utilsDomFns.matchesSelector)(e.target, _this.props.cancel)) {
@@ -1130,6 +1134,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'propTypes',
 	    value: {
 	      /**
+	       * `allowAnyClick` allows dragging using any mouse button.
+	       * By default, we only accept the left button.
+	       *
+	       * Defaults to `false`.
+	       */
+	      allowAnyClick: _react.PropTypes.bool,
+	
+	      /**
 	       * `disabled`, if true, stops the <Draggable> from dragging. All handlers,
 	       * with the exception of `onMouseDown`, will not fire.
 	       *
@@ -1279,6 +1291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'defaultProps',
 	    value: {
+	      allowAnyClick: false, // by default only accept left click
 	      cancel: null,
 	      disabled: false,
 	      enableUserSelectHack: true,

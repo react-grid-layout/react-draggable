@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.0.1 (Oct 28, 2015)
+
+- Fix missing dist files for webpack.
+- Ignore non-primary clicks. Added `allowAnyClick` option to allow other click types.
+
 ### 1.0.0 (Oct 27, 2015)
 
 - Breaking: Removed `resetState()` instance method
