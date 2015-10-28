@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "React draggable component",
   "main": "dist/react-draggable.js",
+  "browser": "dist/react-draggable.js",
   "scripts": {
     "test": "make test",
     "test-debug": "karma start --browsers=Chrome --single-run=false",
