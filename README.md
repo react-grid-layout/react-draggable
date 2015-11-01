@@ -125,9 +125,9 @@ directly.
 ### Draggable Usage
 
 ```js
-/** @jsx React.DOM */
-var React = require('react'),
-	Draggable = require('react-draggable');
+var React = require('react'),;
+var ReactDOM = require('react-dom');
+var Draggable = require('react-draggable');
 
 var App = React.createClass({
 	handleStart: function (event, ui) {
@@ -166,7 +166,7 @@ var App = React.createClass({
 	}
 });
 
-React.renderComponent(<App/>, document.body);
+ReactDOM.render(<App/>, document.body);
 ```
 
 ## <DraggableCore>
