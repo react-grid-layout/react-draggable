@@ -959,7 +959,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // Add a style to the body to disable user-select. This prevents text from
 	      // being selected all over the page.
-	      (0, _utilsDomFns.addUserSelectStyles)();
+	      if (_this.props.enableUserSelectHack) (0, _utilsDomFns.addUserSelectStyles)();
 	
 	      // Get the current drag point from the event. This is used as the offset.
 	
@@ -1062,7 +1062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _utilsDomFns.removeEvent)(document, dragEventFor.stop, _this.handleDragStop);
 	    };
 	
-	    this.handleScroll = function () {
+	    this.handleScroll = function (e) {
 	      var s = _this.state,
 	          x = document.body.scrollLeft,
 	          y = document.body.scrollTop;
@@ -1077,7 +1077,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        lastY: s.lastY + coreEvent.deltaY
 	      });
 	
-	      _this.props.onDrag(coreEvent);
+	      _this.props.onDrag(e, coreEvent);
 	    };
 	
 	    this.onMouseDown = function (e) {

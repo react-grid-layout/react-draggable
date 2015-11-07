@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.0.2 (Nov 7, 2015)
+
+- Fix `enableUserSelectHack` not properly disabling.
+- Fix a crash when the user scrolls the page with a Draggable active.
+
 ### 1.0.1 (Oct 28, 2015)
 
 - Fix missing dist files for webpack.
