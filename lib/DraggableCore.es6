@@ -336,7 +336,7 @@ export default class DraggableCore extends React.Component {
 
   // When the user scrolls, adjust internal state so the draggable moves along the page properly.
   // This only fires when a drag is active.
-  handleScroll = () => {
+  handleScroll = (e) => {
     let s = this.state, x = document.body.scrollLeft, y = document.body.scrollTop;
 
     // Create the usual event, but make the scroll offset our deltas.
@@ -349,7 +349,7 @@ export default class DraggableCore extends React.Component {
       lastY: s.lastY + coreEvent.deltaY
     });
 
-    this.props.onDrag(coreEvent);
+    this.props.onDrag(e, coreEvent);
   };
 
   // On mousedown, consider the drag started.
