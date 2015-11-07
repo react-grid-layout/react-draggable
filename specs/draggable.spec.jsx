@@ -253,6 +253,25 @@ describe('react-draggable', function () {
       TestUtils.Simulate.mouseUp(node);
       expect(document.body.getAttribute('style')).toEqual('');
     });
+
+    it('should not add and remove user-select styles when disabled', function () {
+      // Karma runs in firefox in our tests
+      var userSelectStyle = ';user-select: none;' + dashedBrowserPrefix + 'user-select: none;';
+
+      drag = TestUtils.renderIntoDocument(
+        <Draggable enableUserSelectHack={false}>
+          <div />
+        </Draggable>
+      );
+
+      var node = ReactDOM.findDOMNode(drag);
+
+      expect(document.body.getAttribute('style')).toEqual('');
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      expect(document.body.getAttribute('style')).toEqual('');
+      TestUtils.Simulate.mouseUp(node);
+      expect(document.body.getAttribute('style')).toEqual('');
+    });
   });
 
   describe('interaction', function () {

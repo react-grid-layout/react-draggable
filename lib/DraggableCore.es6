@@ -241,7 +241,7 @@ export default class DraggableCore extends React.Component {
 
     // Add a style to the body to disable user-select. This prevents text from
     // being selected all over the page.
-    addUserSelectStyles();
+    if (this.props.enableUserSelectHack) addUserSelectStyles();
 
     // Get the current drag point from the event. This is used as the offset.
     let {clientX, clientY} = getControlPosition(e);
