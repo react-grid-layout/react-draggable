@@ -192,16 +192,19 @@ on itself.
 Drag callbacks are called with the following parameters:
 
 ```js
-{
-  node: Node
-  position:
-    {
-    	// lastX + deltaX === clientX
-      deltaX: number, deltaY: number,
-      lastX: number, lastY: number,
-      clientX: number, clientY: number
+(
+ event: Event,
+ ui:{
+      node: Node
+      position:
+        {
+        	// lastX + deltaX === clientX
+          deltaX: number, deltaY: number,
+          lastX: number, lastY: number,
+          clientX: number, clientY: number
+        }
     }
-};
+)
 ```
 
 ----
