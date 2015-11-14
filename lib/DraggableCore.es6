@@ -235,6 +235,7 @@ export default class DraggableCore extends React.Component {
     removeEvent(document, eventsFor.touch.move, this.handleDrag);
     removeEvent(document, eventsFor.mouse.stop, this.handleDragStop);
     removeEvent(document, eventsFor.touch.stop, this.handleDragStop);
+    removeEvent(document, 'scroll', this.handleScroll);
     if (this.props.enableUserSelectHack) removeUserSelectStyles();
   }
 
@@ -370,12 +371,12 @@ export default class DraggableCore extends React.Component {
 
     // Create the usual event, but make the scroll offset our deltas.
     let coreEvent = createCoreEvent(this);
-    coreEvent.deltaX = x - s.scrollX;
-    coreEvent.deltaY = y - s.scrollY;
+    coreEvent.position.deltaX = x - s.scrollX;
+    coreEvent.position.deltaY = y - s.scrollY;
 
     this.setState({
-      lastX: s.lastX + coreEvent.deltaX,
-      lastY: s.lastY + coreEvent.deltaY
+      lastX: s.lastX + coreEvent.position.deltaX,
+      lastY: s.lastY + coreEvent.position.deltaY
     });
 
     this.props.onDrag(e, coreEvent);

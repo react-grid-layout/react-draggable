@@ -18,8 +18,8 @@ describe('react-draggable', function () {
 
   afterEach(function() {
     try {
-      ReactDOM.findDOMNode(drag);
-      drag.componentWillUnmount();
+      React.unmountComponentAtNode(React.findDOMNode(drag).parentNode);
+      // TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag));
     } catch(e) { return; }
   });
 
@@ -324,6 +324,32 @@ describe('react-draggable', function () {
 
       TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag));
       expect(drag.state.dragging).toEqual(false);
+    });
+
+    it('should modulate position on scroll', function (done) {
+      // This test fails in karma under PhantomJS & Firefox, scroll event quirks
+      var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+      if (!is_chrome) return done();
+
+      var dragCalled = false;
+
+      function onDrag(e, coreEvent) {
+        expect(coreEvent.deltaY).toEqual(500);
+        dragCalled = true;
+      }
+      drag = TestUtils.renderIntoDocument(<Draggable onDrag={onDrag}><div/></Draggable>);
+      var node = ReactDOM.findDOMNode(drag);
+
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag)); // start drag so window listener is up
+      expect(drag.state.dragging).toEqual(true);
+
+      document.body.style.height = '10000px';
+      window.scrollTo(0, 500);
+      setTimeout(function() {
+        expect(dragCalled).toEqual(true);
+        expect(drag.state.clientY).toEqual(500);
+        done();
+      }, 0);
     });
   });
 
