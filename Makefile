@@ -2,6 +2,7 @@
 # Thanks @andreypopp
 
 export BIN := $(shell npm bin)
+export NODE_ENV = test
 DIST = dist
 LIB = $(DIST)/react-draggable.js
 MIN = $(DIST)/react-draggable.min.js
