@@ -164,21 +164,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        clientY: _this.state.clientY + coreEvent.position.deltaY
 	      };
 	
-	      // Snap to grid if prop has been provided
-	      if (Array.isArray(_this.props.grid)) {
-	        newState.lastX = (_this.state.lastX || newState.clientX) + coreEvent.position.deltaX;
-	        newState.lastY = (_this.state.lastY || newState.clientY) + coreEvent.position.deltaY;
-	        // Eslint bug, it thinks newState.clientY is undefined
-	        /*eslint no-undef:0*/
-	
-	        var _snapToGrid = (0, _utilsPositionFns.snapToGrid)(_this.props.grid, newState.lastX, newState.lastY);
-	
-	        var _snapToGrid2 = _slicedToArray(_snapToGrid, 2);
-	
-	        newState.clientX = _snapToGrid2[0];
-	        newState.clientY = _snapToGrid2[1];
-	      }
-	
 	      // Keep within bounds.
 	      if (_this.props.bounds) {
 	        var _getBoundPosition = (0, _utilsPositionFns.getBoundPosition)(_this, newState.clientX, newState.clientY);
@@ -313,25 +298,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }), _react.PropTypes.oneOf(['parent', false])]),
 	
 	      /**
-	       * `grid` specifies the x and y that dragging should snap to.
-	       *
-	       * Example:
-	       *
-	       * ```jsx
-	       *   let App = React.createClass({
-	       *       render: function () {
-	       *           return (
-	       *               <Draggable grid={[25, 25]}>
-	       *                   <div>I snap to a 25 x 25 grid</div>
-	       *               </Draggable>
-	       *           );
-	       *       }
-	       *   });
-	       * ```
-	       */
-	      grid: _react.PropTypes.arrayOf(_react.PropTypes.number),
-	
-	      /**
 	       * `start` specifies the x and y that the dragged item should start at
 	       *
 	       * Example:
@@ -385,7 +351,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: (0, _objectAssign2['default'])({}, _DraggableCore3['default'].defaultProps, {
 	      axis: 'both',
 	      bounds: false,
-	      grid: null,
 	      start: { x: 0, y: 0 },
 	      zIndex: NaN
 	    }),
@@ -874,6 +839,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -1008,6 +975,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      var clientX = _getControlPosition2.clientX;
 	      var clientY = _getControlPosition2.clientY;
+	
+	      // Snap to grid if prop has been provided
+	      if (Array.isArray(_this.props.grid)) {
+	        var deltaX = clientX - _this.state.lastX,
+	            deltaY = clientY - _this.state.lastY;
+	
+	        var _snapToGrid = (0, _utilsPositionFns.snapToGrid)(_this.props.grid, deltaX, deltaY);
+	
+	        var _snapToGrid2 = _slicedToArray(_snapToGrid, 2);
+	
+	        deltaX = _snapToGrid2[0];
+	        deltaY = _snapToGrid2[1];
+	
+	        if (!deltaX && !deltaY) return; // skip useless drag
+	        clientX = _this.state.lastX + deltaX, clientY = _this.state.lastY + deltaY;
+	      }
 	
 	      var coreEvent = (0, _utilsDomFns.createCoreEvent)(_this, clientX, clientY);
 	
@@ -1169,6 +1152,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	      enableUserSelectHack: _react.PropTypes.bool,
 	
 	      /**
+	       * `grid` specifies the x and y that dragging should snap to.
+	       *
+	       * Example:
+	       *
+	       * ```jsx
+	       *   let App = React.createClass({
+	       *       render: function () {
+	       *           return (
+	       *               <Draggable grid={[25, 25]}>
+	       *                   <div>I snap to a 25 x 25 grid</div>
+	       *               </Draggable>
+	       *           );
+	       *       }
+	       *   });
+	       * ```
+	       */
+	      grid: _react.PropTypes.arrayOf(_react.PropTypes.number),
+	
+	      /**
 	       * `handle` specifies a selector to be used as the handle that initiates drag.
 	       *
 	       * Example:
@@ -1296,6 +1298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      disabled: false,
 	      enableUserSelectHack: true,
 	      handle: null,
+	      grid: null,
 	      transform: null,
 	      onStart: function onStart() {},
 	      onDrag: function onDrag() {},

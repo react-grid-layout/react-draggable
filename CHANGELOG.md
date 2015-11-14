@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.1.0 (Nov 14, 2015)
+
+- Move `grid` into `<DraggableCore>` directly. It will continue to work on `<Draggable>`.
+- Development fixes.
+
 ### 1.0.2 (Nov 7, 2015)
 
 - Fix `enableUserSelectHack` not properly disabling.
