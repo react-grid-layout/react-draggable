@@ -65,7 +65,7 @@
     },
 
     handleDrag: function (e, ui) {
-      var {left, top} = this.state.position;
+      var {left, top} = this.state.deltaPosition;
       this.setState({
         deltaPosition: {
           left: left + ui.deltaX,
@@ -84,7 +84,7 @@
 
     render: function () {
       var drags = {onStart: this.onStart, onStop: this.onStop};
-      var {top. left} = this.state.deltaPosition;
+      var {top, left} = this.state.deltaPosition;
       return (
         <div>
           <h1>React Draggable</h1>
