@@ -1052,12 +1052,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // Create the usual event, but make the scroll offset our deltas.
 	      var coreEvent = (0, _utilsDomFns.createCoreEvent)(_this);
-	      coreEvent.deltaX = x - s.scrollX;
-	      coreEvent.deltaY = y - s.scrollY;
+	      coreEvent.position.deltaX = x - s.scrollX;
+	      coreEvent.position.deltaY = y - s.scrollY;
 	
 	      _this.setState({
-	        lastX: s.lastX + coreEvent.deltaX,
-	        lastY: s.lastY + coreEvent.deltaY
+	        lastX: s.lastX + coreEvent.position.deltaX,
+	        lastY: s.lastY + coreEvent.position.deltaY
 	      });
 	
 	      _this.props.onDrag(e, coreEvent);
@@ -1091,6 +1091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _utilsDomFns.removeEvent)(document, eventsFor.touch.move, this.handleDrag);
 	      (0, _utilsDomFns.removeEvent)(document, eventsFor.mouse.stop, this.handleDragStop);
 	      (0, _utilsDomFns.removeEvent)(document, eventsFor.touch.stop, this.handleDragStop);
+	      (0, _utilsDomFns.removeEvent)(document, 'scroll', this.handleScroll);
 	      if (this.props.enableUserSelectHack) (0, _utilsDomFns.removeUserSelectStyles)();
 	    }
 	  }, {

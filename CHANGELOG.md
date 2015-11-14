@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.1.1 (Nov 14, 2015)
+
+- Bugfix: Clean up scroll events if a component is unmounted before drag stops.
+- Bugfix: `NaN` was returning from scroll events due to event structure change.
+- Add scroll drag modulation test.
+
 ### 1.1.0 (Nov 14, 2015)
 
 - Move `grid` into `<DraggableCore>` directly. It will continue to work on `<Draggable>`.
