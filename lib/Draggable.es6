@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import assign from 'object-assign';
 import {createUIEvent, createTransform} from './utils/domFns';
-import {canDragX, canDragY, getBoundPosition, snapToGrid} from './utils/positionFns';
+import {canDragX, canDragY, getBoundPosition} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
 import DraggableCore from './DraggableCore';
 import log from './utils/log';
@@ -65,25 +65,6 @@ export default class Draggable extends DraggableCore {
     ]),
 
     /**
-     * `grid` specifies the x and y that dragging should snap to.
-     *
-     * Example:
-     *
-     * ```jsx
-     *   let App = React.createClass({
-     *       render: function () {
-     *           return (
-     *               <Draggable grid={[25, 25]}>
-     *                   <div>I snap to a 25 x 25 grid</div>
-     *               </Draggable>
-     *           );
-     *       }
-     *   });
-     * ```
-     */
-    grid: PropTypes.arrayOf(PropTypes.number),
-
-    /**
      * `start` specifies the x and y that the dragged item should start at
      *
      * Example:
@@ -135,7 +116,6 @@ export default class Draggable extends DraggableCore {
   static defaultProps = assign({}, DraggableCore.defaultProps, {
     axis: 'both',
     bounds: false,
-    grid: null,
     start: {x: 0, y: 0},
     zIndex: NaN
   });
@@ -183,15 +163,6 @@ export default class Draggable extends DraggableCore {
       clientX: this.state.clientX + coreEvent.position.deltaX,
       clientY: this.state.clientY + coreEvent.position.deltaY
     };
-
-    // Snap to grid if prop has been provided
-    if (Array.isArray(this.props.grid)) {
-      newState.lastX = (this.state.lastX || newState.clientX) + coreEvent.position.deltaX;
-      newState.lastY = (this.state.lastY || newState.clientY) + coreEvent.position.deltaY;
-      // Eslint bug, it thinks newState.clientY is undefined
-      /*eslint no-undef:0*/
-      [newState.clientX, newState.clientY] = snapToGrid(this.props.grid, newState.lastX, newState.lastY);
-    }
 
     // Keep within bounds.
     if (this.props.bounds) {

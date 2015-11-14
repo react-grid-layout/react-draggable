@@ -1,7 +1,7 @@
 import {default as React, PropTypes} from 'react';
 import {matchesSelector, createCoreEvent, addEvent, removeEvent, addUserSelectStyles,
         removeUserSelectStyles, styleHacks} from './utils/domFns';
-import {getControlPosition} from './utils/positionFns';
+import {getControlPosition, snapToGrid} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
 import log from './utils/log';
 
@@ -68,6 +68,25 @@ export default class DraggableCore extends React.Component {
      * for your app, set this to `false`.
      */
     enableUserSelectHack: PropTypes.bool,
+
+    /**
+     * `grid` specifies the x and y that dragging should snap to.
+     *
+     * Example:
+     *
+     * ```jsx
+     *   let App = React.createClass({
+     *       render: function () {
+     *           return (
+     *               <Draggable grid={[25, 25]}>
+     *                   <div>I snap to a 25 x 25 grid</div>
+     *               </Draggable>
+     *           );
+     *       }
+     *   });
+     * ```
+     */
+    grid: PropTypes.arrayOf(PropTypes.number),
 
     /**
      * `handle` specifies a selector to be used as the handle that initiates drag.
@@ -195,6 +214,7 @@ export default class DraggableCore extends React.Component {
     disabled: false,
     enableUserSelectHack: true,
     handle: null,
+    grid: null,
     transform: null,
     onStart: function(){},
     onDrag: function(){},
@@ -285,9 +305,18 @@ export default class DraggableCore extends React.Component {
 
     let {clientX, clientY} = getControlPosition(e);
 
+    // Snap to grid if prop has been provided
+    if (Array.isArray(this.props.grid)) {
+      let deltaX = clientX - this.state.lastX, deltaY = clientY - this.state.lastY;
+      [deltaX, deltaY] = snapToGrid(this.props.grid, deltaX, deltaY);
+      if (!deltaX && !deltaY) return; // skip useless drag
+      clientX = this.state.lastX + deltaX, clientY = this.state.lastY + deltaY;
+    }
+
     let coreEvent = createCoreEvent(this, clientX, clientY);
 
     log('DraggableCore: handleDrag: %j', coreEvent.position);
+
 
     // Call event handler. If it returns explicit false, trigger end.
     let shouldUpdate = this.props.onDrag(e, coreEvent);

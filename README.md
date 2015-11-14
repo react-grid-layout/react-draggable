@@ -185,7 +185,6 @@ on itself.
 
 * `axis`
 * `bounds`
-* `grid`
 * `start`
 * `zIndex`
 
