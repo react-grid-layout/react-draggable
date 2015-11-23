@@ -342,7 +342,7 @@ describe('react-draggable', function () {
         expect(dragCalled).toEqual(true);
         expect(drag.state.clientY).toEqual(500);
         done();
-      }, 0);
+      }, 50);
     });
   });
 
