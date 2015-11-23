@@ -146,22 +146,22 @@ export default class Draggable extends DraggableCore {
     // Kills start event on core as well, so move handlers are never bound.
     if (shouldStart === false) return false;
 
-    this.setState({
-      dragging: true
-    });
+    this.setState({dragging: true});
   };
 
   onDrag = (e, coreEvent) => {
     if (!this.state.dragging) return false;
     log('Draggable: onDrag: %j', coreEvent.position);
 
+    let uiEvent = createUIEvent(this, coreEvent);
+
     // Short-circuit if user's callback killed it.
-    let shouldUpdate = this.props.onDrag(e, createUIEvent(this, coreEvent));
+    let shouldUpdate = this.props.onDrag(e, uiEvent);
     if (shouldUpdate === false) return false;
 
     let newState = {
-      clientX: this.state.clientX + coreEvent.position.deltaX,
-      clientY: this.state.clientY + coreEvent.position.deltaY
+      clientX: uiEvent.position.left,
+      clientY: uiEvent.position.top
     };
 
     // Keep within bounds.

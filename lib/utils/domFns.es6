@@ -153,8 +153,8 @@ export function createUIEvent(draggable, coreEvent) {
   return {
     node: ReactDOM.findDOMNode(draggable),
     position: {
-      top: coreEvent.position.clientY,
-      left: coreEvent.position.clientX
+      left: draggable.state.clientX + coreEvent.position.deltaX,
+      top: draggable.state.clientY + coreEvent.position.deltaY
     },
     deltaX: coreEvent.position.deltaX,
     deltaY: coreEvent.position.deltaY

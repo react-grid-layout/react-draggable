@@ -220,14 +220,7 @@ describe('react-draggable', function () {
       var node = ReactDOM.findDOMNode(drag);
 
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      // Simulate a movement; can't use TestUtils here because it uses react's event system only,
-      // but <DraggableCore> attaches event listeners directly to the document.
-      // Would love to new MouseEvent() here but it doesn't work with PhantomJS / old browsers.
-      // var e = new MouseEvent('mousemove', {clientX: 100, clientY: 100});
-      var evt = document.createEvent('MouseEvents');
-      evt.initMouseEvent('mousemove', true, true, window,
-          0, 0, 0, 100, 100, false, false, false, false, 0, null);
-      document.dispatchEvent(evt);
+      mouseMove(node, 100, 100);
       TestUtils.Simulate.mouseUp(node);
 
       var transform = node.getAttribute('transform');
@@ -353,6 +346,48 @@ describe('react-draggable', function () {
     });
   });
 
+  describe('draggable callbacks', function () {
+    it('should call back on drag', function () {
+      function onDrag(event, data) {
+        expect(data.position.left).toEqual(100);
+        expect(data.position.top).toEqual(100);
+        expect(data.deltaX).toEqual(100);
+        expect(data.deltaY).toEqual(100);
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag}>
+          <div />
+        </Draggable>
+      );
+
+      var node = ReactDOM.findDOMNode(drag);
+
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      var moveEvt = mouseMove(node, 100, 100);
+      TestUtils.Simulate.mouseUp(node);
+    });
+
+    it('should call back with offset left/top, not client', function () {
+      function onDrag(event, data) {
+        expect(data.position.left).toEqual(100);
+        expect(data.position.top).toEqual(100);
+        expect(data.deltaX).toEqual(100);
+        expect(data.deltaY).toEqual(100);
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag} style={{position: 'relative', top: '200px', left: '200px'}}>
+          <div />
+        </Draggable>
+      );
+
+      var node = ReactDOM.findDOMNode(drag);
+
+      TestUtils.Simulate.mouseDown(node, {clientX: 200, clientY: 200});
+      var moveEvt = mouseMove(node, 300, 300);
+      TestUtils.Simulate.mouseUp(node);
+    });
+  });
+
   describe('validation', function () {
     it('should result with invariant when there isn\'t a child', function () {
       drag = (<Draggable/>);
@@ -384,4 +419,16 @@ describe('react-draggable', function () {
 
 function renderToHTML(component) {
   return ReactDOM.findDOMNode(TestUtils.renderIntoDocument(component)).outerHTML;
+}
+
+// Simulate a movement; can't use TestUtils here because it uses react's event system only,
+// but <DraggableCore> attaches event listeners directly to the document.
+// Would love to new MouseEvent() here but it doesn't work with PhantomJS / old browsers.
+// var e = new MouseEvent('mousemove', {clientX: 100, clientY: 100});
+function mouseMove(node, x, y) {
+  var evt = document.createEvent('MouseEvents');
+  evt.initMouseEvent('mousemove', true, true, window,
+      0, 0, 0, x, y, false, false, false, false, 0, null);
+  document.dispatchEvent(evt);
+  return evt;
 }
