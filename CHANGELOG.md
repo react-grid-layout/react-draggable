@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.1.2 (Nov 23, 2015)
+
+- Bugfix: `<Draggable>` was calling back with clientX/Y, not offsetX/Y as it did pre-1.0. This unintended
+  behavior has been fixed and a test has been added.
+
 ### 1.1.1 (Nov 14, 2015)
 
 - Bugfix: Clean up scroll events if a component is unmounted before drag stops.

@@ -146,22 +146,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Kills start event on core as well, so move handlers are never bound.
 	      if (shouldStart === false) return false;
 	
-	      _this.setState({
-	        dragging: true
-	      });
+	      _this.setState({ dragging: true });
 	    };
 	
 	    this.onDrag = function (e, coreEvent) {
 	      if (!_this.state.dragging) return false;
 	      (0, _utilsLog2['default'])('Draggable: onDrag: %j', coreEvent.position);
 	
+	      var uiEvent = (0, _utilsDomFns.createUIEvent)(_this, coreEvent);
+	
 	      // Short-circuit if user's callback killed it.
-	      var shouldUpdate = _this.props.onDrag(e, (0, _utilsDomFns.createUIEvent)(_this, coreEvent));
+	      var shouldUpdate = _this.props.onDrag(e, uiEvent);
 	      if (shouldUpdate === false) return false;
 	
 	      var newState = {
-	        clientX: _this.state.clientX + coreEvent.position.deltaX,
-	        clientY: _this.state.clientY + coreEvent.position.deltaY
+	        clientX: uiEvent.position.left,
+	        clientY: uiEvent.position.top
 	      };
 	
 	      // Keep within bounds.
@@ -518,6 +518,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var matchesSelectorFunc = '';
 	
 	function matchesSelector(el, selector) {
+	  if (!(el instanceof Node)) throw new TypeError('Value of argument \'el\' violates contract, expected Node got ' + (el === null ? 'null' : el instanceof Object && el.constructor ? el.constructor.name : typeof el));
+	  if (typeof selector !== 'string') throw new TypeError('Value of argument \'selector\' violates contract, expected string got ' + (selector === null ? 'null' : selector instanceof Object && selector.constructor ? selector.constructor.name : typeof selector));
+	
 	  if (!matchesSelectorFunc) {
 	    matchesSelectorFunc = (0, _shims.findInArray)(['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'], function (method) {
 	      return (0, _shims.isFunction)(el[method]);
@@ -528,6 +531,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function addEvent(el, event, handler) {
+	  if (el != null && !(el instanceof Node)) throw new TypeError('Value of argument \'el\' violates contract, expected null or Node got ' + (el === null ? 'null' : el instanceof Object && el.constructor ? el.constructor.name : typeof el));
+	  if (typeof event !== 'string') throw new TypeError('Value of argument \'event\' violates contract, expected string got ' + (event === null ? 'null' : event instanceof Object && event.constructor ? event.constructor.name : typeof event));
+	  if (typeof handler !== 'function') throw new TypeError('Value of argument \'handler\' violates contract, expected function got ' + (handler === null ? 'null' : handler instanceof Object && handler.constructor ? handler.constructor.name : typeof handler));
+	
 	  if (!el) {
 	    return;
 	  }
@@ -541,6 +548,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function removeEvent(el, event, handler) {
+	  if (el != null && !(el instanceof Node)) throw new TypeError('Value of argument \'el\' violates contract, expected null or Node got ' + (el === null ? 'null' : el instanceof Object && el.constructor ? el.constructor.name : typeof el));
+	  if (typeof event !== 'string') throw new TypeError('Value of argument \'event\' violates contract, expected string got ' + (event === null ? 'null' : event instanceof Object && event.constructor ? event.constructor.name : typeof event));
+	  if (typeof handler !== 'function') throw new TypeError('Value of argument \'handler\' violates contract, expected function got ' + (handler === null ? 'null' : handler instanceof Object && handler.constructor ? handler.constructor.name : typeof handler));
+	
 	  if (!el) {
 	    return;
 	  }
@@ -554,6 +565,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function outerHeight(node) {
+	  if (!(node instanceof Node)) throw new TypeError('Value of argument \'node\' violates contract, expected Node got ' + (node === null ? 'null' : node instanceof Object && node.constructor ? node.constructor.name : typeof node));
+	
 	  // This is deliberately excluding margin for our calculations, since we are using
 	  // offsetTop which is including margin. See getBoundPosition
 	  var height = node.clientHeight;
@@ -564,6 +577,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function outerWidth(node) {
+	  if (!(node instanceof Node)) throw new TypeError('Value of argument \'node\' violates contract, expected Node got ' + (node === null ? 'null' : node instanceof Object && node.constructor ? node.constructor.name : typeof node));
+	
 	  // This is deliberately excluding margin for our calculations, since we are using
 	  // offsetLeft which is including margin. See getBoundPosition
 	  var width = node.clientWidth;
@@ -574,6 +589,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function innerHeight(node) {
+	  if (!(node instanceof Node)) throw new TypeError('Value of argument \'node\' violates contract, expected Node got ' + (node === null ? 'null' : node instanceof Object && node.constructor ? node.constructor.name : typeof node));
+	
 	  var height = node.clientHeight;
 	  var computedStyle = window.getComputedStyle(node);
 	  height -= (0, _shims.int)(computedStyle.paddingTop);
@@ -582,6 +599,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function innerWidth(node) {
+	  if (!(node instanceof Node)) throw new TypeError('Value of argument \'node\' violates contract, expected Node got ' + (node === null ? 'null' : node instanceof Object && node.constructor ? node.constructor.name : typeof node));
+	
 	  var width = node.clientWidth;
 	  var computedStyle = window.getComputedStyle(node);
 	  width -= (0, _shims.int)(computedStyle.paddingLeft);
@@ -590,6 +609,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function createTransform(position, isSVG) {
+	  if (typeof position !== 'object') throw new TypeError('Value of argument \'position\' violates contract, expected object got ' + (position === null ? 'null' : position instanceof Object && position.constructor ? position.constructor.name : typeof position));
+	  if (isSVG != null && typeof isSVG !== 'boolean') throw new TypeError('Value of argument \'isSVG\' violates contract, expected null or boolean got ' + (isSVG === null ? 'null' : isSVG instanceof Object && isSVG.constructor ? isSVG.constructor.name : typeof isSVG));
+	
 	  if (isSVG) return createSVGTransform(position);
 	  return createCSSTransform(position);
 	}
@@ -598,6 +620,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var x = _ref.x;
 	  var y = _ref.y;
 	  return (function () {
+	    if ({ x: x, y: y } === null || typeof { x: x, y: y } !== 'object' || typeof { x: x, y: y }.x !== 'number' || typeof { x: x, y: y }.y !== 'number') throw new TypeError('Value of argument \'undefined\' violates contract, expected Object with properties x and y got ' + ({ x: x, y: y } === null ? 'null' : { x: x, y: y } instanceof Object && { x: x, y: y }.constructor ? { x: x, y: y }.constructor.name : typeof { x: x, y: y }));
+	
 	    // Replace unitless items with px
 	    var out = { transform: 'translate(' + x + 'px,' + y + 'px)' };
 	    // Add single prefixed property as well
@@ -612,6 +636,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var x = _ref2.x;
 	  var y = _ref2.y;
 	  return (function () {
+	    if ({ x: x, y: y } === null || typeof { x: x, y: y } !== 'object' || typeof { x: x, y: y }.x !== 'number' || typeof { x: x, y: y }.y !== 'number') throw new TypeError('Value of argument \'undefined\' violates contract, expected Object with properties x and y got ' + ({ x: x, y: y } === null ? 'null' : { x: x, y: y } instanceof Object && { x: x, y: y }.constructor ? { x: x, y: y }.constructor.name : typeof { x: x, y: y }));
+	
 	    return 'translate(' + x + ',' + y + ')';
 	  })();
 	}
@@ -677,8 +703,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return {
 	    node: _reactDom2['default'].findDOMNode(draggable),
 	    position: {
-	      top: coreEvent.position.clientY,
-	      left: coreEvent.position.clientX
+	      left: draggable.state.clientX + coreEvent.position.deltaX,
+	      top: draggable.state.clientY + coreEvent.position.deltaY
 	    },
 	    deltaX: coreEvent.position.deltaX,
 	    deltaY: coreEvent.position.deltaY
