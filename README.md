@@ -55,7 +55,7 @@ Props:
 {
 // Called when dragging starts. If `false` is returned from this method,
 // dragging will cancel.
-// These callbacks are called with the arity
+// These callbacks are called with the arity:
 // (event: Event,
 //  {
 //     position: {left: number, top: number},
@@ -151,7 +151,6 @@ var App = React.createClass({
 				axis="x"
 				handle=".handle"
 				start={{x: 0, y: 0}}
-				moveOnStartChange={false}
 				grid={[25, 25]}
 				zIndex={100}
 				onStart={this.handleStart}
