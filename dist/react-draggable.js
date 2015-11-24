@@ -762,7 +762,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	
 	exports['default'] = (function () {
-	  if (typeof window === 'undefined') return '';
+	  // Checking specifically for 'window.document' is for pseudo-browser server-side
+	  // environments that define 'window' as the global context.
+	  // E.g. React-rails (see https://github.com/reactjs/react-rails/pull/84)
+	  if (typeof window === 'undefined' || typeof window.document === 'undefined') return '';
+	
 	  // Thanks David Walsh
 	  var styles = window.getComputedStyle(document.documentElement, ''),
 	      pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];

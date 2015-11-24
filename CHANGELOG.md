@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.1.3 (Nov 25, 2015)
+
+- Bugfix: Server-side rendering with react-rails, which does bad things like mock `window`
+
 ### 1.1.2 (Nov 23, 2015)
 
 - Bugfix: `<Draggable>` was calling back with clientX/Y, not offsetX/Y as it did pre-1.0. This unintended
