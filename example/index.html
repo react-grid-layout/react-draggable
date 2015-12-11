@@ -55,36 +55,77 @@
 <script type="text/babel">
   var Draggable = ReactDraggable;
   var App = React.createClass({
+
     getInitialState: function () {
       return {
         deltaPosition: {
           top: 0, left: 0
         },
+        startPosition: {x: 0, y: 0},
         activeDrags: 0
       };
     },
 
     handleDrag: function (e, ui) {
       var {left, top} = this.state.deltaPosition;
+
+      var x = left + ui.deltaX;
+      var y = top + ui.deltaY;
+
       this.setState({
         deltaPosition: {
-          left: left + ui.deltaX,
-          top: top + ui.deltaY,
+          left: x,
+          top: y,
+        },
+        startPosition: {
+          x: x,
+          y: y
         }
       });
     },
 
+    componentWillMount: function() {
+      this.setInterval();
+    },
+
+    setInterval: function() {
+      var tick = function() {
+        var startPosition = {
+          x: this.state.startPosition.x + 10,
+          y: this.state.startPosition.y
+        };
+        this.setState({
+          startPosition: startPosition
+        });
+      }
+
+      this.interval = setInterval(tick.bind(this), 1500);
+    },
+
+    clearInterval: function() {
+      clearInterval(this.interval)
+    },
+
+    componentWillUnmount: function() {
+       this.clearInterval();
+    },
+
     onStart: function() {
       this.setState({activeDrags: ++this.state.activeDrags});
+      this.clearInterval();
     },
+
+
 
     onStop: function() {
       this.setState({activeDrags: --this.state.activeDrags});
+      this.setInterval();
     },
 
     render: function () {
       var drags = {onStart: this.onStart, onStop: this.onStop};
       var {top, left} = this.state.deltaPosition;
+
       return (
         <div>
           <h1>React Draggable</h1>
@@ -92,6 +133,11 @@
           <p>
             <a href="https://github.com/mzabriskie/react-draggable/blob/master/example/index.html">Demo Source</a>
           </p>
+
+          <Draggable start={this.state.startPosition} onDrag={this.handleDrag} {...drags}>
+            <div className="box">I can be dragged anywhere</div>
+          </Draggable>
+
           <Draggable zIndex={100} {...drags}>
             <div className="box">I can be dragged anywhere</div>
           </Draggable>
