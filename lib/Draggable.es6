@@ -138,6 +138,15 @@ export default class Draggable extends DraggableCore {
     }
   }
 
+
+  componentWillReceiveProps(newProps) {
+
+    this.setState({
+      clientX: newProps.start.x,
+      clientY: newProps.start.y
+    })
+  }
+
   onDragStart = (e, coreEvent) => {
     log('Draggable: onDragStart: %j', coreEvent.position);
 
