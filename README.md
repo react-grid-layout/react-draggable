@@ -22,6 +22,20 @@ This bundle is also what is loaded when installing from npm. It expects external
 If you want a UMD version of the latest `master` revision, you can generate it yourself from master by cloning this
 repository and running `$ make`. This will create umd dist files in the `dist/` folder.
 
+### Installing with jspm and systemjs ES6 module loader
+
+```bash
+$ jspm install npm:react-draggable
+```
+
+To access the `Draggable` component in your own code, you refer to the `.default` property of the imported reference.
+
+```js
+import * as ReactDraggable from 'react-draggable';
+var Draggable = ReactDraggable.default;
+ReactDOM.render(<Draggable />, ...);
+```
+
 ## Draggable
 
 A `<Draggable>` element wraps an existing element and extends it with new event handlers and styles.
