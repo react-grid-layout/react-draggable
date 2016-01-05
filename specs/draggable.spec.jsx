@@ -190,6 +190,50 @@ describe('react-draggable', function () {
       expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
     });
 
+    it('should translate the initial start x and y position to a transform style', function () {
+      drag = TestUtils.renderIntoDocument(
+        <Draggable start={{x: 50, y: 50}}>
+          <div />
+        </Draggable>
+      );
+
+      var node = ReactDOM.findDOMNode(drag);
+      var style = node.getAttribute('style');
+
+      expect(style.indexOf('transform:translate(50px,50px);')).not.toEqual(-1);
+    });
+
+    it('should update start x and y position to a transform style', function () {
+      //arrange
+      var TestParent = React.createFactory(React.createClass({
+        getInitialState() {
+          return { startX: 10, startY: 20 };
+        },
+        render() {
+          return <Draggable ref="sot" start={{x: this.state.startX, y: this.state.startY}}>
+            <div />
+          </Draggable>
+        }
+      }));
+
+      var parent = TestUtils.renderIntoDocument(TestParent());
+      var node = ReactDOM.findDOMNode(parent.refs.sot);
+      var initialStyle = node.getAttribute('style');
+
+      expect(parent.refs.sot.props.start.x).toEqual(10);
+      expect(parent.refs.sot.props.start.y).toEqual(20);
+      expect(initialStyle.indexOf('transform:translate(10px,20px);')).not.toEqual(-1);
+
+      //act
+      parent.setState({ startX: 30, startY: 40  });
+
+      //assert
+      var updatedStyle = node.getAttribute('style');
+      expect(parent.refs.sot.props.start.x).toEqual(30);
+      expect(parent.refs.sot.props.start.y).toEqual(40);
+      expect(updatedStyle.indexOf('transform: translate(30px, 40px);')).not.toEqual(-1);
+    });
+
     it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
        drag = TestUtils.renderIntoDocument(
           <Draggable>
