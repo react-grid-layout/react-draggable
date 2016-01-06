@@ -30,7 +30,7 @@ The default export is `<Draggable>`. At the `.DraggableCore` property is `<Dragg
 // ES6
 import Draggable from 'react-draggable'; // The default
 import {DraggableCore} from 'react-draggable'; // <DraggableCore>
-import Draggable, {DraggableCore}; // Both at the same time
+import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 
 // CommonJS
 let Draggable = require('react-draggable');
