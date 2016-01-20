@@ -20,6 +20,8 @@ let eventsFor = {
 };
 
 // Default to mouse events.
+// Note: on touch screen laptops both mouse and touch could be used at the same time
+// That's why we flip this variable each time the input changes
 let dragEventFor = eventsFor.mouse;
 
 //
@@ -388,15 +390,18 @@ export default class DraggableCore extends React.Component {
     // We don't cancel the event on touchstart because of #37; we might want to make a scrollable item draggable.
     // More on ghost clicks: http://ariatemplates.com/blog/2014/05/ghost-clicks-in-mobile-browsers/
     if (dragEventFor === eventsFor.touch) {
-      return e.preventDefault();
+      e.preventDefault();
     }
+
+    // We're using mouse now, so change the event handlers
+    dragEventFor = eventsFor.mouse;
 
     return this.handleDragStart(e);
   };
 
   // Same as onMouseDown (start drag), but now consider this a touch device.
   onTouchStart = (e) => {
-    // We're on a touch device now, so change the event handlers
+    // We're using touch now, so change the event handlers
     dragEventFor = eventsFor.touch;
 
     return this.handleDragStart(e);
