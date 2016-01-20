@@ -3,5 +3,4 @@ example
 script
 specs
 karma.conf.js
-webpack.config.js
-dist/
+Makefile
