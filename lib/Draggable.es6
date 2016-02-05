@@ -128,6 +128,9 @@ export default class Draggable extends DraggableCore {
     // Current transform x and y.
     clientX: this.props.start.x, clientY: this.props.start.y,
 
+    // Used for compensating for out-of-bounds drags
+    slackX: 0, slackY: 0,
+
     // Can only determine if SVG after mounting
     isElementSVG: false
   };
@@ -171,7 +174,21 @@ export default class Draggable extends DraggableCore {
 
     // Keep within bounds.
     if (this.props.bounds) {
+      // Save original x and y.
+      let {clientX, clientY} = newState;
+
+      // Add slack to the values used to calculate bound position. This will ensure that if
+      // we start removing slack, the element won't react to it right away until it's been
+      // completely removed.
+      newState.clientX += this.state.slackX;
+      newState.clientY += this.state.slackY;
+
+      // Get bound position. This will ceil/floor the x and y within the boundaries.
       [newState.clientX, newState.clientY] = getBoundPosition(this, newState.clientX, newState.clientY);
+
+      // Recalculate slack by noting how much was shaved by the boundPosition handler.
+      newState.slackX = this.state.slackX + (clientX - newState.clientX);
+      newState.slackY = this.state.slackY + (clientY - newState.clientY);
     }
 
     this.setState(newState);
@@ -187,7 +204,9 @@ export default class Draggable extends DraggableCore {
     log('Draggable: onDragStop: %j', coreEvent.position);
 
     this.setState({
-      dragging: false
+      dragging: false,
+      slackX: 0,
+      slackY: 0
     });
   };
 
