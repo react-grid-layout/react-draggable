@@ -139,6 +139,10 @@ export default class Draggable extends DraggableCore {
     }
   }
 
+  componentWillUnmount() {
+    this.setState({dragging: false}); // prevents invariant if unmounted while dragging
+  }
+
   onDragStart = (e, coreEvent) => {
     log('Draggable: onDragStart: %j', coreEvent.position);
 
