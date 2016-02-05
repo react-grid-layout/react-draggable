@@ -4,6 +4,10 @@
   <meta charset="utf-8"/>
   <title>React Draggable</title>
   <style type="text/css">
+    html, body {
+      height: 100%;
+    }
+
     body {
       color: #222;
       font-family: "Helvetica Neue", sans-serif;
@@ -142,6 +146,11 @@
               </div>
             </Draggable>
           </div>
+          <Draggable bounds="body" {...drags}>
+            <div className="box">
+              I can only be moved within the confines of the body element.
+            </div>
+          </Draggable>
           <Draggable>
             <div className="box" style={{position: 'absolute', bottom: '100px', right: '100px'}} {...drags}>
               I already have an absolute position.

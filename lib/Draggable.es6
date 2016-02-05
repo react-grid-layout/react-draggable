@@ -61,7 +61,8 @@ export default class Draggable extends DraggableCore {
         top: PropTypes.Number,
         bottom: PropTypes.Number
       }),
-      PropTypes.oneOf(['parent', false])
+      PropTypes.string,
+      PropTypes.oneOf([false])
     ]),
 
     /**

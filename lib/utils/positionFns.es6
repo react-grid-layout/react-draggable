@@ -8,19 +8,25 @@ export function getBoundPosition(draggable, clientX, clientY) {
 
   let bounds = JSON.parse(JSON.stringify(draggable.props.bounds));
   let node = ReactDOM.findDOMNode(draggable);
-  let parent = node.parentNode;
 
-  if (bounds === 'parent') {
+  if (typeof bounds === 'string') {
+    let boundNode;
+    if (bounds === 'parent') {
+      boundNode = node.parentNode;
+    } else {
+      boundNode = document.querySelector(bounds);
+      if (!boundNode) throw new Error('Bounds selector "' + bounds + '" could not find an element.');
+    }
     let nodeStyle = window.getComputedStyle(node);
-    let parentStyle = window.getComputedStyle(parent);
+    let boundNodeStyle = window.getComputedStyle(boundNode);
     // Compute bounds. This is a pain with padding and offsets but this gets it exactly right.
     bounds = {
-      left: -node.offsetLeft + int(parentStyle.paddingLeft) +
+      left: -node.offsetLeft + int(boundNodeStyle.paddingLeft) +
             int(nodeStyle.borderLeftWidth) + int(nodeStyle.marginLeft),
-      top: -node.offsetTop + int(parentStyle.paddingTop) +
+      top: -node.offsetTop + int(boundNodeStyle.paddingTop) +
             int(nodeStyle.borderTopWidth) + int(nodeStyle.marginTop),
-      right: innerWidth(parent) - outerWidth(node) - node.offsetLeft,
-      bottom: innerHeight(parent) - outerHeight(node) - node.offsetTop
+      right: innerWidth(boundNode) - outerWidth(node) - node.offsetLeft,
+      bottom: innerHeight(boundNode) - outerHeight(node) - node.offsetTop
     };
   }
 
