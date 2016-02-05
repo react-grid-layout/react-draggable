@@ -1,5 +1,14 @@
 # Changelog
 
+### 1.2.0 (Feb 5, 2015)
+
+- Added arbitrary boundary selector. Now you don't have to just use `'parent'`, you can select any element
+  on the page, including `'body'`.
+- Bugfix: Prevent invariant if a `<Draggable>` is unmounted while dragging.
+- Bugfix: Fix #133, where items would eagerly start dragging off the mouse cursor if you hit boundaries and
+  came back. This is due to how `<DraggableCore>` handles deltas only and does not keep state. Added new state
+  properties `slackX` and `slackY` to `<Draggable>` to handle this and restore pre-v1 behavior.
+
 ### 1.1.3 (Nov 25, 2015)
 
 - Bugfix: Server-side rendering with react-rails, which does bad things like mock `window`

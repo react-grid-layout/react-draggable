@@ -134,6 +134,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Current transform x and y.
 	      clientX: this.props.start.x, clientY: this.props.start.y,
 	
+	      // Used for compensating for out-of-bounds drags
+	      slackX: 0, slackY: 0,
+	
 	      // Can only determine if SVG after mounting
 	      isElementSVG: false
 	    };
@@ -166,12 +169,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // Keep within bounds.
 	      if (_this.props.bounds) {
+	        // Save original x and y.
+	        var clientX = newState.clientX;
+	        var clientY = newState.clientY;
+	
+	        // Add slack to the values used to calculate bound position. This will ensure that if
+	        // we start removing slack, the element won't react to it right away until it's been
+	        // completely removed.
+	        newState.clientX += _this.state.slackX;
+	        newState.clientY += _this.state.slackY;
+	
+	        // Get bound position. This will ceil/floor the x and y within the boundaries.
+	
+	        // Recalculate slack by noting how much was shaved by the boundPosition handler.
+	
 	        var _getBoundPosition = (0, _utilsPositionFns.getBoundPosition)(_this, newState.clientX, newState.clientY);
 	
 	        var _getBoundPosition2 = _slicedToArray(_getBoundPosition, 2);
 	
 	        newState.clientX = _getBoundPosition2[0];
 	        newState.clientY = _getBoundPosition2[1];
+	        newState.slackX = _this.state.slackX + (clientX - newState.clientX);
+	        newState.slackY = _this.state.slackY + (clientY - newState.clientY);
 	      }
 	
 	      _this.setState(newState);
@@ -187,7 +206,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _utilsLog2['default'])('Draggable: onDragStop: %j', coreEvent.position);
 	
 	      _this.setState({
-	        dragging: false
+	        dragging: false,
+	        slackX: 0,
+	        slackY: 0
 	      });
 	    };
 	  }
@@ -199,6 +220,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (_reactDom2['default'].findDOMNode(this) instanceof SVGElement) {
 	        this.setState({ isElementSVG: true });
 	      }
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.setState({ dragging: false }); // prevents invariant if unmounted while dragging
 	    }
 	  }, {
 	    key: 'render',
@@ -295,7 +321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        right: _react.PropTypes.Number,
 	        top: _react.PropTypes.Number,
 	        bottom: _react.PropTypes.Number
-	      }), _react.PropTypes.oneOf(['parent', false])]),
+	      }), _react.PropTypes.string, _react.PropTypes.oneOf([false])]),
 	
 	      /**
 	       * `start` specifies the x and y that the dragged item should start at
@@ -810,17 +836,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  var bounds = JSON.parse(JSON.stringify(draggable.props.bounds));
 	  var node = _reactDom2['default'].findDOMNode(draggable);
-	  var parent = node.parentNode;
 	
-	  if (bounds === 'parent') {
+	  if (typeof bounds === 'string') {
+	    var boundNode = undefined;
+	    if (bounds === 'parent') {
+	      boundNode = node.parentNode;
+	    } else {
+	      boundNode = document.querySelector(bounds);
+	      if (!boundNode) throw new Error('Bounds selector "' + bounds + '" could not find an element.');
+	    }
 	    var nodeStyle = window.getComputedStyle(node);
-	    var parentStyle = window.getComputedStyle(parent);
+	    var boundNodeStyle = window.getComputedStyle(boundNode);
 	    // Compute bounds. This is a pain with padding and offsets but this gets it exactly right.
 	    bounds = {
-	      left: -node.offsetLeft + (0, _shims.int)(parentStyle.paddingLeft) + (0, _shims.int)(nodeStyle.borderLeftWidth) + (0, _shims.int)(nodeStyle.marginLeft),
-	      top: -node.offsetTop + (0, _shims.int)(parentStyle.paddingTop) + (0, _shims.int)(nodeStyle.borderTopWidth) + (0, _shims.int)(nodeStyle.marginTop),
-	      right: (0, _domFns.innerWidth)(parent) - (0, _domFns.outerWidth)(node) - node.offsetLeft,
-	      bottom: (0, _domFns.innerHeight)(parent) - (0, _domFns.outerHeight)(node) - node.offsetTop
+	      left: -node.offsetLeft + (0, _shims.int)(boundNodeStyle.paddingLeft) + (0, _shims.int)(nodeStyle.borderLeftWidth) + (0, _shims.int)(nodeStyle.marginLeft),
+	      top: -node.offsetTop + (0, _shims.int)(boundNodeStyle.paddingTop) + (0, _shims.int)(nodeStyle.borderTopWidth) + (0, _shims.int)(nodeStyle.marginTop),
+	      right: (0, _domFns.innerWidth)(boundNode) - (0, _domFns.outerWidth)(node) - node.offsetLeft,
+	      bottom: (0, _domFns.innerHeight)(boundNode) - (0, _domFns.outerHeight)(node) - node.offsetTop
 	    };
 	  }
 	
