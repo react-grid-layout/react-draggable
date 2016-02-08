@@ -1,6 +1,6 @@
 # Changelog
 
-### 1.2.0 (Feb 5, 2015)
+### 1.2.0 (Feb 5, 2016)
 
 - Added arbitrary boundary selector. Now you don't have to just use `'parent'`, you can select any element
   on the page, including `'body'`.
