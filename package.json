@@ -61,7 +61,6 @@
     "test"
   ],
   "dependencies": {
-    "classnames": "^2.2.0",
-    "object-assign": "^4.0.1"
+    "classnames": "^2.2.0"
   }
 }
