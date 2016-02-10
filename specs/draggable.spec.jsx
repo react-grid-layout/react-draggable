@@ -173,21 +173,60 @@ describe('react-draggable', function () {
       );
 
       var node = ReactDOM.findDOMNode(drag);
-
-      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      // Simulate a movement; can't use TestUtils here because it uses react's event system only,
-      // but <DraggableCore> attaches event listeners directly to the document.
-      // Would love to new MouseEvent() here but it doesn't work with PhantomJS / old browsers.
-      // var e = new MouseEvent('mousemove', {clientX: 100, clientY: 100});
-      var evt = document.createEvent('MouseEvents');
-      evt.initMouseEvent('mousemove', true, true, window,
-          0, 0, 0, 100, 100, false, false, false, false, 0, null);
-      document.dispatchEvent(evt);
-      TestUtils.Simulate.mouseUp(node);
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
 
       var style = node.getAttribute('style');
       expect(dragged).toEqual(true);
       expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
+    });
+
+    it('should honor "x" axis', function () {
+      var dragged = false;
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={function() { dragged = true; }} axis="x">
+          <div />
+        </Draggable>
+      );
+
+      var node = ReactDOM.findDOMNode(drag);
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+
+      var style = node.getAttribute('style');
+      expect(dragged).toEqual(true);
+      expect(style.indexOf('transform: translate(100px, 0px);')).not.toEqual(-1);
+    });
+
+    it('should honor "y" axis', function () {
+      var dragged = false;
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={function() { dragged = true; }} axis="y">
+          <div />
+        </Draggable>
+      );
+
+      var node = ReactDOM.findDOMNode(drag);
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+
+      var style = node.getAttribute('style');
+      expect(dragged).toEqual(true);
+      expect(style.indexOf('transform: translate(0px, 100px);')).not.toEqual(-1);
+    });
+
+    it('should honor "none" axis', function () {
+      var dragged = false;
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={function() { dragged = true; }} axis="none">
+          <div />
+        </Draggable>
+      );
+
+      var node = ReactDOM.findDOMNode(drag);
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+
+      var style = node.getAttribute('style');
+      expect(dragged).toEqual(true);
+      // No idea why the spacing is different here
+      expect(style.indexOf('transform:translate(0px,0px);')).not.toEqual(-1);
     });
 
     it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
@@ -218,10 +257,7 @@ describe('react-draggable', function () {
       );
 
       var node = ReactDOM.findDOMNode(drag);
-
-      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      mouseMove(node, 100, 100);
-      TestUtils.Simulate.mouseUp(node);
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
 
       var transform = node.getAttribute('transform');
       expect(transform.indexOf('translate(100,100)')).not.toEqual(-1);
@@ -360,11 +396,8 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
-
-      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      var moveEvt = mouseMove(node, 100, 100);
-      TestUtils.Simulate.mouseUp(node);
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
 
     it('should call back with offset left/top, not client', function () {
@@ -380,11 +413,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
-
-      TestUtils.Simulate.mouseDown(node, {clientX: 200, clientY: 200});
-      var moveEvt = mouseMove(node, 300, 300);
-      TestUtils.Simulate.mouseUp(node);
+      simulateMovementFromTo(drag, 200, 200, 300, 300);
     });
   });
 
@@ -425,10 +454,19 @@ function renderToHTML(component) {
 // but <DraggableCore> attaches event listeners directly to the document.
 // Would love to new MouseEvent() here but it doesn't work with PhantomJS / old browsers.
 // var e = new MouseEvent('mousemove', {clientX: 100, clientY: 100});
-function mouseMove(node, x, y) {
+function mouseMove(x, y) {
   var evt = document.createEvent('MouseEvents');
   evt.initMouseEvent('mousemove', true, true, window,
       0, 0, 0, x, y, false, false, false, false, 0, null);
   document.dispatchEvent(evt);
   return evt;
+}
+
+
+function simulateMovementFromTo(drag, fromX, fromY, toX, toY) {
+  var node = ReactDOM.findDOMNode(drag);
+
+  TestUtils.Simulate.mouseDown(node, {clientX: fromX, clientY: fromX});
+  mouseMove(toX, toY);
+  TestUtils.Simulate.mouseUp(node);
 }
