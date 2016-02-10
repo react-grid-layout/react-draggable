@@ -208,9 +208,11 @@ export default class Draggable extends React.Component {
       newState.slackX = this.state.slackX + (clientX - newState.clientX);
       newState.slackY = this.state.slackY + (clientY - newState.clientY);
 
-      // Update the event we fire.
+      // Update the event we fire to reflect what really happened after bounds took effect.
       uiEvent.position.left = clientX;
       uiEvent.position.top = clientY;
+      uiEvent.deltaX = newState.clientX - this.state.clientX;
+      uiEvent.deltaY = newState.clientY - this.state.clientY;
     }
 
     // Short-circuit if user's callback killed it.
