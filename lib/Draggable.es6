@@ -167,10 +167,6 @@ export default class Draggable extends DraggableCore {
 
     let uiEvent = createUIEvent(this, coreEvent);
 
-    // Short-circuit if user's callback killed it.
-    let shouldUpdate = this.props.onDrag(e, uiEvent);
-    if (shouldUpdate === false) return false;
-
     let newState = {
       clientX: uiEvent.position.left,
       clientY: uiEvent.position.top
@@ -193,7 +189,15 @@ export default class Draggable extends DraggableCore {
       // Recalculate slack by noting how much was shaved by the boundPosition handler.
       newState.slackX = this.state.slackX + (clientX - newState.clientX);
       newState.slackY = this.state.slackY + (clientY - newState.clientY);
+
+      // Update the event we fire.
+      uiEvent.position.left = clientX;
+      uiEvent.position.top = clientY;
     }
+
+    // Short-circuit if user's callback killed it.
+    let shouldUpdate = this.props.onDrag(e, uiEvent);
+    if (shouldUpdate === false) return false;
 
     this.setState(newState);
   };
