@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.3.1 (Feb 10, 2015)
+
+- Internal: Babel 6 and Flow definitions
+- Bugfix: 1.3.0 broke string bounds ('parent', selectors, etc.).
+- Bugfix: 1.3.0 wasn't updating deltaX and deltaY on a bounds hit.
+
 ### 1.3.0 (Feb 10, 2015)
 
 - Possibly breaking change: bounds are calculated before `<Draggable>` fires `drag` events, as they should have been.
