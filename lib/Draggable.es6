@@ -20,13 +20,17 @@ export default class Draggable extends DraggableCore {
     /**
      * `axis` determines which axis the draggable can move.
      *
+     *  Note that all callbacks will still return data as normal. This only
+     *  controls flushing to the DOM.
+     *
      * 'both' allows movement horizontally and vertically.
      * 'x' limits movement to horizontal axis.
      * 'y' limits movement to vertical axis.
+     * 'none' limits all movement.
      *
      * Defaults to 'both'.
      */
-    axis: PropTypes.oneOf(['both', 'x', 'y']),
+    axis: PropTypes.oneOf(['both', 'x', 'y', 'none']),
 
     /**
      * `bounds` determines the range of movement available to the element.

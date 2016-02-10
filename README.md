@@ -110,10 +110,13 @@ handle: string,
 // If set to `true`, will allow dragging on non left-button clicks.
 allowAnyClick: boolean,
 
-// Determines which axis the draggable can move. Accepted values:
+// Determines which axis the draggable can move. This only affects
+// flushing to the DOM. Callbacks will still include all values.
+// Accepted values:
 // - `both` allows movement horizontally and vertically (default).
 // - `x` limits movement to horizontal axis.
 // - `y` limits movement to vertical axis.
+// - 'none' stops all movement.
 axis: string,
 
 // Specifies movement boundaries. Accepted values:
