@@ -1,8 +1,18 @@
+// @flow
+import React from 'react';
 import {isNum, int} from './shims';
 import ReactDOM from 'react-dom';
 import {innerWidth, innerHeight, outerWidth, outerHeight} from './domFns';
 
-export function getBoundPosition(draggable, clientX, clientY) {
+import type Draggable from '../Draggable';
+export type ControlPosition = {
+  clientX: number, clientY: number
+};
+export type Bounds = {
+  left: number, top: number, right: number, bottom: number
+};
+
+export function getBoundPosition(draggable: Draggable, clientX: number, clientY: number): [number, number] {
   // If no bounds, short-circuit and move on
   if (!draggable.props.bounds) return [clientX, clientY];
 
@@ -42,22 +52,22 @@ export function getBoundPosition(draggable, clientX, clientY) {
   return [clientX, clientY];
 }
 
-export function snapToGrid(grid, pendingX, pendingY) {
+export function snapToGrid(grid: [number, number], pendingX: number, pendingY: number): [number, number] {
   let x = Math.round(pendingX / grid[0]) * grid[0];
   let y = Math.round(pendingY / grid[1]) * grid[1];
   return [x, y];
 }
 
-export function canDragX(draggable) {
+export function canDragX(draggable: React.Component): boolean {
   return draggable.props.axis === 'both' || draggable.props.axis === 'x';
 }
 
-export function canDragY(draggable) {
+export function canDragY(draggable: React.Component): boolean {
   return draggable.props.axis === 'both' || draggable.props.axis === 'y';
 }
 
 // Get {clientX, clientY} positions from event.
-export function getControlPosition(e) {
+export function getControlPosition(e: Event): ControlPosition {
   let position = (e.targetTouches && e.targetTouches[0]) || e;
   return {
     clientX: position.clientX,
@@ -66,7 +76,7 @@ export function getControlPosition(e) {
 }
 
 // A lot faster than stringify/parse
-function cloneBounds(bounds) {
+function cloneBounds(bounds: Bounds): Bounds {
   return {
     left: bounds.left,
     top: bounds.top,

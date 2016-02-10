@@ -28,9 +28,6 @@ module.exports = function(config) {
             loader: 'babel-loader',
             query: {
               cacheDirectory: true,
-              plugins: [
-                'typecheck'
-              ]
             },
             exclude: /(node_modules)/
           }

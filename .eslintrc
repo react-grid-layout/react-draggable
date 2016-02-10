@@ -18,5 +18,10 @@
   env: {
     "browser": true,
     "node": true
+  },
+  globals: {
+    // For Flow
+    "ReactElement",
+    "ReactClass"
   }
 }

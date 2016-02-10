@@ -1,22 +1,36 @@
+// @flow
 import {default as React, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
+// $FlowIgnore
 import classNames from 'classnames';
-import assign from 'object-assign';
-import {createUIEvent, createTransform} from './utils/domFns';
+import {createUIEvent, createCSSTransform, createSVGTransform} from './utils/domFns';
 import {canDragX, canDragY, getBoundPosition} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
 import DraggableCore from './DraggableCore';
 import log from './utils/log';
 
+import type {CoreEvent} from './utils/domFns';
+export type CoreEventHandler = (e: Event, coreEvent: CoreEvent) => void | false;
+export type DraggableState = {
+  dragging: boolean,
+  dragged: boolean,
+  clientX: number, clientY: number,
+  slackX: number, slackY: number,
+  isElementSVG: boolean
+};
+
 //
 // Define <Draggable>
 //
 
-export default class Draggable extends DraggableCore {
+export default class Draggable extends React.Component {
 
   static displayName = 'Draggable';
 
-  static propTypes = assign({}, DraggableCore.propTypes, {
+  static propTypes = {
+    // Accepts all props <DraggableCore> accepts.
+    ...DraggableCore.propTypes,
+
     /**
      * `axis` determines which axis the draggable can move.
      *
@@ -116,18 +130,22 @@ export default class Draggable extends DraggableCore {
     className: dontSetMe,
     style: dontSetMe,
     transform: dontSetMe
-  });
+  };
 
-  static defaultProps = assign({}, DraggableCore.defaultProps, {
+  static defaultProps = {
+    ...DraggableCore.defaultProps,
     axis: 'both',
     bounds: false,
     start: {x: 0, y: 0},
     zIndex: NaN
-  });
+  };
 
-  state = {
+  state: DraggableState = {
     // Whether or not we are currently dragging.
     dragging: false,
+
+    // Whether or not we have been dragged before.
+    dragged: false,
 
     // Current transform x and y.
     clientX: this.props.start.x, clientY: this.props.start.y,
@@ -150,7 +168,7 @@ export default class Draggable extends DraggableCore {
     this.setState({dragging: false}); // prevents invariant if unmounted while dragging
   }
 
-  onDragStart = (e, coreEvent) => {
+  onDragStart: CoreEventHandler = (e, coreEvent) => {
     log('Draggable: onDragStart: %j', coreEvent.position);
 
     // Short-circuit if user's callback killed it.
@@ -158,10 +176,10 @@ export default class Draggable extends DraggableCore {
     // Kills start event on core as well, so move handlers are never bound.
     if (shouldStart === false) return false;
 
-    this.setState({dragging: true});
+    this.setState({dragging: true, dragged: true});
   };
 
-  onDrag = (e, coreEvent) => {
+  onDrag: CoreEventHandler = (e, coreEvent) => {
     if (!this.state.dragging) return false;
     log('Draggable: onDrag: %j', coreEvent.position);
 
@@ -202,7 +220,7 @@ export default class Draggable extends DraggableCore {
     this.setState(newState);
   };
 
-  onDragStop = (e, coreEvent) => {
+  onDragStop: CoreEventHandler = (e, coreEvent) => {
     if (!this.state.dragging) return false;
 
     // Short-circuit if user's callback killed it.
@@ -218,13 +236,14 @@ export default class Draggable extends DraggableCore {
     });
   };
 
-  render() {
-    let style, svgTransform = null;
+  render(): ReactElement {
+    let style = {}, svgTransform = null;
+
     // Add a CSS transform to move the element around. This allows us to move the element around
     // without worrying about whether or not it is relatively or absolutely positioned.
     // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
     // has a clean slate.
-    style = createTransform({
+    const transformOpts = {
       // Set left if horizontal drag is enabled
       x: canDragX(this) ?
         this.state.clientX :
@@ -234,12 +253,13 @@ export default class Draggable extends DraggableCore {
       y: canDragY(this) ?
         this.state.clientY :
         this.props.start.y
-    }, this.state.isElementSVG);
+    };
 
     // If this element was SVG, we use the `transform` attribute.
     if (this.state.isElementSVG) {
-      svgTransform = style;
-      style = {};
+      svgTransform = createSVGTransform(transformOpts);
+    } else {
+      style = createCSSTransform(transformOpts);
     }
 
     // zIndex option
@@ -259,10 +279,11 @@ export default class Draggable extends DraggableCore {
       <DraggableCore {...this.props} onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragStop}>
         {React.cloneElement(React.Children.only(this.props.children), {
           className: className,
-          style: assign({}, this.props.children.props.style, style),
+          style: {...this.props.children.props.style, ...style},
           transform: svgTransform
         })}
       </DraggableCore>
     );
   }
 }
+

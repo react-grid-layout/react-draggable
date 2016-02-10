@@ -5,7 +5,7 @@ var TestUtils = require('react/lib/ReactTestUtils');
 var Draggable = require('../index');
 var DraggableCore = require('../index').DraggableCore;
 var _ = require('lodash');
-var browserPrefix = require('../lib/utils/getPrefix.es6');
+var browserPrefix = require('../lib/utils/getPrefix.es6').default;
 var dashedBrowserPrefix = browserPrefix ? '-' + browserPrefix.toLowerCase() + '-' : '';
 
 /*global describe,it,expect,afterEach */
