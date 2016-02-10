@@ -17,7 +17,8 @@ export function getBoundPosition(draggable: Draggable, clientX: number, clientY:
   if (!draggable.props.bounds) return [clientX, clientY];
 
   // Clone new bounds
-  let bounds = cloneBounds(draggable.props.bounds);
+  let {bounds} = draggable.props;
+  bounds = typeof bounds === 'string' ? bounds : cloneBounds(bounds);
   let node = ReactDOM.findDOMNode(draggable);
 
   if (typeof bounds === 'string') {
