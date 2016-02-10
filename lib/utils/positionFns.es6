@@ -6,7 +6,8 @@ export function getBoundPosition(draggable, clientX, clientY) {
   // If no bounds, short-circuit and move on
   if (!draggable.props.bounds) return [clientX, clientY];
 
-  let bounds = JSON.parse(JSON.stringify(draggable.props.bounds));
+  // Clone new bounds
+  let bounds = cloneBounds(draggable.props.bounds);
   let node = ReactDOM.findDOMNode(draggable);
 
   if (typeof bounds === 'string') {
@@ -61,5 +62,15 @@ export function getControlPosition(e) {
   return {
     clientX: position.clientX,
     clientY: position.clientY
+  };
+}
+
+// A lot faster than stringify/parse
+function cloneBounds(bounds) {
+  return {
+    left: bounds.left,
+    top: bounds.top,
+    right: bounds.right,
+    bottom: bounds.bottom
   };
 }
