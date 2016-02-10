@@ -158,10 +158,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      var uiEvent = (0, _utilsDomFns.createUIEvent)(_this, coreEvent);
 	
-	      // Short-circuit if user's callback killed it.
-	      var shouldUpdate = _this.props.onDrag(e, uiEvent);
-	      if (shouldUpdate === false) return false;
-	
 	      var newState = {
 	        clientX: uiEvent.position.left,
 	        clientY: uiEvent.position.top
@@ -191,7 +187,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        newState.clientY = _getBoundPosition2[1];
 	        newState.slackX = _this.state.slackX + (clientX - newState.clientX);
 	        newState.slackY = _this.state.slackY + (clientY - newState.clientY);
+	
+	        // Update the event we fire.
+	        uiEvent.position.left = clientX;
+	        uiEvent.position.top = clientY;
 	      }
+	
+	      // Short-circuit if user's callback killed it.
+	      var shouldUpdate = _this.props.onDrag(e, uiEvent);
+	      if (shouldUpdate === false) return false;
 	
 	      _this.setState(newState);
 	    };
@@ -282,13 +286,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      /**
 	       * `axis` determines which axis the draggable can move.
 	       *
+	       *  Note that all callbacks will still return data as normal. This only
+	       *  controls flushing to the DOM.
+	       *
 	       * 'both' allows movement horizontally and vertically.
 	       * 'x' limits movement to horizontal axis.
 	       * 'y' limits movement to vertical axis.
+	       * 'none' limits all movement.
 	       *
 	       * Defaults to 'both'.
 	       */
-	      axis: _react.PropTypes.oneOf(['both', 'x', 'y']),
+	      axis: _react.PropTypes.oneOf(['both', 'x', 'y', 'none']),
 	
 	      /**
 	       * `bounds` determines the range of movement available to the element.
@@ -834,7 +842,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // If no bounds, short-circuit and move on
 	  if (!draggable.props.bounds) return [clientX, clientY];
 	
-	  var bounds = JSON.parse(JSON.stringify(draggable.props.bounds));
+	  // Clone new bounds
+	  var bounds = cloneBounds(draggable.props.bounds);
 	  var node = _reactDom2['default'].findDOMNode(draggable);
 	
 	  if (typeof bounds === 'string') {
@@ -888,6 +897,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return {
 	    clientX: position.clientX,
 	    clientY: position.clientY
+	  };
+	}
+	
+	// A lot faster than stringify/parse
+	function cloneBounds(bounds) {
+	  return {
+	    left: bounds.left,
+	    top: bounds.top,
+	    right: bounds.right,
+	    bottom: bounds.bottom
 	  };
 	}
 

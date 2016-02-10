@@ -1,5 +1,12 @@
 # Changelog
 
+### 1.3.0 (Feb 10, 2015)
+
+- Possibly breaking change: bounds are calculated before `<Draggable>` fires `drag` events, as they should have been.
+- Added `'none'` axis type. This allows using `<Draggable>` somewhat like `<DraggableCore>` - state will be kept
+  internally (which makes bounds checks etc possible), but updates will not be flushed to the DOM.
+- Performance tweaks.
+
 ### 1.2.0 (Feb 5, 2015)
 
 - Added arbitrary boundary selector. Now you don't have to just use `'parent'`, you can select any element
