@@ -390,24 +390,24 @@ export default class DraggableCore extends React.Component {
     this.props.onDrag(e, coreEvent);
   };
 
-  // On mousedown, consider the drag started.
-  onMouseDown: EventHandler = (e) => {
-    // HACK: Prevent 'ghost click' which happens 300ms after touchstart if the event isn't cancelled.
-    // We don't cancel the event on touchstart because of #37; we might want to make a scrollable item draggable.
-    // More on ghost clicks: http://ariatemplates.com/blog/2014/05/ghost-clicks-in-mobile-browsers/
-    if (dragEventFor === eventsFor.touch) {
-      return e.preventDefault();
-    }
-
-    return this.handleDragStart(e);
-  };
-
   // Same as onMouseDown (start drag), but now consider this a touch device.
   onTouchStart: EventHandler = (e) => {
     // We're on a touch device now, so change the event handlers
     dragEventFor = eventsFor.touch;
 
     return this.handleDragStart(e);
+  };
+
+  onTouchEnd: EventHandler = (e) => {
+    // We're on a touch device now, so change the event handlers
+    dragEventFor = eventsFor.touch;
+
+    // HACK: Prevent 'ghost click' which happens 300ms after touchstart if the event isn't cancelled.
+    // We don't cancel the event on touchstart because of #37; we might want to make a scrollable item draggable.
+    // More on ghost clicks: http://ariatemplates.com/blog/2014/05/ghost-clicks-in-mobile-browsers/
+    e.preventDefault();
+
+    return this.handleDragStop(e);
   };
 
   render(): ReactElement {
@@ -418,10 +418,10 @@ export default class DraggableCore extends React.Component {
 
       // Note: mouseMove handler is attached to document so it will still function
       // when the user drags quickly and leaves the bounds of the element.
-      onMouseDown: this.onMouseDown,
+      onMouseDown: this.handleDragStart,
       onTouchStart: this.onTouchStart,
       onMouseUp: this.handleDragStop,
-      onTouchEnd: this.handleDragStop
+      onTouchEnd: this.onTouchEnd
     });
   }
 }
