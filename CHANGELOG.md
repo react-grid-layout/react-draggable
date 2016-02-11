@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.3.2 (Feb 11, 2015)
+
+- Bugfix: #116: Child inputs not focusing on touch events.
+
 ### 1.3.1 (Feb 10, 2015)
 
 - Internal: Babel 6 and Flow definitions

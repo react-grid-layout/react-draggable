@@ -1059,20 +1059,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	
 	      _this.props.onDrag(e, coreEvent);
-	    }, _this.onMouseDown = function (e) {
-	      // HACK: Prevent 'ghost click' which happens 300ms after touchstart if the event isn't cancelled.
-	      // We don't cancel the event on touchstart because of #37; we might want to make a scrollable item draggable.
-	      // More on ghost clicks: http://ariatemplates.com/blog/2014/05/ghost-clicks-in-mobile-browsers/
-	      if (dragEventFor === eventsFor.touch) {
-	        return e.preventDefault();
-	      }
-	
-	      return _this.handleDragStart(e);
 	    }, _this.onTouchStart = function (e) {
 	      // We're on a touch device now, so change the event handlers
 	      dragEventFor = eventsFor.touch;
 	
 	      return _this.handleDragStart(e);
+	    }, _this.onTouchEnd = function (e) {
+	      // We're on a touch device now, so change the event handlers
+	      dragEventFor = eventsFor.touch;
+	
+	      // HACK: Prevent 'ghost click' which happens 300ms after touchstart if the event isn't cancelled.
+	      // We don't cancel the event on touchstart because of #37; we might want to make a scrollable item draggable.
+	      // More on ghost clicks: http://ariatemplates.com/blog/2014/05/ghost-clicks-in-mobile-browsers/
+	      e.preventDefault();
+	
+	      return _this.handleDragStop(e);
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 	
@@ -1093,9 +1094,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // This only fires when a drag is active.
 	
 	
-	    // On mousedown, consider the drag started.
-	
-	
 	    // Same as onMouseDown (start drag), but now consider this a touch device.
 	
 	  }, {
@@ -1108,10 +1106,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        // Note: mouseMove handler is attached to document so it will still function
 	        // when the user drags quickly and leaves the bounds of the element.
-	        onMouseDown: this.onMouseDown,
+	        onMouseDown: this.handleDragStart,
 	        onTouchStart: this.onTouchStart,
 	        onMouseUp: this.handleDragStop,
-	        onTouchEnd: this.handleDragStop
+	        onTouchEnd: this.onTouchEnd
 	      });
 	    }
 	  }]);
