@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.3.3 (Feb 11, 2015)
+
+- Bugfix: #116: Android/Chrome are finicky; give up on canceling ghost clicks entirely.
+
 ### 1.3.2 (Feb 11, 2015)
 
 - Bugfix: #116: Child inputs not focusing on touch events.
