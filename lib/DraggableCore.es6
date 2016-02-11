@@ -402,11 +402,6 @@ export default class DraggableCore extends React.Component {
     // We're on a touch device now, so change the event handlers
     dragEventFor = eventsFor.touch;
 
-    // HACK: Prevent 'ghost click' which happens 300ms after touchstart if the event isn't cancelled.
-    // We don't cancel the event on touchstart because of #37; we might want to make a scrollable item draggable.
-    // More on ghost clicks: http://ariatemplates.com/blog/2014/05/ghost-clicks-in-mobile-browsers/
-    e.preventDefault();
-
     return this.handleDragStop(e);
   };
 
