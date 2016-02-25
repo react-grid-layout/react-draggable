@@ -96,6 +96,10 @@ onMouseDown: Function,
 // your callbacks and with css transforms.
 start: {x: number, y: number},
 
+// Specifies the `x` and `y` that the dragged item should change to.
+// Useful if you need to move the draggable programmatically.
+position: {x: number, y: number},
+
 // If true, will not call any drag handlers.
 disabled: boolean,
 

@@ -64,8 +64,20 @@
         deltaPosition: {
           top: 0, left: 0
         },
+        xPos: -400,
+        yPos: 200,
         activeDrags: 0
       };
+    },
+
+    adjustXPos: function(event) {
+      event.preventDefault();
+      this.setState({ xPos: this.state.xPos - 10 });
+    },
+
+    adjustYPos: function(event) {
+      event.preventDefault();
+      this.setState({ yPos: this.state.yPos - 10 });
     },
 
     handleDrag: function (e, ui) {
@@ -159,6 +171,15 @@
           <Draggable start={{x: 25, y: 25}} {...drags}>
             <div className="box">
               {"I have a start position of {x: 25, y: 25}, so I'm slightly offset."}
+            </div>
+          </Draggable>
+          <Draggable start={{x: this.state.xPos, y: this.state.yPos}} position={{x: this.state.xPos, y: this.state.yPos}} {...drags}>
+            <div className="box">
+              {"My position can be changed programmatically."}
+              <br /><br />
+              <a href="#" onClick={this.adjustXPos}>Adjust xPos ({this.state.xPos})</a>
+              <br /><br />
+              <a href="#" onClick={this.adjustYPos}>Adjust yPos ({this.state.yPos})</a>
             </div>
           </Draggable>
         </div>

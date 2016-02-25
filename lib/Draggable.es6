@@ -106,6 +106,28 @@ export default class Draggable extends React.Component {
     }),
 
     /**
+     * `position` specifies the x and y that the dragged item should change to
+     *
+     * Example:
+     *
+     * ```jsx
+     *      let App = React.createClass({
+     *          render: function () {
+     *              return (
+     *                  <Draggable position={{x: 25, y: 25}}>
+     *                      <div>I change to transformX: 25px and transformY: 25px;</div>
+     *                  </Draggable>
+     *              );
+     *          }
+     *      });
+     * ```
+     */
+    position: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number
+    }),
+
+    /**
      * `zIndex` specifies the zIndex to use while dragging.
      *
      * Example:
@@ -137,6 +159,7 @@ export default class Draggable extends React.Component {
     axis: 'both',
     bounds: false,
     start: {x: 0, y: 0},
+    position: {x: 0, y: 0},
     zIndex: NaN
   };
 
@@ -161,6 +184,12 @@ export default class Draggable extends React.Component {
     // Check to see if the element passed is an instanceof SVGElement
     if(ReactDOM.findDOMNode(this) instanceof SVGElement) {
       this.setState({ isElementSVG: true });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.position.x !== this.props.position.x || nextProps.position.y !== this.props.position.y) {
+      this.setState({ clientX: nextProps.position.x, clientY: nextProps.position.y });
     }
   }
 
