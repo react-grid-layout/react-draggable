@@ -84,29 +84,7 @@ export default class Draggable extends React.Component {
     ]),
 
     /**
-     * `start` specifies the x and y that the dragged item should start at
-     *
-     * Example:
-     *
-     * ```jsx
-     *      let App = React.createClass({
-     *          render: function () {
-     *              return (
-     *                  <Draggable start={{x: 25, y: 25}}>
-     *                      <div>I start with transformX: 25px and transformY: 25px;</div>
-     *                  </Draggable>
-     *              );
-     *          }
-     *      });
-     * ```
-     */
-    start: PropTypes.shape({
-      x: PropTypes.number,
-      y: PropTypes.number
-    }),
-
-    /**
-     * `position` specifies the x and y that the dragged item should change to
+     * `position` specifies the x and y of the dragged item
      *
      * Example:
      *
@@ -123,8 +101,14 @@ export default class Draggable extends React.Component {
      * ```
      */
     position: PropTypes.shape({
-      x: PropTypes.number,
-      y: PropTypes.number
+      x: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+      ]),
+      y: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+      ])
     }),
 
     /**
@@ -171,7 +155,7 @@ export default class Draggable extends React.Component {
     dragged: false,
 
     // Current transform x and y.
-    clientX: this.props.start.x, clientY: this.props.start.y,
+    clientX: this.props.position.x || this.props.start.x, clientY: this.props.position.y || this.props.start.y,
 
     // Used for compensating for out-of-bounds drags
     slackX: 0, slackY: 0,
@@ -188,7 +172,9 @@ export default class Draggable extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.position.x !== this.props.position.x || nextProps.position.y !== this.props.position.y) {
+    // Set clientX/clientY if position has changed
+    if (nextProps.position !== this.props.position &&
+      (nextProps.position.x !== this.state.clientX || nextProps.position.y !== this.state.clientY)) {
       this.setState({ clientX: nextProps.position.x, clientY: nextProps.position.y });
     }
   }
@@ -278,12 +264,12 @@ export default class Draggable extends React.Component {
       // Set left if horizontal drag is enabled
       x: canDragX(this) ?
         this.state.clientX :
-        this.props.start.x,
+        this.props.position.x || this.props.start.x,
 
       // Set top if vertical drag is enabled
       y: canDragY(this) ?
         this.state.clientY :
-        this.props.start.y
+        this.props.position.y || this.props.start.y
     };
 
     // If this element was SVG, we use the `transform` attribute.
