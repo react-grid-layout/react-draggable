@@ -384,7 +384,9 @@ export default class DraggableCore extends React.Component {
 
     this.setState({
       lastX: s.lastX + coreEvent.position.deltaX,
-      lastY: s.lastY + coreEvent.position.deltaY
+      lastY: s.lastY + coreEvent.position.deltaY,
+      scrollX: x,
+      scrollY: y
     });
 
     this.props.onDrag(e, coreEvent);
