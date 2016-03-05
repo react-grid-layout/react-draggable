@@ -9,7 +9,7 @@
     "test-debug": "karma start --browsers=Chrome --single-run=false",
     "dev": "make dev",
     "build": "make clean build",
-    "lint": "eslint lib/* lib/utils/* specs/*"
+    "lint": "make lint"
   },
   "repository": {
     "type": "git",

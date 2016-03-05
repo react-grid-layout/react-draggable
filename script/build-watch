@@ -6,6 +6,7 @@ function finish {
   kill $SERVER_PID
 }
 
+make clean
 DRAGGABLE_DEBUG=true webpack --watch --devtool inline-source-map &
 WEBPACK_PID=$!
 
