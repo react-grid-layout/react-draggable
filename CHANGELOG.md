@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.3.4 (Mar 5, 2015)
+
+- Bugfix: Scrolling while dragging caused items to move unpredictably.
+
 ### 1.3.3 (Feb 11, 2015)
 
 - Bugfix: #116: Android/Chrome are finicky; give up on canceling ghost clicks entirely.
