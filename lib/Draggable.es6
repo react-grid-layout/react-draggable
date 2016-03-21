@@ -148,7 +148,7 @@ export default class Draggable extends React.Component {
     dragged: false,
 
     // Current transform x and y.
-    clientX: this.props.start.x, clientY: this.props.start.y,
+    clientX: this.props ? this.props.start.x : 0, clientY: this.props ? this.props.start.y : 0,
 
     // Used for compensating for out-of-bounds drags
     slackX: 0, slackY: 0,
