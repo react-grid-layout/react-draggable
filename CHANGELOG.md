@@ -1,31 +1,31 @@
 # Changelog
 
-### 1.3.4 (Mar 5, 2015)
+### 1.3.4 (Mar 5, 2016)
 
 - Bugfix: Scrolling while dragging caused items to move unpredictably.
 
-### 1.3.3 (Feb 11, 2015)
+### 1.3.3 (Feb 11, 2016)
 
 - Bugfix: #116: Android/Chrome are finicky; give up on canceling ghost clicks entirely.
 
-### 1.3.2 (Feb 11, 2015)
+### 1.3.2 (Feb 11, 2016)
 
 - Bugfix: #116: Child inputs not focusing on touch events.
 
-### 1.3.1 (Feb 10, 2015)
+### 1.3.1 (Feb 10, 2016)
 
 - Internal: Babel 6 and Flow definitions
 - Bugfix: 1.3.0 broke string bounds ('parent', selectors, etc.).
 - Bugfix: 1.3.0 wasn't updating deltaX and deltaY on a bounds hit.
 
-### 1.3.0 (Feb 10, 2015)
+### 1.3.0 (Feb 10, 2016)
 
 - Possibly breaking change: bounds are calculated before `<Draggable>` fires `drag` events, as they should have been.
 - Added `'none'` axis type. This allows using `<Draggable>` somewhat like `<DraggableCore>` - state will be kept
   internally (which makes bounds checks etc possible), but updates will not be flushed to the DOM.
 - Performance tweaks.
 
-### 1.2.0 (Feb 5, 2015)
+### 1.2.0 (Feb 5, 2016)
 
 - Added arbitrary boundary selector. Now you don't have to just use `'parent'`, you can select any element
   on the page, including `'body'`.
