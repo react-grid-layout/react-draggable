@@ -392,6 +392,18 @@ export default class DraggableCore extends React.Component {
     this.props.onDrag(e, coreEvent);
   };
 
+  onMouseDown: EventHandler = (e) => {
+    dragEventFor = eventsFor.mouse; // on touchscreen laptops we could switch back to mouse
+
+    return this.handleDragStart(e);
+  };
+
+  onMouseUp: EventHandler = (e) => {
+    dragEventFor = eventsFor.mouse;
+
+    return this.handleDragStop(e);
+  };
+
   // Same as onMouseDown (start drag), but now consider this a touch device.
   onTouchStart: EventHandler = (e) => {
     // We're on a touch device now, so change the event handlers
@@ -415,9 +427,9 @@ export default class DraggableCore extends React.Component {
 
       // Note: mouseMove handler is attached to document so it will still function
       // when the user drags quickly and leaves the bounds of the element.
-      onMouseDown: this.handleDragStart,
+      onMouseDown: this.onMouseDown,
       onTouchStart: this.onTouchStart,
-      onMouseUp: this.handleDragStop,
+      onMouseUp: this.onMouseUp,
       onTouchEnd: this.onTouchEnd
     });
   }
