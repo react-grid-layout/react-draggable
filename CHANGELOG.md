@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.3.6 (Apr 8, 2016)
+
+- Republish after 1.3.5 contained a bundling error.
+
 ### 1.3.5 (Apr 8, 2016)
 
 - Add React v15 to devDeps. `<Draggable>` supports both `v0.14` and `v15`.
