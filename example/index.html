@@ -52,8 +52,9 @@
   </style>
 </head>
 <body>
-<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.min.js"></script>
+<div id="container"></div>
+<script src="//fb.me/react-15.0.0.js"></script>
+<script src="//fb.me/react-dom-15.0.0.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.29/browser.min.js"></script>
 <script src="../dist/react-draggable.js"></script>
 <script type="text/babel">
@@ -166,7 +167,7 @@
     }
   });
 
-  React.render(<App/>, document.body);
+  ReactDOM.render(<App/>, document.getElementById('container'));
 </script>
 </body>
 </html>
