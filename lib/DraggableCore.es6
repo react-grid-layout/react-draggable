@@ -419,7 +419,7 @@ export default class DraggableCore extends React.Component {
     return this.handleDragStop(e);
   };
 
-  render(): ReactElement {
+  render(): React.Element {
     // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     return React.cloneElement(React.Children.only(this.props.children), {

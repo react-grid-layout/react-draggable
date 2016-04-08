@@ -238,7 +238,7 @@ export default class Draggable extends React.Component {
     });
   };
 
-  render(): ReactElement {
+  render(): React.Element {
     let style = {}, svgTransform = null;
 
     // Add a CSS transform to move the element around. This allows us to move the element around
