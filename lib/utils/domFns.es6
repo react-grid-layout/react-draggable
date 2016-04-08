@@ -1,6 +1,6 @@
 // @flow
 import {findInArray, isFunction, isNum, int} from './shims';
-import browserPrefix from './getPrefix';
+import browserPrefix, {getPrefix, browserPrefixToStyle, browserPrefixToKey} from './getPrefix';
 import ReactDOM from 'react-dom';
 
 import type Draggable from '../Draggable';
@@ -103,12 +103,7 @@ export function innerWidth(node: HTMLElement): number {
 
 export function createCSSTransform({x, y}: {x: number, y: number}): Object {
   // Replace unitless items with px
-  let out = {transform: 'translate(' + x + 'px,' + y + 'px)'};
-  // Add single prefixed property as well
-  if (browserPrefix) {
-    out[browserPrefix + 'Transform'] = out.transform;
-  }
-  return out;
+  return {[browserPrefixToKey('transform', browserPrefix)]: 'translate(' + x + 'px,' + y + 'px)'};
 }
 
 export function createSVGTransform({x, y}: {x: number, y: number}): string {
@@ -118,7 +113,9 @@ export function createSVGTransform({x, y}: {x: number, y: number}): string {
 // User-select Hacks:
 //
 // Useful for preventing blue highlights all over everything when dragging.
-const userSelectStyle = `;${browserPrefix ? `-${browserPrefix.toLowerCase()}-` : ''}user-select: none;`;
+const userSelectPrefix = getPrefix('user-select');
+const userSelect = browserPrefixToStyle('user-select', userSelectPrefix);
+const userSelectStyle = `;${userSelect}: none;`;
 
 export function addUserSelectStyles() {
   let style = document.body.getAttribute('style') || '';

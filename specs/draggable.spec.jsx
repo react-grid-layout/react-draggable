@@ -1,12 +1,13 @@
 /*eslint no-unused-vars:0*/
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react/lib/ReactTestUtils');
-var Draggable = require('../index');
-var DraggableCore = require('../index').DraggableCore;
-var _ = require('lodash');
-var browserPrefix = require('../lib/utils/getPrefix.es6').default;
-var dashedBrowserPrefix = browserPrefix ? '-' + browserPrefix.toLowerCase() + '-' : '';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react/lib/ReactTestUtils';
+import Draggable, {DraggableCore} from '../index';
+import _ from 'lodash';
+import {getPrefix, browserPrefixToKey, browserPrefixToStyle} from '../lib/utils/getPrefix';
+const transformStyle = browserPrefixToStyle('transform', getPrefix('transform'));
+const transformKey = browserPrefixToKey('transform', getPrefix('transform'));
+const userSelectStyle = browserPrefixToStyle('user-select', getPrefix('user-select'));
 
 /*global describe,it,expect,afterEach */
 describe('react-draggable', function () {
@@ -45,7 +46,7 @@ describe('react-draggable', function () {
         expect(node.getAttribute('style')).toMatch('touch-action: none');
       }
       expect(node.getAttribute('style')).toMatch('color: black');
-      expect(node.getAttribute('style')).toMatch(dashedBrowserPrefix + 'transform: translate\\\(0px, 0px\\\)');
+      expect(node.getAttribute('style')).toMatch(transformStyle + ': translate\\\(0px, 0px\\\)');
       expect(node.getAttribute('class')).toEqual('foo react-draggable');
     });
 
@@ -61,7 +62,7 @@ describe('react-draggable', function () {
           <div
             className="react-draggable"
             style={{
-              [browserPrefix + 'Transform']: 'translate(0px, 0px)'
+              [transformKey]: 'translate(0px, 0px)'
             }}
             transform={null} />
         </DraggableCore>
@@ -267,8 +268,7 @@ describe('react-draggable', function () {
     });
 
     it('should add and remove user-select styles', function () {
-      // Karma runs in firefox in our tests
-      var userSelectStyle = ';' + dashedBrowserPrefix + 'user-select: none;';
+      var userSelectStyleStr = `;${userSelectStyle}: none;`;
 
       drag = TestUtils.renderIntoDocument(
         <Draggable>
@@ -280,14 +280,12 @@ describe('react-draggable', function () {
 
       expect(document.body.getAttribute('style')).toEqual('');
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      expect(document.body.getAttribute('style')).toEqual(userSelectStyle);
+      expect(document.body.getAttribute('style')).toEqual(userSelectStyleStr);
       TestUtils.Simulate.mouseUp(node);
       expect(document.body.getAttribute('style')).toEqual('');
     });
 
     it('should not add and remove user-select styles when disabled', function () {
-      // Karma runs in firefox in our tests
-      var userSelectStyle = ';' + dashedBrowserPrefix + 'user-select: none;';
 
       drag = TestUtils.renderIntoDocument(
         <Draggable enableUserSelectHack={false}>
