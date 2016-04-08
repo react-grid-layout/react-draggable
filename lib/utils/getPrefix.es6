@@ -5,18 +5,19 @@ export function generatePrefix(): string {
   // E.g. React-rails (see https://github.com/reactjs/react-rails/pull/84)
   if (typeof window === 'undefined' || typeof window.document === 'undefined') return '';
 
-  // Thanks David Walsh
-  let styles = window.getComputedStyle(document.documentElement, ''),
-  pre = (Array.prototype.slice
-        .call(styles)
-        .join('')
-        .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' ? ['', 'o'] : [])
-      )[1];
-  // 'ms' is not titlecased
-  if (pre === undefined || pre === null) return '';
-  if (pre === 'ms') return pre;
-  if (pre === undefined || pre === null) return '';
-  return pre.slice(0, 1).toUpperCase() + pre.slice(1);
+  const prefixes = ['Moz', 'Webkit', 'O', 'ms'];
+  const style = window.document.documentElement.style;
+
+  if ('transform' in style) {
+    return '';
+  }
+
+  for (let i = 0; i < prefixes.length; ++i) {
+    if (prefixes[i] + 'Transform' in style) {
+      return prefixes[i];
+    }
+  }
+  return '';
 }
 
 export default generatePrefix();

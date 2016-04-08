@@ -118,10 +118,7 @@ export function createSVGTransform({x, y}: {x: number, y: number}): string {
 // User-select Hacks:
 //
 // Useful for preventing blue highlights all over everything when dragging.
-let userSelectStyle = ';user-select: none;';
-if (browserPrefix) {
-  userSelectStyle += '-' + browserPrefix.toLowerCase() + '-user-select: none;';
-}
+const userSelectStyle = `;${browserPrefix ? `-${browserPrefix.toLowerCase()}-` : ''}user-select: none;`;
 
 export function addUserSelectStyles() {
   let style = document.body.getAttribute('style') || '';
