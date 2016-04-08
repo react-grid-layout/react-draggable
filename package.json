@@ -1,6 +1,6 @@
 {
   "name": "react-draggable",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "React draggable component",
   "main": "dist/react-draggable.js",
   "browser": "dist/react-draggable.js",

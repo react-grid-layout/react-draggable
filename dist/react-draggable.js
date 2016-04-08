@@ -409,8 +409,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2015 Jed Watson.
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2016 Jed Watson.
 	  Licensed under the MIT License (MIT), see
 	  http://jedwatson.github.io/classnames
 	*/
@@ -422,7 +422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var hasOwn = {}.hasOwnProperty;
 	
 		function classNames () {
-			var classes = '';
+			var classes = [];
 	
 			for (var i = 0; i < arguments.length; i++) {
 				var arg = arguments[i];
@@ -431,28 +431,28 @@ return /******/ (function(modules) { // webpackBootstrap
 				var argType = typeof arg;
 	
 				if (argType === 'string' || argType === 'number') {
-					classes += ' ' + arg;
+					classes.push(arg);
 				} else if (Array.isArray(arg)) {
-					classes += ' ' + classNames.apply(null, arg);
+					classes.push(classNames.apply(null, arg));
 				} else if (argType === 'object') {
 					for (var key in arg) {
 						if (hasOwn.call(arg, key) && arg[key]) {
-							classes += ' ' + key;
+							classes.push(key);
 						}
 					}
 				}
 			}
 	
-			return classes.substr(1);
+			return classes.join(' ');
 		}
 	
 		if (typeof module !== 'undefined' && module.exports) {
 			module.exports = classNames;
 		} else if (true) {
 			// register as 'classnames', consistent with npm package name
-			!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
 				return classNames;
-			}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		} else {
 			window.classNames = classNames;
 		}
@@ -597,10 +597,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// User-select Hacks:
 	//
 	// Useful for preventing blue highlights all over everything when dragging.
-	var userSelectStyle = ';user-select: none;';
-	if (_getPrefix2.default) {
-	  userSelectStyle += '-' + _getPrefix2.default.toLowerCase() + '-user-select: none;';
-	}
+	var userSelectStyle = ';' + (_getPrefix2.default ? '-' + _getPrefix2.default.toLowerCase() + '-' : '') + 'user-select: none;';
 	
 	function addUserSelectStyles() {
 	  var style = document.body.getAttribute('style') || '';
@@ -715,14 +712,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // E.g. React-rails (see https://github.com/reactjs/react-rails/pull/84)
 	  if (typeof window === 'undefined' || typeof window.document === 'undefined') return '';
 	
-	  // Thanks David Walsh
-	  var styles = window.getComputedStyle(document.documentElement, ''),
-	      pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || (styles.OLink === '' ? ['', 'o'] : []))[1];
-	  // 'ms' is not titlecased
-	  if (pre === undefined || pre === null) return '';
-	  if (pre === 'ms') return pre;
-	  if (pre === undefined || pre === null) return '';
-	  return pre.slice(0, 1).toUpperCase() + pre.slice(1);
+	  var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
+	  var style = window.document.documentElement.style;
+	
+	  if ('transform' in style) {
+	    return '';
+	  }
+	
+	  for (var i = 0; i < prefixes.length; ++i) {
+	    if (prefixes[i] + 'Transform' in style) {
+	      return prefixes[i];
+	    }
+	  }
+	  return '';
 	}
 	
 	exports.default = generatePrefix();
@@ -767,7 +769,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var node = _reactDom2.default.findDOMNode(draggable);
 	
 	  if (typeof bounds === 'string') {
-	    var boundNode = undefined;
+	    var boundNode = void 0;
 	    if (bounds === 'parent') {
 	      boundNode = node.parentNode;
 	    } else {
@@ -1061,6 +1063,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	
 	      _this.props.onDrag(e, coreEvent);
+	    }, _this.onMouseDown = function (e) {
+	      dragEventFor = eventsFor.mouse; // on touchscreen laptops we could switch back to mouse
+	
+	      return _this.handleDragStart(e);
+	    }, _this.onMouseUp = function (e) {
+	      dragEventFor = eventsFor.mouse;
+	
+	      return _this.handleDragStop(e);
 	    }, _this.onTouchStart = function (e) {
 	      // We're on a touch device now, so change the event handlers
 	      dragEventFor = eventsFor.touch;
@@ -1103,9 +1113,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        // Note: mouseMove handler is attached to document so it will still function
 	        // when the user drags quickly and leaves the bounds of the element.
-	        onMouseDown: this.handleDragStart,
+	        onMouseDown: this.onMouseDown,
 	        onTouchStart: this.onTouchStart,
-	        onMouseUp: this.handleDragStop,
+	        onMouseUp: this.onMouseUp,
 	        onTouchEnd: this.onTouchEnd
 	      });
 	    }

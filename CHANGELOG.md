@@ -1,5 +1,12 @@
 # Changelog
 
+### 1.3.5 (Apr 8, 2016)
+
+- Add React v15 to devDeps. `<Draggable>` supports both `v0.14` and `v15`.
+- Enhancement: Clean up usage of browser prefixes; modern browsers will no longer use them.
+  - This also removes the duplicated `user-select` style that is created on the `<body>` while dragging.
+- Internal: Test fixes.
+
 ### 1.3.4 (Mar 5, 2016)
 
 - Bugfix: Scrolling while dragging caused items to move unpredictably.
