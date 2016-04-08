@@ -18,8 +18,8 @@ describe('react-draggable', function () {
 
   afterEach(function() {
     try {
-      React.unmountComponentAtNode(React.findDOMNode(drag).parentNode);
-      // TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag));
+      TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag)); // reset user-select
+      React.unmountComponentAtNode(ReactDOM.findDOMNode(drag).parentNode);
     } catch(e) { return; }
   });
 
@@ -40,9 +40,13 @@ describe('react-draggable', function () {
     it('should pass style and className properly from child', function () {
       drag = (<Draggable><div className="foo" style={{color: 'black'}}/></Draggable>);
 
-      expect(renderToHTML(drag)).toEqual('<div class="foo react-draggable" ' +
-        'style="touch-action:none;color:black;transform:translate(0px,0px);' + dashedBrowserPrefix +
-        'transform:translate(0px,0px);" data-reactid=".1"></div>');
+      var node = renderToNode(drag);
+      if ('touchAction' in document.body.style) {
+        expect(node.getAttribute('style')).toMatch('touch-action: none');
+      }
+      expect(node.getAttribute('style')).toMatch('color: black');
+      expect(node.getAttribute('style')).toMatch(dashedBrowserPrefix + 'transform: translate\\\(0px, 0px\\\)');
+      expect(node.getAttribute('class')).toEqual('foo react-draggable');
     });
 
     // NOTE: this runs a shallow renderer, which DOES NOT actually render <DraggableCore>
@@ -57,14 +61,14 @@ describe('react-draggable', function () {
           <div
             className="react-draggable"
             style={{
-              'transform': 'translate(0px,0px)',
-              [browserPrefix + 'Transform']: 'translate(0px,0px)'
+              [browserPrefix + 'Transform']: 'translate(0px, 0px)'
             }}
             transform={null} />
         </DraggableCore>
       );
+
       // Not easy to actually test equality here. The functions are bound as static props so we can't test those easily.
-      var toOmit = ['onStart', 'onStop', 'onDrag'];
+      var toOmit = ['onStart', 'onStop', 'onDrag', 'onMouseDown', 'children'];
       expect(_.isEqual(
         _.omit(output.props, toOmit),
         _.omit(expected.props, toOmit))
@@ -225,8 +229,7 @@ describe('react-draggable', function () {
 
       var style = node.getAttribute('style');
       expect(dragged).toEqual(true);
-      // No idea why the spacing is different here
-      expect(style.indexOf('transform:translate(0px,0px);')).not.toEqual(-1);
+      expect(style.indexOf('transform: translate(0px, 0px);')).not.toEqual(-1);
     });
 
     it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
@@ -261,12 +264,11 @@ describe('react-draggable', function () {
 
       var transform = node.getAttribute('transform');
       expect(transform.indexOf('translate(100,100)')).not.toEqual(-1);
-
     });
 
     it('should add and remove user-select styles', function () {
       // Karma runs in firefox in our tests
-      var userSelectStyle = ';user-select: none;' + dashedBrowserPrefix + 'user-select: none;';
+      var userSelectStyle = ';' + dashedBrowserPrefix + 'user-select: none;';
 
       drag = TestUtils.renderIntoDocument(
         <Draggable>
@@ -285,7 +287,7 @@ describe('react-draggable', function () {
 
     it('should not add and remove user-select styles when disabled', function () {
       // Karma runs in firefox in our tests
-      var userSelectStyle = ';user-select: none;' + dashedBrowserPrefix + 'user-select: none;';
+      var userSelectStyle = ';' + dashedBrowserPrefix + 'user-select: none;';
 
       drag = TestUtils.renderIntoDocument(
         <Draggable enableUserSelectHack={false}>
@@ -447,7 +449,11 @@ describe('react-draggable', function () {
 });
 
 function renderToHTML(component) {
-  return ReactDOM.findDOMNode(TestUtils.renderIntoDocument(component)).outerHTML;
+  return renderToNode(component).outerHTML;
+}
+
+function renderToNode(component) {
+  return ReactDOM.findDOMNode(TestUtils.renderIntoDocument(component));
 }
 
 // Simulate a movement; can't use TestUtils here because it uses react's event system only,
