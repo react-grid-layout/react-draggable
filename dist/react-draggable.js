@@ -498,6 +498,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	
 	var matchesSelectorFunc = '';
 	function matchesSelector(el, selector) {
 	  if (!matchesSelectorFunc) {
@@ -579,17 +581,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var y = _ref.y;
 	
 	  // Replace unitless items with px
-	  var out = { transform: 'translate(' + x + 'px,' + y + 'px)' };
-	  // Add single prefixed property as well
-	  if (_getPrefix2.default) {
-	    out[_getPrefix2.default + 'Transform'] = out.transform;
-	  }
-	  return out;
+	  return _defineProperty({}, (0, _getPrefix.browserPrefixToKey)('transform', _getPrefix2.default), 'translate(' + x + 'px,' + y + 'px)');
 	}
 	
-	function createSVGTransform(_ref2) {
-	  var x = _ref2.x;
-	  var y = _ref2.y;
+	function createSVGTransform(_ref3) {
+	  var x = _ref3.x;
+	  var y = _ref3.y;
 	
 	  return 'translate(' + x + ',' + y + ')';
 	}
@@ -597,7 +594,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	// User-select Hacks:
 	//
 	// Useful for preventing blue highlights all over everything when dragging.
-	var userSelectStyle = ';' + (_getPrefix2.default ? '-' + _getPrefix2.default.toLowerCase() + '-' : '') + 'user-select: none;';
+	var userSelectPrefix = (0, _getPrefix.getPrefix)('user-select');
+	var userSelect = (0, _getPrefix.browserPrefixToStyle)('user-select', userSelectPrefix);
+	var userSelectStyle = ';' + userSelect + ': none;';
 	
 	function addUserSelectStyles() {
 	  var style = document.body.getAttribute('style') || '';
@@ -705,29 +704,58 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.generatePrefix = generatePrefix;
-	function generatePrefix() {
+	exports.getPrefix = getPrefix;
+	exports.browserPrefixToKey = browserPrefixToKey;
+	exports.browserPrefixToStyle = browserPrefixToStyle;
+	
+	var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
+	function getPrefix() {
+	  var prop = arguments.length <= 0 || arguments[0] === undefined ? 'transform' : arguments[0];
+	
 	  // Checking specifically for 'window.document' is for pseudo-browser server-side
 	  // environments that define 'window' as the global context.
 	  // E.g. React-rails (see https://github.com/reactjs/react-rails/pull/84)
 	  if (typeof window === 'undefined' || typeof window.document === 'undefined') return '';
 	
-	  var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
 	  var style = window.document.documentElement.style;
 	
-	  if ('transform' in style) {
-	    return '';
+	  if (prop in style) return '';
+	
+	  for (var i = 0; i < prefixes.length; i++) {
+	    if (browserPrefixToStyle(prop, prefixes[i]) in style) return prefixes[i];
 	  }
 	
-	  for (var i = 0; i < prefixes.length; ++i) {
-	    if (prefixes[i] + 'Transform' in style) {
-	      return prefixes[i];
-	    }
-	  }
 	  return '';
 	}
 	
-	exports.default = generatePrefix();
+	function browserPrefixToKey(prop, prefix) {
+	  return prefix ? '' + prefix + kebabToTitleCase(prop) : prop;
+	}
+	
+	function browserPrefixToStyle(prop, prefix) {
+	  return prefix ? '-' + prefix.toLowerCase() + '-' + prop : prop;
+	}
+	
+	function kebabToTitleCase(str) {
+	  var out = '';
+	  var shouldCapitalize = true;
+	  for (var i = 0; i < str.length; i++) {
+	    if (shouldCapitalize) {
+	      out += str[i].toUpperCase();
+	      shouldCapitalize = false;
+	    } else if (str[i] === '-') {
+	      shouldCapitalize = true;
+	    } else {
+	      out += str[i];
+	    }
+	  }
+	  return out;
+	}
+	
+	// Default export is the prefix itself, like 'Moz', 'Webkit', etc
+	// Note that you may have to re-test for certain things; for instance, Chrome 50
+	// can handle unprefixed `transform`, but not unprefixed `user-select`
+	exports.default = getPrefix();
 
 /***/ },
 /* 8 */

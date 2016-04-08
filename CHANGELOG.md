@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.3.7 (Apr 8, 2016)
+
+- Fix `user-select` prefixing, which may be different than the prefix required for `transform`.
+
 ### 1.3.6 (Apr 8, 2016)
 
 - Republish after 1.3.5 contained a bundling error.
