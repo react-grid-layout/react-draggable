@@ -243,7 +243,6 @@ export default class DraggableCore extends React.Component {
     removeEvent(document, eventsFor.touch.move, this.handleDrag);
     removeEvent(document, eventsFor.mouse.stop, this.handleDragStop);
     removeEvent(document, eventsFor.touch.stop, this.handleDragStop);
-    removeEvent(document, 'scroll', this.handleScroll);
     if (this.props.enableUserSelectHack) removeUserSelectStyles();
   }
 
@@ -273,10 +272,10 @@ export default class DraggableCore extends React.Component {
     if (this.props.enableUserSelectHack) addUserSelectStyles();
 
     // Get the current drag point from the event. This is used as the offset.
-    let {clientX, clientY} = getControlPosition(e);
+    let {x, y} = getControlPosition(e, this);
 
     // Create an event object with all the data parents need to make a decision here.
-    let coreEvent = createCoreEvent(this, clientX, clientY);
+    let coreEvent = createCoreEvent(this, x, y);
 
     log('DraggableCore: handleDragStart: %j', coreEvent.position);
 
@@ -292,15 +291,10 @@ export default class DraggableCore extends React.Component {
     this.setState({
       dragging: true,
 
-      lastX: clientX,
-      lastY: clientY,
-      // Stored so we can adjust our offset if scrolled.
-      scrollX: document.body.scrollLeft,
-      scrollY: document.body.scrollTop
+      lastX: x,
+      lastY: y
     });
 
-    // Translate el on page scroll.
-    addEvent(document, 'scroll', this.handleScroll);
     // Add events to the document directly so we catch when the user's mouse/touch moves outside of
     // this element. We use different events depending on whether or not we have detected that this
     // is a touch-capable device.
@@ -312,20 +306,19 @@ export default class DraggableCore extends React.Component {
     // Return if this is a touch event, but not the correct one for this element
     if (e.targetTouches && (e.targetTouches[0].identifier !== this.state.touchIdentifier)) return;
 
-    let {clientX, clientY} = getControlPosition(e);
+    let {x, y} = getControlPosition(e, this);
 
     // Snap to grid if prop has been provided
     if (Array.isArray(this.props.grid)) {
-      let deltaX = clientX - this.state.lastX, deltaY = clientY - this.state.lastY;
+      let deltaX = x - this.state.lastX, deltaY = y - this.state.lastY;
       [deltaX, deltaY] = snapToGrid(this.props.grid, deltaX, deltaY);
       if (!deltaX && !deltaY) return; // skip useless drag
-      clientX = this.state.lastX + deltaX, clientY = this.state.lastY + deltaY;
+      x = this.state.lastX + deltaX, y = this.state.lastY + deltaY;
     }
 
-    const coreEvent = createCoreEvent(this, clientX, clientY);
+    const coreEvent = createCoreEvent(this, x, y);
 
     log('DraggableCore: handleDrag: %j', coreEvent.position);
-
 
     // Call event handler. If it returns explicit false, trigger end.
     const shouldUpdate = this.props.onDrag(e, coreEvent);
@@ -335,8 +328,8 @@ export default class DraggableCore extends React.Component {
     }
 
     this.setState({
-      lastX: clientX,
-      lastY: clientY
+      lastX: x,
+      lastY: y
     });
   };
 
@@ -350,8 +343,8 @@ export default class DraggableCore extends React.Component {
     // Remove user-select hack
     if (this.props.enableUserSelectHack) removeUserSelectStyles();
 
-    let {clientX, clientY} = getControlPosition(e);
-    const coreEvent = createCoreEvent(this, clientX, clientY);
+    let {x, y} = getControlPosition(e, this);
+    const coreEvent = createCoreEvent(this, x, y);
 
     log('DraggableCore: handleDragStop: %j', coreEvent.position);
 
@@ -367,29 +360,8 @@ export default class DraggableCore extends React.Component {
 
     // Remove event handlers
     log('DraggableCore: Removing handlers');
-    removeEvent(document, 'scroll', this.handleScroll);
     removeEvent(document, dragEventFor.move, this.handleDrag);
     removeEvent(document, dragEventFor.stop, this.handleDragStop);
-  };
-
-  // When the user scrolls, adjust internal state so the draggable moves along the page properly.
-  // This only fires when a drag is active.
-  handleScroll: EventHandler = (e) => {
-    const s = this.state, x = document.body.scrollLeft, y = document.body.scrollTop;
-
-    // Create the usual event, but make the scroll offset our deltas.
-    let coreEvent = createCoreEvent(this);
-    coreEvent.position.deltaX = x - s.scrollX;
-    coreEvent.position.deltaY = y - s.scrollY;
-
-    this.setState({
-      lastX: s.lastX + coreEvent.position.deltaX,
-      lastY: s.lastY + coreEvent.position.deltaY,
-      scrollX: x,
-      scrollY: y
-    });
-
-    this.props.onDrag(e, coreEvent);
   };
 
   onMouseDown: EventHandler = (e) => {

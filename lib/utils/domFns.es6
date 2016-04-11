@@ -101,6 +101,19 @@ export function innerWidth(node: HTMLElement): number {
   return width;
 }
 
+// Get from offsetParent
+export function offsetXYFromParentOf(e: MouseEvent, node: HTMLElement & {offsetParent: HTMLElement}): {x: number, y: number} {
+  const evt = e.targetTouches ? e.targetTouches[0] : e;
+
+  const offsetParent = node.offsetParent || document.body;
+  const offsetParentRect = node.offsetParent === document.body ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
+
+  const x = evt.clientX + offsetParent.scrollLeft - offsetParentRect.left;
+  const y = evt.clientY + offsetParent.scrollTop - offsetParentRect.top;
+
+  return {x, y};
+}
+
 export function createCSSTransform({x, y}: {x: number, y: number}): Object {
   // Replace unitless items with px
   return {[browserPrefixToKey('transform', browserPrefix)]: 'translate(' + x + 'px,' + y + 'px)'};

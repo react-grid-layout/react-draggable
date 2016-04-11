@@ -1,12 +1,12 @@
 // @flow
-import React from 'react';
 import {isNum, int} from './shims';
 import ReactDOM from 'react-dom';
-import {innerWidth, innerHeight, outerWidth, outerHeight} from './domFns';
+import {innerWidth, innerHeight, offsetXYFromParentOf, outerWidth, outerHeight} from './domFns';
 
 import type Draggable from '../Draggable';
+import type DraggableCore from '../DraggableCore';
 export type ControlPosition = {
-  clientX: number, clientY: number
+  x: number, y: number
 };
 export type Bounds = {
   left: number, top: number, right: number, bottom: number
@@ -59,21 +59,18 @@ export function snapToGrid(grid: [number, number], pendingX: number, pendingY: n
   return [x, y];
 }
 
-export function canDragX(draggable: React.Component): boolean {
+export function canDragX(draggable: Draggable): boolean {
   return draggable.props.axis === 'both' || draggable.props.axis === 'x';
 }
 
-export function canDragY(draggable: React.Component): boolean {
+export function canDragY(draggable: Draggable): boolean {
   return draggable.props.axis === 'both' || draggable.props.axis === 'y';
 }
 
-// Get {clientX, clientY} positions from event.
-export function getControlPosition(e: Event): ControlPosition {
-  let position = (e.targetTouches && e.targetTouches[0]) || e;
-  return {
-    clientX: position.clientX,
-    clientY: position.clientY
-  };
+// Get {x, y} positions from event.
+export function getControlPosition(e: MouseEvent, draggableCore: DraggableCore): ControlPosition {
+  const node = ReactDOM.findDOMNode(draggableCore);
+  return offsetXYFromParentOf(e, node);
 }
 
 // A lot faster than stringify/parse
