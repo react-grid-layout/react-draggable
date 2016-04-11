@@ -11,7 +11,7 @@ export function getPrefix(prop: string='transform'): string {
   if (prop in style) return '';
 
   for (let i = 0; i < prefixes.length; i++) {
-    if (browserPrefixToStyle(prop, prefixes[i]) in style) return prefixes[i];
+    if (browserPrefixToKey(prop, prefixes[i]) in style) return prefixes[i];
   }
 
   return '';
