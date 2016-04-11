@@ -20,6 +20,6 @@ export function int(a: string): number {
 
 export function dontSetMe(props: Object, propName: string, componentName: string) {
   if (props[propName]) {
-    throw new Error(`Invalid prop ${propName} passed to ${componentName} - do not set this, set it on the child.`);
+    return new Error(`Invalid prop ${propName} passed to ${componentName} - do not set this, set it on the child.`);
   }
 }
