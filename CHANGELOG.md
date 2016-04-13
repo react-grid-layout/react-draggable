@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.4.0-beta1 (Apr 13, 2016)
+
+- Major improvements to drag tracking that now support even nested scroll boxes.
+  - This revision is being done as a pre-release to ensure there are no unforeseen issues with the offset changes.
+
 ### 1.3.7 (Apr 8, 2016)
 
 - Fix `user-select` prefixing, which may be different than the prefix required for `transform`.

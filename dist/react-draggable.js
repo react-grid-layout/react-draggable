@@ -478,6 +478,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.outerWidth = outerWidth;
 	exports.innerHeight = innerHeight;
 	exports.innerWidth = innerWidth;
+	exports.offsetXYFromParentOf = offsetXYFromParentOf;
 	exports.createCSSTransform = createCSSTransform;
 	exports.createSVGTransform = createSVGTransform;
 	exports.addUserSelectStyles = addUserSelectStyles;
@@ -574,6 +575,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  width -= (0, _shims.int)(computedStyle.paddingLeft);
 	  width -= (0, _shims.int)(computedStyle.paddingRight);
 	  return width;
+	}
+	
+	// Get from offsetParent
+	function offsetXYFromParentOf(e, node) {
+	  var evt = e.targetTouches ? e.targetTouches[0] : e;
+	
+	  var offsetParent = node.offsetParent || document.body;
+	  var offsetParentRect = node.offsetParent === document.body ? { left: 0, top: 0 } : offsetParent.getBoundingClientRect();
+	
+	  var x = evt.clientX + offsetParent.scrollLeft - offsetParentRect.left;
+	  var y = evt.clientY + offsetParent.scrollTop - offsetParentRect.top;
+	
+	  return { x: x, y: y };
 	}
 	
 	function createCSSTransform(_ref) {
@@ -691,7 +705,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function dontSetMe(props, propName, componentName) {
 	  if (props[propName]) {
-	    throw new Error('Invalid prop ' + propName + ' passed to ' + componentName + ' - do not set this, set it on the child.');
+	    return new Error('Invalid prop ' + propName + ' passed to ' + componentName + ' - do not set this, set it on the child.');
 	  }
 	}
 
@@ -722,7 +736,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (prop in style) return '';
 	
 	  for (var i = 0; i < prefixes.length; i++) {
-	    if (browserPrefixToStyle(prop, prefixes[i]) in style) return prefixes[i];
+	    if (browserPrefixToKey(prop, prefixes[i]) in style) return prefixes[i];
 	  }
 	
 	  return '';
@@ -771,10 +785,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.canDragX = canDragX;
 	exports.canDragY = canDragY;
 	exports.getControlPosition = getControlPosition;
-	
-	var _react = __webpack_require__(2);
-	
-	var _react2 = _interopRequireDefault(_react);
 	
 	var _shims = __webpack_require__(6);
 	
@@ -840,13 +850,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return draggable.props.axis === 'both' || draggable.props.axis === 'y';
 	}
 	
-	// Get {clientX, clientY} positions from event.
-	function getControlPosition(e) {
-	  var position = e.targetTouches && e.targetTouches[0] || e;
-	  return {
-	    clientX: position.clientX,
-	    clientY: position.clientY
-	  };
+	// Get {x, y} positions from event.
+	function getControlPosition(e, draggableCore) {
+	  var node = _reactDom2.default.findDOMNode(draggableCore);
+	  return (0, _domFns.offsetXYFromParentOf)(e, node);
 	}
 	
 	// A lot faster than stringify/parse
@@ -962,14 +969,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // Get the current drag point from the event. This is used as the offset.
 	
-	      var _getControlPosition = (0, _positionFns.getControlPosition)(e);
+	      var _getControlPosition = (0, _positionFns.getControlPosition)(e, _this);
 	
-	      var clientX = _getControlPosition.clientX;
-	      var clientY = _getControlPosition.clientY;
+	      var x = _getControlPosition.x;
+	      var y = _getControlPosition.y;
 	
 	      // Create an event object with all the data parents need to make a decision here.
 	
-	      var coreEvent = (0, _domFns.createCoreEvent)(_this, clientX, clientY);
+	      var coreEvent = (0, _domFns.createCoreEvent)(_this, x, y);
 	
 	      (0, _log2.default)('DraggableCore: handleDragStart: %j', coreEvent.position);
 	
@@ -984,15 +991,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _this.setState({
 	        dragging: true,
 	
-	        lastX: clientX,
-	        lastY: clientY,
-	        // Stored so we can adjust our offset if scrolled.
-	        scrollX: document.body.scrollLeft,
-	        scrollY: document.body.scrollTop
+	        lastX: x,
+	        lastY: y
 	      });
 	
-	      // Translate el on page scroll.
-	      (0, _domFns.addEvent)(document, 'scroll', _this.handleScroll);
 	      // Add events to the document directly so we catch when the user's mouse/touch moves outside of
 	      // this element. We use different events depending on whether or not we have detected that this
 	      // is a touch-capable device.
@@ -1002,16 +1004,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Return if this is a touch event, but not the correct one for this element
 	      if (e.targetTouches && e.targetTouches[0].identifier !== _this.state.touchIdentifier) return;
 	
-	      var _getControlPosition2 = (0, _positionFns.getControlPosition)(e);
+	      var _getControlPosition2 = (0, _positionFns.getControlPosition)(e, _this);
 	
-	      var clientX = _getControlPosition2.clientX;
-	      var clientY = _getControlPosition2.clientY;
+	      var x = _getControlPosition2.x;
+	      var y = _getControlPosition2.y;
 	
 	      // Snap to grid if prop has been provided
 	
 	      if (Array.isArray(_this.props.grid)) {
-	        var deltaX = clientX - _this.state.lastX,
-	            deltaY = clientY - _this.state.lastY;
+	        var deltaX = x - _this.state.lastX,
+	            deltaY = y - _this.state.lastY;
 	
 	        var _snapToGrid = (0, _positionFns.snapToGrid)(_this.props.grid, deltaX, deltaY);
 	
@@ -1021,10 +1023,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        deltaY = _snapToGrid2[1];
 	
 	        if (!deltaX && !deltaY) return; // skip useless drag
-	        clientX = _this.state.lastX + deltaX, clientY = _this.state.lastY + deltaY;
+	        x = _this.state.lastX + deltaX, y = _this.state.lastY + deltaY;
 	      }
 	
-	      var coreEvent = (0, _domFns.createCoreEvent)(_this, clientX, clientY);
+	      var coreEvent = (0, _domFns.createCoreEvent)(_this, x, y);
 	
 	      (0, _log2.default)('DraggableCore: handleDrag: %j', coreEvent.position);
 	
@@ -1036,8 +1038,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	
 	      _this.setState({
-	        lastX: clientX,
-	        lastY: clientY
+	        lastX: x,
+	        lastY: y
 	      });
 	    }, _this.handleDragStop = function (e) {
 	      if (!_this.state.dragging) return;
@@ -1049,12 +1051,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Remove user-select hack
 	      if (_this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)();
 	
-	      var _getControlPosition3 = (0, _positionFns.getControlPosition)(e);
+	      var _getControlPosition3 = (0, _positionFns.getControlPosition)(e, _this);
 	
-	      var clientX = _getControlPosition3.clientX;
-	      var clientY = _getControlPosition3.clientY;
+	      var x = _getControlPosition3.x;
+	      var y = _getControlPosition3.y;
 	
-	      var coreEvent = (0, _domFns.createCoreEvent)(_this, clientX, clientY);
+	      var coreEvent = (0, _domFns.createCoreEvent)(_this, x, y);
 	
 	      (0, _log2.default)('DraggableCore: handleDragStop: %j', coreEvent.position);
 	
@@ -1070,27 +1072,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // Remove event handlers
 	      (0, _log2.default)('DraggableCore: Removing handlers');
-	      (0, _domFns.removeEvent)(document, 'scroll', _this.handleScroll);
 	      (0, _domFns.removeEvent)(document, dragEventFor.move, _this.handleDrag);
 	      (0, _domFns.removeEvent)(document, dragEventFor.stop, _this.handleDragStop);
-	    }, _this.handleScroll = function (e) {
-	      var s = _this.state,
-	          x = document.body.scrollLeft,
-	          y = document.body.scrollTop;
-	
-	      // Create the usual event, but make the scroll offset our deltas.
-	      var coreEvent = (0, _domFns.createCoreEvent)(_this);
-	      coreEvent.position.deltaX = x - s.scrollX;
-	      coreEvent.position.deltaY = y - s.scrollY;
-	
-	      _this.setState({
-	        lastX: s.lastX + coreEvent.position.deltaX,
-	        lastY: s.lastY + coreEvent.position.deltaY,
-	        scrollX: x,
-	        scrollY: y
-	      });
-	
-	      _this.props.onDrag(e, coreEvent);
 	    }, _this.onMouseDown = function (e) {
 	      dragEventFor = eventsFor.mouse; // on touchscreen laptops we could switch back to mouse
 	
@@ -1121,13 +1104,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _domFns.removeEvent)(document, eventsFor.touch.move, this.handleDrag);
 	      (0, _domFns.removeEvent)(document, eventsFor.mouse.stop, this.handleDragStop);
 	      (0, _domFns.removeEvent)(document, eventsFor.touch.stop, this.handleDragStop);
-	      (0, _domFns.removeEvent)(document, 'scroll', this.handleScroll);
 	      if (this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)();
 	    }
-	
-	    // When the user scrolls, adjust internal state so the draggable moves along the page properly.
-	    // This only fires when a drag is active.
-	
 	
 	    // Same as onMouseDown (start drag), but now consider this a touch device.
 	
