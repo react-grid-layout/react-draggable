@@ -90,11 +90,9 @@ onStop: Function,
 //  disabled status.
 onMouseDown: Function,
 
-// Specifies the `x` and `y` that the dragged item should start at.
-// This is generally not necessary to use (you can use absolute or relative
-// positioning of the child directly), but can be helpful for uniformity in
-// your callbacks and with css transforms.
-start: {x: number, y: number},
+// Specifies the `x` and `y` of the dragged item.
+// Useful if you need a start position or to move the draggable programmatically.
+position: {x: number, y: number},
 
 // If true, will not call any drag handlers.
 disabled: boolean,
