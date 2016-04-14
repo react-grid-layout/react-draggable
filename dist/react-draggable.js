@@ -137,80 +137,82 @@ return /******/ (function(modules) { // webpackBootstrap
 	      dragged: false,
 	
 	      // Current transform x and y.
-	      clientX: _this.props.start.x, clientY: _this.props.start.y,
+	      x: _this.props.position ? _this.props.position.x : _this.props.defaultPosition.x,
+	      y: _this.props.position ? _this.props.position.y : _this.props.defaultPosition.y,
 	
 	      // Used for compensating for out-of-bounds drags
 	      slackX: 0, slackY: 0,
 	
 	      // Can only determine if SVG after mounting
 	      isElementSVG: false
-	    }, _this.onDragStart = function (e, coreEvent) {
-	      (0, _log2.default)('Draggable: onDragStart: %j', coreEvent.position);
+	    }, _this.onDragStart = function (e, coreData) {
+	      (0, _log2.default)('Draggable: onDragStart: %j', coreData);
 	
 	      // Short-circuit if user's callback killed it.
-	      var shouldStart = _this.props.onStart(e, (0, _domFns.createUIEvent)(_this, coreEvent));
+	      var shouldStart = _this.props.onStart(e, (0, _positionFns.createDraggableData)(_this, coreData));
 	      // Kills start event on core as well, so move handlers are never bound.
 	      if (shouldStart === false) return false;
 	
 	      _this.setState({ dragging: true, dragged: true });
-	    }, _this.onDrag = function (e, coreEvent) {
+	    }, _this.onDrag = function (e, coreData) {
 	      if (!_this.state.dragging) return false;
-	      (0, _log2.default)('Draggable: onDrag: %j', coreEvent.position);
+	      (0, _log2.default)('Draggable: onDrag: %j', coreData);
 	
-	      var uiEvent = (0, _domFns.createUIEvent)(_this, coreEvent);
+	      var uiData = (0, _positionFns.createDraggableData)(_this, coreData);
 	
 	      var newState = {
-	        clientX: uiEvent.position.left,
-	        clientY: uiEvent.position.top
+	        x: uiData.x,
+	        y: uiData.y
 	      };
 	
 	      // Keep within bounds.
 	      if (_this.props.bounds) {
 	        // Save original x and y.
-	        var _clientX = newState.clientX;
-	        var _clientY = newState.clientY;
+	        var _x = newState.x;
+	        var _y = newState.y;
 	
 	        // Add slack to the values used to calculate bound position. This will ensure that if
 	        // we start removing slack, the element won't react to it right away until it's been
 	        // completely removed.
 	
-	        newState.clientX += _this.state.slackX;
-	        newState.clientY += _this.state.slackY;
+	        newState.x += _this.state.slackX;
+	        newState.y += _this.state.slackY;
 	
 	        // Get bound position. This will ceil/floor the x and y within the boundaries.
+	        // $FlowBug
 	
 	
 	        // Recalculate slack by noting how much was shaved by the boundPosition handler.
 	
-	        var _getBoundPosition = (0, _positionFns.getBoundPosition)(_this, newState.clientX, newState.clientY);
+	        var _getBoundPosition = (0, _positionFns.getBoundPosition)(_this, newState.x, newState.y);
 	
 	        var _getBoundPosition2 = _slicedToArray(_getBoundPosition, 2);
 	
-	        newState.clientX = _getBoundPosition2[0];
-	        newState.clientY = _getBoundPosition2[1];
-	        newState.slackX = _this.state.slackX + (_clientX - newState.clientX);
-	        newState.slackY = _this.state.slackY + (_clientY - newState.clientY);
+	        newState.x = _getBoundPosition2[0];
+	        newState.y = _getBoundPosition2[1];
+	        newState.slackX = _this.state.slackX + (_x - newState.x);
+	        newState.slackY = _this.state.slackY + (_y - newState.y);
 	
 	        // Update the event we fire to reflect what really happened after bounds took effect.
-	        uiEvent.position.left = _clientX;
-	        uiEvent.position.top = _clientY;
-	        uiEvent.deltaX = newState.clientX - _this.state.clientX;
-	        uiEvent.deltaY = newState.clientY - _this.state.clientY;
+	        uiData.x = _x;
+	        uiData.y = _y;
+	        uiData.deltaX = newState.x - _this.state.x;
+	        uiData.deltaY = newState.y - _this.state.y;
 	      }
 	
 	      // Short-circuit if user's callback killed it.
-	      var shouldUpdate = _this.props.onDrag(e, uiEvent);
+	      var shouldUpdate = _this.props.onDrag(e, uiData);
 	      if (shouldUpdate === false) return false;
 	
 	      _this.setState(newState);
-	    }, _this.onDragStop = function (e, coreEvent) {
+	    }, _this.onDragStop = function (e, coreData) {
 	      if (!_this.state.dragging) return false;
 	
 	      // Short-circuit if user's callback killed it.
-	      var shouldStop = _this.props.onStop(e, (0, _domFns.createUIEvent)(_this, coreEvent));
+	      var shouldStop = _this.props.onStop(e, (0, _positionFns.createDraggableData)(_this, coreData));
 	      if (shouldStop === false) return false;
 	
-	      (0, _log2.default)('Draggable: onDragStop: %j', coreEvent.position);
+	      (0, _log2.default)('Draggable: onDragStop: %j', coreData);
 	
 	      _this.setState({
 	        dragging: false,
@@ -229,6 +231,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      // Set x/y if position has changed
+	      if (nextProps.position && (!this.props.position || nextProps.position.x !== this.props.position.x || nextProps.position.y !== this.props.position.y)) {
+	        this.setState({ x: nextProps.position.x, y: nextProps.position.y });
+	      }
+	    }
+	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
 	      this.setState({ dragging: false }); // prevents invariant if unmounted while dragging
@@ -243,12 +253,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // without worrying about whether or not it is relatively or absolutely positioned.
 	      // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
 	      // has a clean slate.
+	      var controlled = Boolean(this.props.position);
+	      var position = this.props.position || this.props.defaultPosition;
 	      var transformOpts = {
 	        // Set left if horizontal drag is enabled
-	        x: (0, _positionFns.canDragX)(this) ? this.state.clientX : this.props.start.x,
+	        x: (0, _positionFns.canDragX)(this) && !controlled ? this.state.x : position.x,
 	
 	        // Set top if vertical drag is enabled
-	        y: (0, _positionFns.canDragY)(this) ? this.state.clientY : this.props.start.y
+	        y: (0, _positionFns.canDragY)(this) && !controlled ? this.state.y : position.y
 	      };
 	
 	      // If this element was SVG, we use the `transform` attribute.
@@ -256,11 +268,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        svgTransform = (0, _domFns.createSVGTransform)(transformOpts);
 	      } else {
 	        style = (0, _domFns.createCSSTransform)(transformOpts);
-	      }
-	
-	      // zIndex option
-	      if (this.state.dragging && !isNaN(this.props.zIndex)) {
-	        style.zIndex = this.props.zIndex;
 	      }
 	
 	      // Mark with class while dragging
@@ -331,14 +338,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * ```
 	   */
 	  bounds: _react.PropTypes.oneOfType([_react.PropTypes.shape({
-	    left: _react.PropTypes.Number,
-	    right: _react.PropTypes.Number,
-	    top: _react.PropTypes.Number,
-	    bottom: _react.PropTypes.Number
+	    left: _react.PropTypes.number,
+	    right: _react.PropTypes.number,
+	    top: _react.PropTypes.number,
+	    bottom: _react.PropTypes.number
 	  }), _react.PropTypes.string, _react.PropTypes.oneOf([false])]),
 	
 	  /**
-	   * `start` specifies the x and y that the dragged item should start at
+	   * `defaultPosition` specifies the x and y that the dragged item should start at
 	   *
 	   * Example:
 	   *
@@ -346,7 +353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *      let App = React.createClass({
 	   *          render: function () {
 	   *              return (
-	   *                  <Draggable start={{x: 25, y: 25}}>
+	   *                  <Draggable defaultPosition={{x: 25, y: 25}}>
 	   *                      <div>I start with transformX: 25px and transformY: 25px;</div>
 	   *                  </Draggable>
 	   *              );
@@ -354,29 +361,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *      });
 	   * ```
 	   */
-	  start: _react.PropTypes.shape({
+	  defaultPosition: _react.PropTypes.shape({
 	    x: _react.PropTypes.number,
 	    y: _react.PropTypes.number
 	  }),
 	
 	  /**
-	   * `zIndex` specifies the zIndex to use while dragging.
+	   * `position`, if present, defines the current position of the element.
+	   *
+	   *  This is similar to how form elements in React work - if no `position` is supplied, the component
+	   *  is uncontrolled.
 	   *
 	   * Example:
 	   *
 	   * ```jsx
-	   *   let App = React.createClass({
-	   *       render: function () {
-	   *           return (
-	   *               <Draggable zIndex={100}>
-	   *                   <div>I have a zIndex</div>
-	   *               </Draggable>
-	   *           );
-	   *       }
-	   *   });
+	   *      let App = React.createClass({
+	   *          render: function () {
+	   *              return (
+	   *                  <Draggable defaultPosition={{x: 25, y: 25}}>
+	   *                      <div>I start with transformX: 25px and transformY: 25px;</div>
+	   *                  </Draggable>
+	   *              );
+	   *          }
+	   *      });
 	   * ```
 	   */
-	  zIndex: _react.PropTypes.number,
+	  position: _react.PropTypes.shape({
+	    x: _react.PropTypes.number,
+	    y: _react.PropTypes.number
+	  }),
 	
 	  /**
 	   * These properties should be defined on the child, not here.
@@ -388,8 +401,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	Draggable.defaultProps = _extends({}, _DraggableCore2.default.defaultProps, {
 	  axis: 'both',
 	  bounds: false,
-	  start: { x: 0, y: 0 },
-	  zIndex: NaN
+	  defaultPosition: { x: 0, y: 0 },
+	  position: null
 	});
 	exports.default = Draggable;
 
@@ -484,18 +497,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.addUserSelectStyles = addUserSelectStyles;
 	exports.removeUserSelectStyles = removeUserSelectStyles;
 	exports.styleHacks = styleHacks;
-	exports.createCoreEvent = createCoreEvent;
-	exports.createUIEvent = createUIEvent;
 	
 	var _shims = __webpack_require__(6);
 	
 	var _getPrefix = __webpack_require__(7);
 	
 	var _getPrefix2 = _interopRequireDefault(_getPrefix);
-	
-	var _reactDom = __webpack_require__(3);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -631,43 +638,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    touchAction: 'none'
 	  }, childStyle);
 	}
-	
-	// Create an event exposed by <DraggableCore>
-	function createCoreEvent(draggable, clientX, clientY) {
-	  // State changes are often (but not always!) async. We want the latest value.
-	  var state = draggable._pendingState || draggable.state;
-	  var isStart = !(0, _shims.isNum)(state.lastX);
-	
-	  return {
-	    node: _reactDom2.default.findDOMNode(draggable),
-	    position: isStart ?
-	    // If this is our first move, use the clientX and clientY as last coords.
-	    {
-	      deltaX: 0, deltaY: 0,
-	      lastX: clientX, lastY: clientY,
-	      clientX: clientX, clientY: clientY
-	    } :
-	    // Otherwise calculate proper values.
-	    {
-	      deltaX: clientX - state.lastX, deltaY: clientY - state.lastY,
-	      lastX: state.lastX, lastY: state.lastY,
-	      clientX: clientX, clientY: clientY
-	    }
-	  };
-	}
-	
-	// Create an event exposed by <Draggable>
-	function createUIEvent(draggable, coreEvent) {
-	  return {
-	    node: _reactDom2.default.findDOMNode(draggable),
-	    position: {
-	      left: draggable.state.clientX + coreEvent.position.deltaX,
-	      top: draggable.state.clientY + coreEvent.position.deltaY
-	    },
-	    deltaX: coreEvent.position.deltaX,
-	    deltaY: coreEvent.position.deltaY
-	  };
-	}
 
 /***/ },
 /* 6 */
@@ -785,6 +755,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.canDragX = canDragX;
 	exports.canDragY = canDragY;
 	exports.getControlPosition = getControlPosition;
+	exports.createCoreData = createCoreData;
+	exports.createDraggableData = createDraggableData;
 	
 	var _shims = __webpack_require__(6);
 	
@@ -796,9 +768,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function getBoundPosition(draggable, clientX, clientY) {
+	function getBoundPosition(draggable, x, y) {
 	  // If no bounds, short-circuit and move on
-	  if (!draggable.props.bounds) return [clientX, clientY];
+	  if (!draggable.props.bounds) return [x, y];
 	
 	  // Clone new bounds
 	  var bounds = draggable.props.bounds;
@@ -826,14 +798,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	
 	  // Keep x and y below right and bottom limits...
-	  if ((0, _shims.isNum)(bounds.right)) clientX = Math.min(clientX, bounds.right);
-	  if ((0, _shims.isNum)(bounds.bottom)) clientY = Math.min(clientY, bounds.bottom);
+	  if ((0, _shims.isNum)(bounds.right)) x = Math.min(x, bounds.right);
+	  if ((0, _shims.isNum)(bounds.bottom)) y = Math.min(y, bounds.bottom);
 	
 	  // But above left and top limits.
-	  if ((0, _shims.isNum)(bounds.left)) clientX = Math.max(clientX, bounds.left);
-	  if ((0, _shims.isNum)(bounds.top)) clientY = Math.max(clientY, bounds.top);
+	  if ((0, _shims.isNum)(bounds.left)) x = Math.max(x, bounds.left);
+	  if ((0, _shims.isNum)(bounds.top)) y = Math.max(y, bounds.top);
 	
-	  return [clientX, clientY];
+	  return [x, y];
 	}
 	
 	function snapToGrid(grid, pendingX, pendingY) {
@@ -852,8 +824,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// Get {x, y} positions from event.
 	function getControlPosition(e, draggableCore) {
-	  var node = _reactDom2.default.findDOMNode(draggableCore);
-	  return (0, _domFns.offsetXYFromParentOf)(e, node);
+	  return (0, _domFns.offsetXYFromParentOf)(e, _reactDom2.default.findDOMNode(draggableCore));
+	}
+	
+	// Create an data object exposed by <DraggableCore>'s events
+	function createCoreData(draggable, x, y) {
+	  // State changes are often (but not always!) async. We want the latest value.
+	  var state = draggable._pendingState || draggable.state;
+	  var isStart = !(0, _shims.isNum)(state.lastX);
+	
+	  if (isStart) {
+	    // If this is our first move, use the x and y as last coords.
+	    return {
+	      node: _reactDom2.default.findDOMNode(this),
+	      deltaX: 0, deltaY: 0,
+	      lastX: x, lastY: y,
+	      x: x, y: y
+	    };
+	  } else {
+	    // Otherwise calculate proper values.
+	    return {
+	      node: _reactDom2.default.findDOMNode(this),
+	      deltaX: x - state.lastX, deltaY: y - state.lastY,
+	      lastX: state.lastX, lastY: state.lastY,
+	      x: x, y: y
+	    };
+	  }
+	}
+	
+	// Create an data exposed by <Draggable>'s events
+	function createDraggableData(draggable, coreData) {
+	  return {
+	    node: coreData.node,
+	    x: draggable.state.x + coreData.deltaX,
+	    y: draggable.state.y + coreData.deltaY,
+	    deltaX: coreData.deltaX,
+	    deltaY: coreData.deltaY,
+	    lastX: draggable.state.x,
+	    lastY: draggable.state.y
+	  };
 	}
 	
 	// A lot faster than stringify/parse
@@ -943,7 +952,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(DraggableCore)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
 	      dragging: false,
 	      // Used while dragging to determine deltas.
-	      lastX: null, lastY: null
+	      lastX: NaN, lastY: NaN,
+	      touchIdentifier: NaN
 	    }, _this.handleDragStart = function (e) {
 	      // Make it possible to attach event handlers on top of this one.
 	      _this.props.onMouseDown(e);
@@ -952,7 +962,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!_this.props.allowAnyClick && typeof e.button === 'number' && e.button !== 0) return false;
 	
 	      // Short circuit if handle or cancel prop was provided and selector doesn't match.
-	      if (_this.props.disabled || _this.props.handle && !(0, _domFns.matchesSelector)(e.target, _this.props.handle) || _this.props.cancel && (0, _domFns.matchesSelector)(e.target, _this.props.cancel)) {
+	      if (_this.props.disabled || !(e.target instanceof Node) || _this.props.handle && !(0, _domFns.matchesSelector)(e.target, _this.props.handle) || _this.props.cancel && (0, _domFns.matchesSelector)(e.target, _this.props.cancel)) {
 	        return;
 	      }
 	
@@ -976,9 +986,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // Create an event object with all the data parents need to make a decision here.
 	
-	      var coreEvent = (0, _domFns.createCoreEvent)(_this, x, y);
+	      var coreEvent = (0, _positionFns.createCoreData)(_this, x, y);
 	
-	      (0, _log2.default)('DraggableCore: handleDragStart: %j', coreEvent.position);
+	      (0, _log2.default)('DraggableCore: handleDragStart: %j', coreEvent);
 	
 	      // Call event handler. If it returns explicit false, cancel.
 	      (0, _log2.default)('calling', _this.props.onStart);
@@ -1026,14 +1036,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        x = _this.state.lastX + deltaX, y = _this.state.lastY + deltaY;
 	      }
 	
-	      var coreEvent = (0, _domFns.createCoreEvent)(_this, x, y);
+	      var coreEvent = (0, _positionFns.createCoreData)(_this, x, y);
 	
-	      (0, _log2.default)('DraggableCore: handleDrag: %j', coreEvent.position);
+	      (0, _log2.default)('DraggableCore: handleDrag: %j', coreEvent);
 	
 	      // Call event handler. If it returns explicit false, trigger end.
 	      var shouldUpdate = _this.props.onDrag(e, coreEvent);
 	      if (shouldUpdate === false) {
-	        _this.handleDragStop({});
+	        _this.handleDragStop(new MouseEvent());
 	        return;
 	      }
 	
@@ -1056,15 +1066,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var x = _getControlPosition3.x;
 	      var y = _getControlPosition3.y;
 	
-	      var coreEvent = (0, _domFns.createCoreEvent)(_this, x, y);
+	      var coreEvent = (0, _positionFns.createCoreData)(_this, x, y);
 	
-	      (0, _log2.default)('DraggableCore: handleDragStop: %j', coreEvent.position);
+	      (0, _log2.default)('DraggableCore: handleDragStop: %j', coreEvent);
 	
 	      // Reset the el.
 	      _this.setState({
 	        dragging: false,
-	        lastX: null,
-	        lastY: null
+	        lastX: NaN,
+	        lastY: NaN
 	      });
 	
 	      // Call event handler
@@ -1143,20 +1153,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * `disabled`, if true, stops the <Draggable> from dragging. All handlers,
 	   * with the exception of `onMouseDown`, will not fire.
-	   *
-	   * Example:
-	   *
-	   * ```jsx
-	   *   let App = React.createClass({
-	   *       render: function () {
-	   *           return (
-	   *               <Draggable disabled={true}>
-	   *                   <div>I can't be dragged</div>
-	   *               </Draggable>
-	   *           );
-	   *       }
-	   *   });
-	   * ```
 	   */
 	  disabled: _react.PropTypes.bool,
 	
@@ -1169,20 +1165,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  /**
 	   * `grid` specifies the x and y that dragging should snap to.
-	   *
-	   * Example:
-	   *
-	   * ```jsx
-	   *   let App = React.createClass({
-	   *       render: function () {
-	   *           return (
-	   *               <Draggable grid={[25, 25]}>
-	   *                   <div>I snap to a 25 x 25 grid</div>
-	   *               </Draggable>
-	   *           );
-	   *       }
-	   *   });
-	   * ```
 	   */
 	  grid: _react.PropTypes.arrayOf(_react.PropTypes.number),
 	
@@ -1220,7 +1202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *               <Draggable cancel=".cancel">
 	   *                   <div>
 	   *                     <div className="cancel">You can't drag from here</div>
-	   *            <div>Dragging here works fine</div>
+	   *                     <div>Dragging here works fine</div>
 	   *                   </div>
 	   *               </Draggable>
 	   *           );
@@ -1233,68 +1215,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Called when dragging starts.
 	   * If this function returns the boolean false, dragging will be canceled.
-	   *
-	   * Example:
-	   *
-	   * ```js
-	   *  function (event, ui) {}
-	   * ```
-	   *
-	   * `event` is the Event that was triggered.
-	   * `ui` is an object:
-	   *
-	   * ```js
-	   *  {
-	   *    position: {top: 0, left: 0}
-	   *  }
-	   * ```
 	   */
 	  onStart: _react.PropTypes.func,
 	
 	  /**
 	   * Called while dragging.
 	   * If this function returns the boolean false, dragging will be canceled.
-	   *
-	   * Example:
-	   *
-	   * ```js
-	   *  function (event, ui) {}
-	   * ```
-	   *
-	   * `event` is the Event that was triggered.
-	   * `ui` is an object:
-	   *
-	   * ```js
-	   *  {
-	   *    position: {top: 0, left: 0}
-	   *  }
-	   * ```
 	   */
 	  onDrag: _react.PropTypes.func,
 	
 	  /**
 	   * Called when dragging stops.
-	   *
-	   * Example:
-	   *
-	   * ```js
-	   *  function (event, ui) {}
-	   * ```
-	   *
-	   * `event` is the Event that was triggered.
-	   * `ui` is an object:
-	   *
-	   * ```js
-	   *  {
-	   *    position: {top: 0, left: 0}
-	   *  }
-	   * ```
+	   * If this function returns the boolean false, the drag will remain active.
 	   */
 	  onStop: _react.PropTypes.func,
 	
 	  /**
 	   * A workaround option which can be passed if onMouseDown needs to be accessed,
-	   * since it'll always be blocked (due to that there's internal use of onMouseDown)
+	   * since it'll always be blocked (as there is internal use of onMouseDown)
 	   */
 	  onMouseDown: _react.PropTypes.func,
 	
@@ -1330,6 +1268,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	exports.default = log;
+	
+	/*eslint no-console:0*/
 	function log() {
 	  var _console;
 	
