@@ -1,4 +1,4 @@
-/*eslint no-unused-vars:0*/
+/*eslint no-unused-vars:0, no-console:0*/
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react/lib/ReactTestUtils';
@@ -387,8 +387,8 @@ describe('react-draggable', function () {
   describe('draggable callbacks', function () {
     it('should call back on drag', function () {
       function onDrag(event, data) {
-        expect(data.position.left).toEqual(100);
-        expect(data.position.top).toEqual(100);
+        expect(data.x).toEqual(100);
+        expect(data.y).toEqual(100);
         expect(data.deltaX).toEqual(100);
         expect(data.deltaY).toEqual(100);
       }
@@ -404,8 +404,8 @@ describe('react-draggable', function () {
 
     it('should call back with offset left/top, not client', function () {
       function onDrag(event, data) {
-        expect(data.position.left).toEqual(100);
-        expect(data.position.top).toEqual(100);
+        expect(data.x).toEqual(100);
+        expect(data.y).toEqual(100);
         expect(data.deltaX).toEqual(100);
         expect(data.deltaY).toEqual(100);
       }

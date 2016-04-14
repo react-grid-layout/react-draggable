@@ -1,10 +1,12 @@
 // @flow
-import {default as React, PropTypes} from 'react';
-import {matchesSelector, createCoreEvent, addEvent, removeEvent, addUserSelectStyles,
+import React, {PropTypes} from 'react';
+import {matchesSelector, addEvent, removeEvent, addUserSelectStyles,
         removeUserSelectStyles, styleHacks} from './utils/domFns';
-import {getControlPosition, snapToGrid} from './utils/positionFns';
+import {createCoreData, getControlPosition, snapToGrid} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
 import log from './utils/log';
+
+import type {EventHandler} from './utils/types';
 
 // Simple abstraction for dragging events names.
 const eventsFor = {
@@ -23,11 +25,11 @@ const eventsFor = {
 // Default to mouse events.
 let dragEventFor = eventsFor.mouse;
 
-type EventHandler = (e: Event) => void;
 type CoreState = {
   dragging: boolean,
-  lastX: ?number,
-  lastY: ?number
+  lastX: number,
+  lastY: number,
+  touchIdentifier: number
 };
 
 //
@@ -53,20 +55,6 @@ export default class DraggableCore extends React.Component {
     /**
      * `disabled`, if true, stops the <Draggable> from dragging. All handlers,
      * with the exception of `onMouseDown`, will not fire.
-     *
-     * Example:
-     *
-     * ```jsx
-     *   let App = React.createClass({
-     *       render: function () {
-     *           return (
-     *               <Draggable disabled={true}>
-     *                   <div>I can't be dragged</div>
-     *               </Draggable>
-     *           );
-     *       }
-     *   });
-     * ```
      */
     disabled: PropTypes.bool,
 
@@ -79,20 +67,6 @@ export default class DraggableCore extends React.Component {
 
     /**
      * `grid` specifies the x and y that dragging should snap to.
-     *
-     * Example:
-     *
-     * ```jsx
-     *   let App = React.createClass({
-     *       render: function () {
-     *           return (
-     *               <Draggable grid={[25, 25]}>
-     *                   <div>I snap to a 25 x 25 grid</div>
-     *               </Draggable>
-     *           );
-     *       }
-     *   });
-     * ```
      */
     grid: PropTypes.arrayOf(PropTypes.number),
 
@@ -130,7 +104,7 @@ export default class DraggableCore extends React.Component {
      *               <Draggable cancel=".cancel">
      *                   <div>
      *                     <div className="cancel">You can't drag from here</div>
-     *            <div>Dragging here works fine</div>
+     *                     <div>Dragging here works fine</div>
      *                   </div>
      *               </Draggable>
      *           );
@@ -143,68 +117,24 @@ export default class DraggableCore extends React.Component {
     /**
      * Called when dragging starts.
      * If this function returns the boolean false, dragging will be canceled.
-     *
-     * Example:
-     *
-     * ```js
-     *  function (event, ui) {}
-     * ```
-     *
-     * `event` is the Event that was triggered.
-     * `ui` is an object:
-     *
-     * ```js
-     *  {
-     *    position: {top: 0, left: 0}
-     *  }
-     * ```
      */
     onStart: PropTypes.func,
 
     /**
      * Called while dragging.
      * If this function returns the boolean false, dragging will be canceled.
-     *
-     * Example:
-     *
-     * ```js
-     *  function (event, ui) {}
-     * ```
-     *
-     * `event` is the Event that was triggered.
-     * `ui` is an object:
-     *
-     * ```js
-     *  {
-     *    position: {top: 0, left: 0}
-     *  }
-     * ```
      */
     onDrag: PropTypes.func,
 
     /**
      * Called when dragging stops.
-     *
-     * Example:
-     *
-     * ```js
-     *  function (event, ui) {}
-     * ```
-     *
-     * `event` is the Event that was triggered.
-     * `ui` is an object:
-     *
-     * ```js
-     *  {
-     *    position: {top: 0, left: 0}
-     *  }
-     * ```
+     * If this function returns the boolean false, the drag will remain active.
      */
     onStop: PropTypes.func,
 
     /**
      * A workaround option which can be passed if onMouseDown needs to be accessed,
-     * since it'll always be blocked (due to that there's internal use of onMouseDown)
+     * since it'll always be blocked (as there is internal use of onMouseDown)
      */
     onMouseDown: PropTypes.func,
 
@@ -233,7 +163,8 @@ export default class DraggableCore extends React.Component {
   state: CoreState = {
     dragging: false,
     // Used while dragging to determine deltas.
-    lastX: null, lastY: null
+    lastX: NaN, lastY: NaN,
+    touchIdentifier: NaN
   };
 
   componentWillUnmount() {
@@ -246,7 +177,7 @@ export default class DraggableCore extends React.Component {
     if (this.props.enableUserSelectHack) removeUserSelectStyles();
   }
 
-  handleDragStart: EventHandler = (e) => {
+  handleDragStart: EventHandler<MouseEvent> = (e) => {
     // Make it possible to attach event handlers on top of this one.
     this.props.onMouseDown(e);
 
@@ -255,6 +186,7 @@ export default class DraggableCore extends React.Component {
 
     // Short circuit if handle or cancel prop was provided and selector doesn't match.
     if (this.props.disabled ||
+      (!(e.target instanceof Node)) ||
       (this.props.handle && !matchesSelector(e.target, this.props.handle)) ||
       (this.props.cancel && matchesSelector(e.target, this.props.cancel))) {
       return;
@@ -272,16 +204,16 @@ export default class DraggableCore extends React.Component {
     if (this.props.enableUserSelectHack) addUserSelectStyles();
 
     // Get the current drag point from the event. This is used as the offset.
-    let {x, y} = getControlPosition(e, this);
+    const {x, y} = getControlPosition(e, this);
 
     // Create an event object with all the data parents need to make a decision here.
-    let coreEvent = createCoreEvent(this, x, y);
+    const coreEvent = createCoreData(this, x, y);
 
-    log('DraggableCore: handleDragStart: %j', coreEvent.position);
+    log('DraggableCore: handleDragStart: %j', coreEvent);
 
     // Call event handler. If it returns explicit false, cancel.
     log('calling', this.props.onStart);
-    let shouldUpdate = this.props.onStart(e, coreEvent);
+    const shouldUpdate = this.props.onStart(e, coreEvent);
     if (shouldUpdate === false) return;
 
 
@@ -302,7 +234,7 @@ export default class DraggableCore extends React.Component {
     addEvent(document, dragEventFor.stop, this.handleDragStop);
   };
 
-  handleDrag: EventHandler = (e) => {
+  handleDrag: EventHandler<MouseEvent> = (e) => {
     // Return if this is a touch event, but not the correct one for this element
     if (e.targetTouches && (e.targetTouches[0].identifier !== this.state.touchIdentifier)) return;
 
@@ -316,14 +248,14 @@ export default class DraggableCore extends React.Component {
       x = this.state.lastX + deltaX, y = this.state.lastY + deltaY;
     }
 
-    const coreEvent = createCoreEvent(this, x, y);
+    const coreEvent = createCoreData(this, x, y);
 
-    log('DraggableCore: handleDrag: %j', coreEvent.position);
+    log('DraggableCore: handleDrag: %j', coreEvent);
 
     // Call event handler. If it returns explicit false, trigger end.
     const shouldUpdate = this.props.onDrag(e, coreEvent);
     if (shouldUpdate === false) {
-      this.handleDragStop({});
+      this.handleDragStop(new MouseEvent());
       return;
     }
 
@@ -333,7 +265,7 @@ export default class DraggableCore extends React.Component {
     });
   };
 
-  handleDragStop: EventHandler = (e) => {
+  handleDragStop: EventHandler<MouseEvent> = (e) => {
     if (!this.state.dragging) return;
 
     // Short circuit if this is not the correct touch event. `changedTouches` contains all
@@ -343,16 +275,16 @@ export default class DraggableCore extends React.Component {
     // Remove user-select hack
     if (this.props.enableUserSelectHack) removeUserSelectStyles();
 
-    let {x, y} = getControlPosition(e, this);
-    const coreEvent = createCoreEvent(this, x, y);
+    const {x, y} = getControlPosition(e, this);
+    const coreEvent = createCoreData(this, x, y);
 
-    log('DraggableCore: handleDragStop: %j', coreEvent.position);
+    log('DraggableCore: handleDragStop: %j', coreEvent);
 
     // Reset the el.
     this.setState({
       dragging: false,
-      lastX: null,
-      lastY: null
+      lastX: NaN,
+      lastY: NaN
     });
 
     // Call event handler
@@ -364,27 +296,27 @@ export default class DraggableCore extends React.Component {
     removeEvent(document, dragEventFor.stop, this.handleDragStop);
   };
 
-  onMouseDown: EventHandler = (e) => {
+  onMouseDown: EventHandler<MouseEvent> = (e) => {
     dragEventFor = eventsFor.mouse; // on touchscreen laptops we could switch back to mouse
 
     return this.handleDragStart(e);
   };
 
-  onMouseUp: EventHandler = (e) => {
+  onMouseUp: EventHandler<MouseEvent> = (e) => {
     dragEventFor = eventsFor.mouse;
 
     return this.handleDragStop(e);
   };
 
   // Same as onMouseDown (start drag), but now consider this a touch device.
-  onTouchStart: EventHandler = (e) => {
+  onTouchStart: EventHandler<MouseEvent> = (e) => {
     // We're on a touch device now, so change the event handlers
     dragEventFor = eventsFor.touch;
 
     return this.handleDragStart(e);
   };
 
-  onTouchEnd: EventHandler = (e) => {
+  onTouchEnd: EventHandler<MouseEvent> = (e) => {
     // We're on a touch device now, so change the event handlers
     dragEventFor = eventsFor.touch;
 

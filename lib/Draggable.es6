@@ -1,20 +1,19 @@
 // @flow
-import {default as React, PropTypes} from 'react';
+import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 // $FlowIgnore
 import classNames from 'classnames';
-import {createUIEvent, createCSSTransform, createSVGTransform} from './utils/domFns';
-import {canDragX, canDragY, getBoundPosition} from './utils/positionFns';
+import {createCSSTransform, createSVGTransform} from './utils/domFns';
+import {canDragX, canDragY, createDraggableData, getBoundPosition} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
 import DraggableCore from './DraggableCore';
 import log from './utils/log';
+import type {DraggableEventHandler} from './utils/types';
 
-import type {CoreEvent} from './utils/domFns';
-export type CoreEventHandler = (e: Event, coreEvent: CoreEvent) => void | false;
-export type DraggableState = {
+type DraggableState = {
   dragging: boolean,
   dragged: boolean,
-  clientX: number, clientY: number,
+  x: number, y: number,
   slackX: number, slackY: number,
   isElementSVG: boolean
 };
@@ -74,17 +73,17 @@ export default class Draggable extends React.Component {
      */
     bounds: PropTypes.oneOfType([
       PropTypes.shape({
-        left: PropTypes.Number,
-        right: PropTypes.Number,
-        top: PropTypes.Number,
-        bottom: PropTypes.Number
+        left: PropTypes.number,
+        right: PropTypes.number,
+        top: PropTypes.number,
+        bottom: PropTypes.number
       }),
       PropTypes.string,
       PropTypes.oneOf([false])
     ]),
 
     /**
-     * `start` specifies the x and y that the dragged item should start at
+     * `defaultPosition` specifies the x and y that the dragged item should start at
      *
      * Example:
      *
@@ -92,7 +91,7 @@ export default class Draggable extends React.Component {
      *      let App = React.createClass({
      *          render: function () {
      *              return (
-     *                  <Draggable start={{x: 25, y: 25}}>
+     *                  <Draggable defaultPosition={{x: 25, y: 25}}>
      *                      <div>I start with transformX: 25px and transformY: 25px;</div>
      *                  </Draggable>
      *              );
@@ -100,29 +99,35 @@ export default class Draggable extends React.Component {
      *      });
      * ```
      */
-    start: PropTypes.shape({
+    defaultPosition: PropTypes.shape({
       x: PropTypes.number,
       y: PropTypes.number
     }),
 
     /**
-     * `zIndex` specifies the zIndex to use while dragging.
+     * `position`, if present, defines the current position of the element.
+     *
+     *  This is similar to how form elements in React work - if no `position` is supplied, the component
+     *  is uncontrolled.
      *
      * Example:
      *
      * ```jsx
-     *   let App = React.createClass({
-     *       render: function () {
-     *           return (
-     *               <Draggable zIndex={100}>
-     *                   <div>I have a zIndex</div>
-     *               </Draggable>
-     *           );
-     *       }
-     *   });
+     *      let App = React.createClass({
+     *          render: function () {
+     *              return (
+     *                  <Draggable defaultPosition={{x: 25, y: 25}}>
+     *                      <div>I start with transformX: 25px and transformY: 25px;</div>
+     *                  </Draggable>
+     *              );
+     *          }
+     *      });
      * ```
      */
-    zIndex: PropTypes.number,
+    position: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number
+    }),
 
     /**
      * These properties should be defined on the child, not here.
@@ -136,8 +141,8 @@ export default class Draggable extends React.Component {
     ...DraggableCore.defaultProps,
     axis: 'both',
     bounds: false,
-    start: {x: 0, y: 0},
-    zIndex: NaN
+    defaultPosition: {x: 0, y: 0},
+    position: null
   };
 
   state: DraggableState = {
@@ -148,7 +153,8 @@ export default class Draggable extends React.Component {
     dragged: false,
 
     // Current transform x and y.
-    clientX: this.props.start.x, clientY: this.props.start.y,
+    x: this.props.position ? this.props.position.x : this.props.defaultPosition.x,
+    y: this.props.position ? this.props.position.y : this.props.defaultPosition.y,
 
     // Used for compensating for out-of-bounds drags
     slackX: 0, slackY: 0,
@@ -164,72 +170,85 @@ export default class Draggable extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps: Object) {
+    // Set x/y if position has changed
+    if (nextProps.position &&
+        (!this.props.position ||
+          nextProps.position.x !== this.props.position.x ||
+          nextProps.position.y !== this.props.position.y
+        )
+      ) {
+      this.setState({ x: nextProps.position.x, y: nextProps.position.y });
+    }
+  }
+
   componentWillUnmount() {
     this.setState({dragging: false}); // prevents invariant if unmounted while dragging
   }
 
-  onDragStart: CoreEventHandler = (e, coreEvent) => {
-    log('Draggable: onDragStart: %j', coreEvent.position);
+  onDragStart: DraggableEventHandler = (e, coreData) => {
+    log('Draggable: onDragStart: %j', coreData);
 
     // Short-circuit if user's callback killed it.
-    let shouldStart = this.props.onStart(e, createUIEvent(this, coreEvent));
+    const shouldStart = this.props.onStart(e, createDraggableData(this, coreData));
     // Kills start event on core as well, so move handlers are never bound.
     if (shouldStart === false) return false;
 
     this.setState({dragging: true, dragged: true});
   };
 
-  onDrag: CoreEventHandler = (e, coreEvent) => {
+  onDrag: DraggableEventHandler = (e, coreData) => {
     if (!this.state.dragging) return false;
-    log('Draggable: onDrag: %j', coreEvent.position);
+    log('Draggable: onDrag: %j', coreData);
 
-    let uiEvent = createUIEvent(this, coreEvent);
+    const uiData = createDraggableData(this, coreData);
 
-    let newState = {
-      clientX: uiEvent.position.left,
-      clientY: uiEvent.position.top
+    const newState: $Shape<DraggableState> = {
+      x: uiData.x,
+      y: uiData.y
     };
 
     // Keep within bounds.
     if (this.props.bounds) {
       // Save original x and y.
-      let {clientX, clientY} = newState;
+      const {x, y} = newState;
 
       // Add slack to the values used to calculate bound position. This will ensure that if
       // we start removing slack, the element won't react to it right away until it's been
       // completely removed.
-      newState.clientX += this.state.slackX;
-      newState.clientY += this.state.slackY;
+      newState.x += this.state.slackX;
+      newState.y += this.state.slackY;
 
       // Get bound position. This will ceil/floor the x and y within the boundaries.
-      [newState.clientX, newState.clientY] = getBoundPosition(this, newState.clientX, newState.clientY);
+      // $FlowBug
+      [newState.x, newState.y] = getBoundPosition(this, newState.x, newState.y);
 
       // Recalculate slack by noting how much was shaved by the boundPosition handler.
-      newState.slackX = this.state.slackX + (clientX - newState.clientX);
-      newState.slackY = this.state.slackY + (clientY - newState.clientY);
+      newState.slackX = this.state.slackX + (x - newState.x);
+      newState.slackY = this.state.slackY + (y - newState.y);
 
       // Update the event we fire to reflect what really happened after bounds took effect.
-      uiEvent.position.left = clientX;
-      uiEvent.position.top = clientY;
-      uiEvent.deltaX = newState.clientX - this.state.clientX;
-      uiEvent.deltaY = newState.clientY - this.state.clientY;
+      uiData.x = x;
+      uiData.y = y;
+      uiData.deltaX = newState.x - this.state.x;
+      uiData.deltaY = newState.y - this.state.y;
     }
 
     // Short-circuit if user's callback killed it.
-    let shouldUpdate = this.props.onDrag(e, uiEvent);
+    const shouldUpdate = this.props.onDrag(e, uiData);
     if (shouldUpdate === false) return false;
 
     this.setState(newState);
   };
 
-  onDragStop: CoreEventHandler = (e, coreEvent) => {
+  onDragStop: DraggableEventHandler = (e, coreData) => {
     if (!this.state.dragging) return false;
 
     // Short-circuit if user's callback killed it.
-    let shouldStop = this.props.onStop(e, createUIEvent(this, coreEvent));
+    const shouldStop = this.props.onStop(e, createDraggableData(this, coreData));
     if (shouldStop === false) return false;
 
-    log('Draggable: onDragStop: %j', coreEvent.position);
+    log('Draggable: onDragStop: %j', coreData);
 
     this.setState({
       dragging: false,
@@ -245,16 +264,18 @@ export default class Draggable extends React.Component {
     // without worrying about whether or not it is relatively or absolutely positioned.
     // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
     // has a clean slate.
+    const controlled = Boolean(this.props.position);
+    const position = this.props.position || this.props.defaultPosition;
     const transformOpts = {
       // Set left if horizontal drag is enabled
-      x: canDragX(this) ?
-        this.state.clientX :
-        this.props.start.x,
+      x: canDragX(this) && !controlled ?
+        this.state.x :
+        position.x,
 
       // Set top if vertical drag is enabled
-      y: canDragY(this) ?
-        this.state.clientY :
-        this.props.start.y
+      y: canDragY(this) && !controlled ?
+        this.state.y :
+        position.y
     };
 
     // If this element was SVG, we use the `transform` attribute.
@@ -264,13 +285,8 @@ export default class Draggable extends React.Component {
       style = createCSSTransform(transformOpts);
     }
 
-    // zIndex option
-    if (this.state.dragging && !isNaN(this.props.zIndex)) {
-      style.zIndex = this.props.zIndex;
-    }
-
     // Mark with class while dragging
-    let className = classNames((this.props.children.props.className || ''), 'react-draggable', {
+    const className = classNames((this.props.children.props.className || ''), 'react-draggable', {
       'react-draggable-dragging': this.state.dragging,
       'react-draggable-dragged': this.state.dragged
     });

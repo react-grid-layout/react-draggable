@@ -67,46 +67,15 @@ React.DOM elements support the above six properties by default, so you may use t
 Props:
 
 ```js
+type DraggableEventHandler = (e: Event, data: DraggableData) => void | false;
+type DraggableData = {
+  node: HTMLElement,
+  // lastX + deltaX === x
+  x: number, y: number,
+  deltaX: number, deltaY: number,
+  lastX: number, lastY: number
+};
 {
-// Called when dragging starts. If `false` is returned from this method,
-// dragging will cancel.
-// These callbacks are called with the arity:
-// (event: Event,
-//  {
-//     position: {left: number, top: number},
-//     deltaX: number,
-//     deltaY: number
-//  }
-// )
-onStart: Function,
-
-// Called while dragging.
-onDrag: Function,
-
-// Called when dragging stops.
-onStop: Function,
-
-// Called whenever the user mouses down. Called regardless of handle or
-//  disabled status.
-onMouseDown: Function,
-
-// Specifies the `x` and `y` that the dragged item should start at.
-// This is generally not necessary to use (you can use absolute or relative
-// positioning of the child directly), but can be helpful for uniformity in
-// your callbacks and with css transforms.
-start: {x: number, y: number},
-
-// If true, will not call any drag handlers.
-disabled: boolean,
-
-// Specifies a selector to be used to prevent drag initialization.
-// Example: '.body'
-cancel: string,
-
-// Specifies a selector to be used as the handle that initiates drag.
-// Example: '.handle'
-handle: string,
-
 // If set to `true`, will allow dragging on non left-button clicks.
 allowAnyClick: boolean,
 
@@ -127,11 +96,44 @@ axis: string,
 //   can be moved.
 bounds: {left: number, top: number, right: number, bottom: number} | string,
 
+// Specifies a selector to be used to prevent drag initialization.
+// Example: '.body'
+cancel: string,
+
+// Specifies the `x` and `y` that the dragged item should start at.
+// This is generally not necessary to use (you can use absolute or relative
+// positioning of the child directly), but can be helpful for uniformity in
+// your callbacks and with css transforms.
+defaultPosition: {x: number, y: number},
+
+// If true, will not call any drag handlers.
+disabled: boolean,
+
 // Specifies the x and y that dragging should snap to.
 grid: [number, number],
 
-// Specifies the zIndex to use while dragging.
-zIndex: number
+// Specifies a selector to be used as the handle that initiates drag.
+// Example: '.handle'
+handle: string,
+
+// Called whenever the user mouses down. Called regardless of handle or
+// disabled status.
+onMouseDown: (e: MouseEvent) => boolean,
+
+// Called when dragging starts. If `false` is returned any handler,
+// the action will cancel.
+onStart: DraggableEventHandler,
+
+// Called while dragging.
+onDrag: DraggableEventHandler,
+
+// Called when dragging stops.
+onStop: DraggableEventHandler,
+
+// Much like React form elements, if this property is present, the item
+// becomes 'controlled' and is not responsive to user input. Use `position`
+// if you need to have direct control of the element.
+position: {x: number, y: number}
 }
 ```
 
@@ -168,7 +170,8 @@ var App = React.createClass({
 			<Draggable
 				axis="x"
 				handle=".handle"
-				start={{x: 0, y: 0}}
+				defaultPosition={{x: 0, y: 0}}
+        position={null}
 				grid={[25, 25]}
 				zIndex={100}
 				onStart={this.handleStart}
@@ -198,28 +201,39 @@ on itself.
 
 ### DraggableCore API
 
-`<DraggableCore>` takes all of the above `<Draggable>` options, with the exception of:
+`<DraggableCore>` takes a limited subset of options:
 
-* `axis`
-* `bounds`
-* `start`
-* `zIndex`
+```js
+{
+  allowAnyClick: boolean,
+  cancel: string,
+  disabled: boolean,
+  enableUserSelectHack: boolean,
+  grid: [number, number],
+  handle: string,
+  onStart: DraggableEventHandler,
+  onDrag: DraggableEventHandler,
+  onStop: DraggableEventHandler
+  onMouseDown: (e: MouseEvent) => void
+}
+```
 
-Drag callbacks are called with the following parameters:
+Note that there is no start position. `<DraggableCore>` simply calls `drag` handlers with the below parameters,
+indicating its position (as inferred from the underlying MouseEvent) and deltas. It is up to the parent
+to set actual positions on `<DraggableCore>`.
+
+Drag callbacks (`onDragStart`, `onDrag`, `onDragEnd`) are called with the following parameters:
 
 ```js
 (
- event: Event,
- ui:{
-      node: Node
-      position:
-        {
-        	// lastX + deltaX === clientX
-          deltaX: number, deltaY: number,
-          lastX: number, lastY: number,
-          clientX: number, clientY: number
-        }
-    }
+  event: Event,
+  data: {
+    node: HTMLElement,
+  	// lastX + deltaX === x
+    x: number, y: number,
+    deltaX: number, deltaY: number,
+    lastX: number, lastY: number
+  }
 )
 ```
 
