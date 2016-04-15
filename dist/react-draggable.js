@@ -214,15 +214,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      (0, _log2.default)('Draggable: onDragStop: %j', coreData);
 	
-	      _this.setState({
+	      var newState = {
 	        dragging: false,
 	        slackX: 0,
 	        slackY: 0
-	      });
+	      };
+	
+	      // If this is a controlled component, the result of this operation will be to
+	      // revert back to the old position. We expect a handler on `onDragStop`, at the least.
+	      var controlled = Boolean(_this.props.position);
+	      if (controlled) {
+	        var _this$props$position = _this.props.position;
+	        var _x2 = _this$props$position.x;
+	        var _y2 = _this$props$position.y;
+	
+	        newState.x = _x2;
+	        newState.y = _y2;
+	      }
+	
+	      _this.setState(newState);
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 	
 	  _createClass(Draggable, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      if (this.props.position && !(this.props.onDrag || this.props.onStop)) {
+	        // eslint-disable-next-line
+	        console.warn('A `position` was applied to this <Draggable>, without drag handlers. This will make this ' + 'component effectively undraggable. Please attach `onDrag` or `onStop` handlers so you can adjust the ' + '`position` of this element.');
+	      }
+	    }
+	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      // Check to see if the element passed is an instanceof SVGElement
@@ -249,24 +271,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var style = {},
 	          svgTransform = null;
 	
-	      // Add a CSS transform to move the element around. This allows us to move the element around
-	      // without worrying about whether or not it is relatively or absolutely positioned.
-	      // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
-	      // has a clean slate.
+	      // If this is controlled, we don't want to move it - unless it's dragging.
 	      var controlled = Boolean(this.props.position);
+	      var draggable = !controlled || this.state.dragging;
+	
 	      var position = this.props.position || this.props.defaultPosition;
 	      var transformOpts = {
 	        // Set left if horizontal drag is enabled
-	        x: (0, _positionFns.canDragX)(this) && !controlled ? this.state.x : position.x,
+	        x: (0, _positionFns.canDragX)(this) && draggable ? this.state.x : position.x,
 	
 	        // Set top if vertical drag is enabled
-	        y: (0, _positionFns.canDragY)(this) && !controlled ? this.state.y : position.y
+	        y: (0, _positionFns.canDragY)(this) && draggable ? this.state.y : position.y
 	      };
 	
 	      // If this element was SVG, we use the `transform` attribute.
 	      if (this.state.isElementSVG) {
 	        svgTransform = (0, _domFns.createSVGTransform)(transformOpts);
 	      } else {
+	        // Add a CSS transform to move the element around. This allows us to move the element around
+	        // without worrying about whether or not it is relatively or absolutely positioned.
+	        // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
+	        // has a clean slate.
 	        style = (0, _domFns.createCSSTransform)(transformOpts);
 	      }
 	

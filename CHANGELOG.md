@@ -1,5 +1,13 @@
 # Changelog
 
+### 2.0.0-beta2 (Apr 14, 2016)
+
+- We're making a small deviation from React Core's controlled vs. uncontrolled scheme; for convenience,
+  `<Draggable>`s with a `position` property will still be draggable, but will revert to their old position
+  on drag stop. Attach an `onStop` or `onDrag` handler to synchronize state.
+  - A warning has been added informing users of this. If you make `<Draggable>` controlled but no callback
+    handlers, a warning will be printed.
+
 ### 2.0.0-beta1 (Apr 14, 2016)
 
 - Due to API changes, this is a major release.
