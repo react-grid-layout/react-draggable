@@ -24,7 +24,8 @@ repository and running `$ make`. This will create umd dist files in the `dist/` 
 
 ### Exports
 
-The default export is `<Draggable>`. At the `.DraggableCore` property is `<DraggableCore>`. Here's how to use it:
+The default export is `<Draggable>`. At the `.DraggableCore` property is [`<DraggableCore>`](#draggablecore).
+Here's how to use it:
 
 ```js
 // ES6
@@ -37,7 +38,7 @@ let Draggable = require('react-draggable');
 let DraggableCore = Draggable.DraggableCore;
 ```
 
-## Draggable
+## `<Draggable>`
 
 A `<Draggable>` element wraps an existing element and extends it with new event handlers and styles.
 It does not create a wrapper element in the DOM.
@@ -54,15 +55,15 @@ an intermediate wrapper (`<Draggable><span>...</span></Draggable>`) in this case
 The `<Draggable/>` component transparently adds draggable to whatever element is supplied as `this.props.children`.
 **Note**: Only a single element is allowed or an Error will be thrown.
 
-For the `<Draggable/>` component to correctly attach itself to its child, the child element must provide support for the following props:
+For the `<Draggable/>` component to correctly attach itself to its child, the child element must provide support
+for the following props:
 - `style` is used to give the transform css to the child.
 - `className` is used to apply the proper classes to the object being dragged.
-- `onMouseDown` is used along with onMouseUp to keep track of dragging state.
-- `onMouseUp` is used along with onMouseDown to keep track of dragging state.
-- `onTouchStart` is used along with onTouchEnd to keep track of dragging state.
-- `onTouchEnd` is used along with onTouchStart to keep track of dragging state.
+- `onMouseDown`, `onMouseUp`, `onTouchStart`, and `onTouchEnd`  are used to keep track of dragging state.
 
-React.DOM elements support the above six properties by default, so you may use those elements as children without any changes. If you wish to use a React component you created, you might find [this React page](https://facebook.github.io/react/docs/transferring-props.html) helpful.
+React.DOM elements support the above six properties by default, so you may use those elements as children without
+any changes. If you wish to use a React component you created, you might find
+[this React page](https://facebook.github.io/react/docs/transferring-props.html) helpful.
 
 Props:
 
@@ -189,15 +190,36 @@ var App = React.createClass({
 ReactDOM.render(<App/>, document.body);
 ```
 
-## <DraggableCore>
+## Controlled vs. Uncontrolled
 
-For users that require more control, a `<DraggableCore>` element is available. This is useful for more programmatic
-usage of the element. See [React-Resizable](https://github.com/STRML/react-resizable) and
-[React-Grid-Layout](https://github.com/STRML/react-grid-layout) for some examples of this.
+`<Draggable>` is a 'batteries-included' component that manages its own state. If you want to completely
+control the lifecycle of the component, use `<DraggableCore>`.
+
+For some users, they may want the nice state management that `<Draggable>` provides, but occasionally want
+to programmatically reposition their components. `<Draggable>` allows this customization via a system that
+is similar to how React handles form components.
+
+If the prop `position: {x: number, y: number}` is defined, the `<Draggable>` will ignore its internal state and use
+the provided position instead. Altneratively, you can seed the position using `defaultPosition`. Technically, since
+`<Draggable>` works only on position deltas, you could also seed the initial position using CSS `top/left`.
+
+We make one modification to the React philosophy here - we still allow dragging while a component is controlled.
+We then expect you to use at least an `onDrag` or `onStop` handler to synchronize state.
+
+To disable dragging while controlled, send the prop `disabled={true}` - at this point the `<Draggable>` will operate
+like a completely static component.
+
+## `<DraggableCore>`
+
+For users that require absolute control, a `<DraggableCore>` element is available. This is useful as an abstraction
+over touch and mouse events, but with full control. `<DraggableCore>` has no internal state.
+
+See [React-Resizable](https://github.com/STRML/react-resizable) and
+[React-Grid-Layout](https://github.com/STRML/react-grid-layout) for some usage examples.
 
 `<DraggableCore>` is a useful building block for other libraries that simply want to abstract browser-specific
 quirks and receive callbacks when a user attempts to move an element. It does not set styles or transforms
-on itself.
+on itself and thus must have callbacks attached to be useful.
 
 ### DraggableCore API
 
@@ -222,20 +244,7 @@ Note that there is no start position. `<DraggableCore>` simply calls `drag` hand
 indicating its position (as inferred from the underlying MouseEvent) and deltas. It is up to the parent
 to set actual positions on `<DraggableCore>`.
 
-Drag callbacks (`onDragStart`, `onDrag`, `onDragEnd`) are called with the following parameters:
-
-```js
-(
-  event: Event,
-  data: {
-    node: HTMLElement,
-  	// lastX + deltaX === x
-    x: number, y: number,
-    deltaX: number, deltaY: number,
-    lastX: number, lastY: number
-  }
-)
-```
+Drag callbacks (`onStart`, `onDrag`, `onStop`) are called with the [same arguments as `<Draggable>`](#draggable-api).
 
 ----
 
