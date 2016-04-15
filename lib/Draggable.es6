@@ -163,6 +163,15 @@ export default class Draggable extends React.Component {
     isElementSVG: false
   };
 
+  componentWillMount() {
+    if (this.props.position && !(this.props.onDrag || this.props.onStop)) {
+      // eslint-disable-next-line
+      console.warn('A `position` was applied to this <Draggable>, without drag handlers. This will make this ' +
+        'component effectively undraggable. Please attach `onDrag` or `onStop` handlers so you can adjust the ' +
+        '`position` of this element.');
+    }
+  }
+
   componentDidMount() {
     // Check to see if the element passed is an instanceof SVGElement
     if(ReactDOM.findDOMNode(this) instanceof SVGElement) {
@@ -250,30 +259,40 @@ export default class Draggable extends React.Component {
 
     log('Draggable: onDragStop: %j', coreData);
 
-    this.setState({
+    const newState: $Shape<DraggableState> = {
       dragging: false,
       slackX: 0,
       slackY: 0
-    });
+    };
+
+    // If this is a controlled component, the result of this operation will be to
+    // revert back to the old position. We expect a handler on `onDragStop`, at the least.
+    const controlled = Boolean(this.props.position);
+    if (controlled) {
+      const {x, y} = this.props.position;
+      newState.x = x;
+      newState.y = y;
+    }
+
+    this.setState(newState);
   };
 
   render(): React.Element {
     let style = {}, svgTransform = null;
 
-    // Add a CSS transform to move the element around. This allows us to move the element around
-    // without worrying about whether or not it is relatively or absolutely positioned.
-    // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
-    // has a clean slate.
+    // If this is controlled, we don't want to move it - unless it's dragging.
     const controlled = Boolean(this.props.position);
+    const draggable = !controlled || this.state.dragging;
+
     const position = this.props.position || this.props.defaultPosition;
     const transformOpts = {
       // Set left if horizontal drag is enabled
-      x: canDragX(this) && !controlled ?
+      x: canDragX(this) && draggable ?
         this.state.x :
         position.x,
 
       // Set top if vertical drag is enabled
-      y: canDragY(this) && !controlled ?
+      y: canDragY(this) && draggable ?
         this.state.y :
         position.y
     };
@@ -282,6 +301,10 @@ export default class Draggable extends React.Component {
     if (this.state.isElementSVG) {
       svgTransform = createSVGTransform(transformOpts);
     } else {
+      // Add a CSS transform to move the element around. This allows us to move the element around
+      // without worrying about whether or not it is relatively or absolutely positioned.
+      // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
+      // has a clean slate.
       style = createCSSTransform(transformOpts);
     }
 
