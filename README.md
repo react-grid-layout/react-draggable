@@ -1,12 +1,29 @@
-# React-Draggable [![Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable)
+# React-Draggable [![Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable) [![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)]()
 
 A simple component for making elements draggable.
 
-[View the Changelog](CHANGELOG.md)
+```js
+<Draggable>
+  <div>I can now be moved around!</div>
+</Draggable>
+```
 
-### Demo
+- [Demo](http://mzabriskie.github.io/react-draggable/example/)
+- [Changelog](CHANGELOG.md)
 
-[View Demo](http://mzabriskie.github.io/react-draggable/example/)
+------
+
+#### Technical Documentation
+
+- [Installing](#installing)
+- [Exports](#exports)
+- [Draggable](#draggable)
+- [Draggable Usage](#draggable-usage)
+- [Draggable API](#draggable-api)
+- [Controlled vs. Uncontrolled](#controlled-vs-uncontrolled)
+- [DraggableCore](#draggablecore)
+- [DraggableCore API](#draggablecore-api)
+
 
 
 ### Installing
@@ -49,11 +66,52 @@ positioning (relative, absolute, or static). Elements can also be moved between 
 If the item you are dragging already has a CSS Transform applied, it will be overwritten by `<Draggable>`. Use
 an intermediate wrapper (`<Draggable><span>...</span></Draggable>`) in this case.
 
+### Draggable Usage
+
+View the [Demo](http://mzabriskie.github.io/react-draggable/example/) and its
+[source](/example/index.html) for more.
+
+```js
+import React from 'react');
+import ReactDOM from 'react-dom';
+import Draggable from 'react-draggable';
+
+class App extends React.Element {
+
+  eventLogger = (e: MouseEvent, data: Object) => {
+    console.log('Event: ', event);
+    console.log('Data: ', data);
+  };
+
+  render() {
+    return (
+      <Draggable
+        axis="x"
+        handle=".handle"
+        defaultPosition={{x: 0, y: 0}}
+        position={null}
+        grid={[25, 25]}
+        zIndex={100}
+        onStart={this.handleStart}
+        onDrag={this.handleDrag}
+        onStop={this.handleStop}>
+        <div>
+          <div className="handle">Drag from here</div>
+          <div>This readme is really dragging on...</div>
+        </div>
+      </Draggable>
+    );
+  }
+}
+
+ReactDOM.render(<App/>, document.body);
+```
 
 ### Draggable API
 
-The `<Draggable/>` component transparently adds draggable to whatever element is supplied as `this.props.children`.
-**Note**: Only a single element is allowed or an Error will be thrown.
+The `<Draggable/>` component transparently adds draggability to its children.
+
+**Note**: Only a single child is allowed or an Error will be thrown.
 
 For the `<Draggable/>` component to correctly attach itself to its child, the child element must provide support
 for the following props:
@@ -61,13 +119,16 @@ for the following props:
 - `className` is used to apply the proper classes to the object being dragged.
 - `onMouseDown`, `onMouseUp`, `onTouchStart`, and `onTouchEnd`  are used to keep track of dragging state.
 
-React.DOM elements support the above six properties by default, so you may use those elements as children without
-any changes. If you wish to use a React component you created, you might find
-[this React page](https://facebook.github.io/react/docs/transferring-props.html) helpful.
+React.DOM elements support the above properties by default, so you may use those elements as children without
+any changes. If you wish to use a React component you created, you'll need to be sure to
+[transfer prop](https://facebook.github.io/react/docs/transferring-props.html).
 
-Props:
+#### `<Draggable>` Props:
 
 ```js
+//
+// Types:
+//
 type DraggableEventHandler = (e: Event, data: DraggableData) => void | false;
 type DraggableData = {
   node: HTMLElement,
@@ -76,6 +137,10 @@ type DraggableData = {
   deltaX: number, deltaY: number,
   lastX: number, lastY: number
 };
+
+//
+// Props:
+//
 {
 // If set to `true`, will allow dragging on non left-button clicks.
 allowAnyClick: boolean,
@@ -119,7 +184,7 @@ handle: string,
 
 // Called whenever the user mouses down. Called regardless of handle or
 // disabled status.
-onMouseDown: (e: MouseEvent) => boolean,
+onMouseDown: (e: MouseEvent) => void,
 
 // Called when dragging starts. If `false` is returned any handler,
 // the action will cancel.
@@ -142,53 +207,6 @@ position: {x: number, y: number}
 Note that sending `className`, `style`, or `transform` as properties will error - set them on the child element
 directly.
 
-
-### Draggable Usage
-
-```js
-var React = require('react'),;
-var ReactDOM = require('react-dom');
-var Draggable = require('react-draggable');
-
-var App = React.createClass({
-	handleStart: function (event, ui) {
-		console.log('Event: ', event);
-		console.log('Position: ', ui.position);
-	},
-
-	handleDrag: function (event, ui) {
-		console.log('Event: ', event);
-    console.log('Position: ', ui.position);
-	},
-
-	handleStop: function (event, ui) {
-		console.log('Event: ', event);
-    console.log('Position: ', ui.position);
-	},
-
-	render: function () {
-		return (
-			<Draggable
-				axis="x"
-				handle=".handle"
-				defaultPosition={{x: 0, y: 0}}
-        position={null}
-				grid={[25, 25]}
-				zIndex={100}
-				onStart={this.handleStart}
-				onDrag={this.handleDrag}
-				onStop={this.handleStop}>
-				<div>
-					<div className="handle">Drag from here</div>
-					<div>This readme is really dragging on...</div>
-				</div>
-			</Draggable>
-		);
-	}
-});
-
-ReactDOM.render(<App/>, document.body);
-```
 
 ## Controlled vs. Uncontrolled
 
