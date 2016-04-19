@@ -1,5 +1,10 @@
 # Changelog
 
+### 2.0.0-beta3 (Apr 19, 2016)
+
+- Flow comments are now in the build. Other projects, such as React-Grid-Layout and React-Resizable, will
+  rely on them in their build and export their own comments.
+
 ### 2.0.0-beta2 (Apr 14, 2016)
 
 - We're making a small deviation from React Core's controlled vs. uncontrolled scheme; for convenience,

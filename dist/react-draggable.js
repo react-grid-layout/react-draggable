@@ -111,9 +111,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	// $FlowIgnore
 	
 	
+	/*:: import type {DraggableEventHandler} from './utils/types';*/
+	
+	
 	//
 	// Define <Draggable>
 	//
+	
+	/*:: type DraggableState = {
+	  dragging: boolean,
+	  dragged: boolean,
+	  x: number, y: number,
+	  slackX: number, slackY: number,
+	  isElementSVG: boolean
+	};*/
 	
 	var Draggable = function (_React$Component) {
 	  _inherits(Draggable, _React$Component);
@@ -160,7 +171,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      var uiData = (0, _positionFns.createDraggableData)(_this, coreData);
 	
-	      var newState = {
+	      var newState /*: $Shape<DraggableState>*/ = {
 	        x: uiData.x,
 	        y: uiData.y
 	      };
@@ -214,7 +225,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      (0, _log2.default)('Draggable: onDragStop: %j', coreData);
 	
-	      var newState = {
+	      var newState /*: $Shape<DraggableState>*/ = {
 	        dragging: false,
 	        slackX: 0,
 	        slackY: 0
@@ -254,7 +265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
+	    value: function componentWillReceiveProps(nextProps /*: Object*/) {
 	      // Set x/y if position has changed
 	      if (nextProps.position && (!this.props.position || nextProps.position.x !== this.props.position.x || nextProps.position.y !== this.props.position.y)) {
 	        this.setState({ x: nextProps.position.x, y: nextProps.position.y });
@@ -533,8 +544,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
+	/*:: import type {ControlPosition} from './types';*/
+	
+	
 	var matchesSelectorFunc = '';
-	function matchesSelector(el, selector) {
+	function matchesSelector(el /*: Node*/, selector /*: string*/) /*: boolean*/ {
 	  if (!matchesSelectorFunc) {
 	    matchesSelectorFunc = (0, _shims.findInArray)(['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'], function (method) {
 	      // $FlowIgnore: Doesn't think elements are indexable
@@ -546,7 +560,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return el[matchesSelectorFunc].call(el, selector);
 	}
 	
-	function addEvent(el, event, handler) {
+	function addEvent(el /*: ?Node*/, event /*: string*/, handler /*: Function*/) /*: void*/ {
 	  if (!el) {
 	    return;
 	  }
@@ -560,7 +574,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	
-	function removeEvent(el, event, handler) {
+	function removeEvent(el /*: ?Node*/, event /*: string*/, handler /*: Function*/) /*: void*/ {
 	  if (!el) {
 	    return;
 	  }
@@ -574,7 +588,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	
-	function outerHeight(node) {
+	function outerHeight(node /*: HTMLElement*/) /*: number*/ {
 	  // This is deliberately excluding margin for our calculations, since we are using
 	  // offsetTop which is including margin. See getBoundPosition
 	  var height = node.clientHeight;
@@ -584,7 +598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return height;
 	}
 	
-	function outerWidth(node) {
+	function outerWidth(node /*: HTMLElement*/) /*: number*/ {
 	  // This is deliberately excluding margin for our calculations, since we are using
 	  // offsetLeft which is including margin. See getBoundPosition
 	  var width = node.clientWidth;
@@ -593,7 +607,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  width += (0, _shims.int)(computedStyle.borderRightWidth);
 	  return width;
 	}
-	function innerHeight(node) {
+	function innerHeight(node /*: HTMLElement*/) /*: number*/ {
 	  var height = node.clientHeight;
 	  var computedStyle = window.getComputedStyle(node);
 	  height -= (0, _shims.int)(computedStyle.paddingTop);
@@ -601,7 +615,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return height;
 	}
 	
-	function innerWidth(node) {
+	function innerWidth(node /*: HTMLElement*/) /*: number*/ {
 	  var width = node.clientWidth;
 	  var computedStyle = window.getComputedStyle(node);
 	  width -= (0, _shims.int)(computedStyle.paddingLeft);
@@ -610,7 +624,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	// Get from offsetParent
-	function offsetXYFromParentOf(e, node) {
+	function offsetXYFromParentOf(e /*: MouseEvent*/, node /*: HTMLElement & {offsetParent: HTMLElement}*/) /*: ControlPosition*/ {
 	  var evt = e.targetTouches ? e.targetTouches[0] : e;
 	
 	  var offsetParent = node.offsetParent || document.body;
@@ -622,7 +636,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return { x: x, y: y };
 	}
 	
-	function createCSSTransform(_ref) {
+	function createCSSTransform(_ref) /*: Object*/ {
 	  var x = _ref.x;
 	  var y = _ref.y;
 	
@@ -630,7 +644,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return _defineProperty({}, (0, _getPrefix.browserPrefixToKey)('transform', _getPrefix2.default), 'translate(' + x + 'px,' + y + 'px)');
 	}
 	
-	function createSVGTransform(_ref3) {
+	function createSVGTransform(_ref3) /*: string*/ {
 	  var x = _ref3.x;
 	  var y = _ref3.y;
 	
@@ -654,8 +668,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  document.body.setAttribute('style', style.replace(userSelectStyle, ''));
 	}
 	
-	function styleHacks() {
-	  var childStyle = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	function styleHacks() /*: Object*/ {
+	  var childStyle /*: Object*/ = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	
 	  // Workaround IE pointer events; see #51
 	  // https://github.com/mzabriskie/react-draggable/issues/51#issuecomment-103488278
@@ -680,25 +694,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.dontSetMe = dontSetMe;
 	
 	// @credits https://gist.github.com/rogozhnikoff/a43cfed27c41e4e68cdc
-	function findInArray(array, callback) {
+	function findInArray(array /*: Array<any>*/, callback /*: Function*/) /*: any*/ {
 	  for (var i = 0, length = array.length; i < length; i++) {
 	    if (callback.apply(callback, [array[i], i, array])) return array[i];
 	  }
 	}
 	
-	function isFunction(func) {
+	function isFunction(func /*: any*/) /*: boolean*/ {
 	  return typeof func === 'function' || Object.prototype.toString.call(func) === '[object Function]';
 	}
 	
-	function isNum(num) {
+	function isNum(num /*: any*/) /*: boolean*/ {
 	  return typeof num === 'number' && !isNaN(num);
 	}
 	
-	function int(a) {
+	function int(a /*: string*/) /*: number*/ {
 	  return parseInt(a, 10);
 	}
 	
-	function dontSetMe(props, propName, componentName) {
+	function dontSetMe(props /*: Object*/, propName /*: string*/, componentName /*: string*/) {
 	  if (props[propName]) {
 	    return new Error('Invalid prop ' + propName + ' passed to ' + componentName + ' - do not set this, set it on the child.');
 	  }
@@ -718,8 +732,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.browserPrefixToStyle = browserPrefixToStyle;
 	
 	var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
-	function getPrefix() {
-	  var prop = arguments.length <= 0 || arguments[0] === undefined ? 'transform' : arguments[0];
+	function getPrefix() /*: string*/ {
+	  var prop /*: string*/ = arguments.length <= 0 || arguments[0] === undefined ? 'transform' : arguments[0];
 	
 	  // Checking specifically for 'window.document' is for pseudo-browser server-side
 	  // environments that define 'window' as the global context.
@@ -737,15 +751,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return '';
 	}
 	
-	function browserPrefixToKey(prop, prefix) {
+	function browserPrefixToKey(prop /*: string*/, prefix /*: string*/) /*: string*/ {
 	  return prefix ? '' + prefix + kebabToTitleCase(prop) : prop;
 	}
 	
-	function browserPrefixToStyle(prop, prefix) {
+	function browserPrefixToStyle(prop /*: string*/, prefix /*: string*/) /*: string*/ {
 	  return prefix ? '-' + prefix.toLowerCase() + '-' + prop : prop;
 	}
 	
-	function kebabToTitleCase(str) {
+	function kebabToTitleCase(str /*: string*/) /*: string*/ {
 	  var out = '';
 	  var shouldCapitalize = true;
 	  for (var i = 0; i < str.length; i++) {
@@ -793,7 +807,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function getBoundPosition(draggable, x, y) {
+	/*:: import type Draggable from '../Draggable';*/
+	/*:: import type {Bounds, ControlPosition, DraggableData} from './types';*/
+	/*:: import type DraggableCore from '../DraggableCore';*/
+	function getBoundPosition(draggable /*: Draggable*/, x /*: number*/, y /*: number*/) /*: [number, number]*/ {
 	  // If no bounds, short-circuit and move on
 	  if (!draggable.props.bounds) return [x, y];
 	
@@ -833,27 +850,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return [x, y];
 	}
 	
-	function snapToGrid(grid, pendingX, pendingY) {
+	function snapToGrid(grid /*: [number, number]*/, pendingX /*: number*/, pendingY /*: number*/) /*: [number, number]*/ {
 	  var x = Math.round(pendingX / grid[0]) * grid[0];
 	  var y = Math.round(pendingY / grid[1]) * grid[1];
 	  return [x, y];
 	}
 	
-	function canDragX(draggable) {
+	function canDragX(draggable /*: Draggable*/) /*: boolean*/ {
 	  return draggable.props.axis === 'both' || draggable.props.axis === 'x';
 	}
 	
-	function canDragY(draggable) {
+	function canDragY(draggable /*: Draggable*/) /*: boolean*/ {
 	  return draggable.props.axis === 'both' || draggable.props.axis === 'y';
 	}
 	
 	// Get {x, y} positions from event.
-	function getControlPosition(e, draggableCore) {
+	function getControlPosition(e /*: MouseEvent*/, draggableCore /*: DraggableCore*/) /*: ControlPosition*/ {
 	  return (0, _domFns.offsetXYFromParentOf)(e, _reactDom2.default.findDOMNode(draggableCore));
 	}
 	
 	// Create an data object exposed by <DraggableCore>'s events
-	function createCoreData(draggable, x, y) {
+	function createCoreData(draggable /*: DraggableCore*/, x /*: number*/, y /*: number*/) /*: DraggableData*/ {
 	  // State changes are often (but not always!) async. We want the latest value.
 	  var state = draggable._pendingState || draggable.state;
 	  var isStart = !(0, _shims.isNum)(state.lastX);
@@ -878,7 +895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	// Create an data exposed by <Draggable>'s events
-	function createDraggableData(draggable, coreData) {
+	function createDraggableData(draggable /*: Draggable*/, coreData /*: DraggableData*/) /*: DraggableData*/ {
 	  return {
 	    node: coreData.node,
 	    x: draggable.state.x + coreData.deltaX,
@@ -891,7 +908,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	// A lot faster than stringify/parse
-	function cloneBounds(bounds) {
+	function cloneBounds(bounds /*: Bounds*/) /*: Bounds*/ {
 	  return {
 	    left: bounds.left,
 	    top: bounds.top,
@@ -937,6 +954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	// Simple abstraction for dragging events names.
+	/*:: import type {EventHandler} from './utils/types';*/
 	var eventsFor = {
 	  touch: {
 	    start: 'touchstart',
@@ -959,6 +977,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	// <DraggableCore> is for advanced usage of <Draggable>. It maintains minimal internal state so it can
 	// work well with libraries that require more control over the element.
 	//
+	
+	/*:: type CoreState = {
+	  dragging: boolean,
+	  lastX: number,
+	  lastY: number,
+	  touchIdentifier: number
+	};*/
 	
 	var DraggableCore = function (_React$Component) {
 	  _inherits(DraggableCore, _React$Component);
