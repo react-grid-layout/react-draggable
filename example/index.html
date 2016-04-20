@@ -135,6 +135,9 @@
           <Draggable axis="y" {...dragHandlers}>
             <div className="box cursor-y">I can only be dragged vertically</div>
           </Draggable>
+          <Draggable onStart={() => false}>
+            <div className="box">I don't want to be dragged</div>
+          </Draggable>
           <Draggable onDrag={this.handleDrag} {...dragHandlers}>
             <div className="box">
               <div>I track my deltas</div>

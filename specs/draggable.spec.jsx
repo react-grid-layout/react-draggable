@@ -301,6 +301,24 @@ describe('react-draggable', function () {
       TestUtils.Simulate.mouseUp(node);
       expect(document.body.getAttribute('style')).toEqual('');
     });
+
+    it('should not add and remove user-select styles when onStart returns false', function () {
+      function onStart() { return false; }
+
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onStart={onStart}>
+          <div />
+        </Draggable>
+      );
+
+      var node = ReactDOM.findDOMNode(drag);
+
+      expect(document.body.getAttribute('style')).toEqual('');
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      expect(document.body.getAttribute('style')).toEqual('');
+      TestUtils.Simulate.mouseUp(node);
+      expect(document.body.getAttribute('style')).toEqual('');
+    });
   });
 
   describe('interaction', function () {
