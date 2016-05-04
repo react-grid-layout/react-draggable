@@ -218,7 +218,7 @@ to programmatically reposition their components. `<Draggable>` allows this custo
 is similar to how React handles form components.
 
 If the prop `position: {x: number, y: number}` is defined, the `<Draggable>` will ignore its internal state and use
-the provided position instead. Altneratively, you can seed the position using `defaultPosition`. Technically, since
+the provided position instead. Alternatively, you can seed the position using `defaultPosition`. Technically, since
 `<Draggable>` works only on position deltas, you could also seed the initial position using CSS `top/left`.
 
 We make one modification to the React philosophy here - we still allow dragging while a component is controlled.
