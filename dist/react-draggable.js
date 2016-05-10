@@ -63,7 +63,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -259,7 +259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      // Check to see if the element passed is an instanceof SVGElement
-	      if (_reactDom2.default.findDOMNode(this) instanceof SVGElement) {
+	      if (typeof global.SVGElement !== 'undefined' && _reactDom2.default.findDOMNode(this) instanceof global.SVGElement) {
 	        this.setState({ isElementSVG: true });
 	      }
 	    }
@@ -441,6 +441,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  position: null
 	});
 	exports.default = Draggable;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 2 */
@@ -1023,10 +1024,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.setState({ touchIdentifier: e.targetTouches[0].identifier });
 	      }
 	
-	      // Add a style to the body to disable user-select. This prevents text from
-	      // being selected all over the page.
-	      if (_this.props.enableUserSelectHack) (0, _domFns.addUserSelectStyles)();
-	
 	      // Get the current drag point from the event. This is used as the offset.
 	
 	      var _getControlPosition = (0, _positionFns.getControlPosition)(e, _this);
@@ -1044,6 +1041,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _log2.default)('calling', _this.props.onStart);
 	      var shouldUpdate = _this.props.onStart(e, coreEvent);
 	      if (shouldUpdate === false) return;
+	
+	      // Add a style to the body to disable user-select. This prevents text from
+	      // being selected all over the page.
+	      if (_this.props.enableUserSelectHack) (0, _domFns.addUserSelectStyles)();
 	
 	      // Initiate dragging. Set the current x and y as offsets
 	      // so we know how much we've moved during the drag. This allows us

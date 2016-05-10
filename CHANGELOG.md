@@ -1,5 +1,13 @@
 # Changelog
 
+### 2.0.0
+
+- This is a breaking change. See the changes below in the beta releases.
+  - Note the changes to event callbacks and `position` / `defaultPosition`.
+- Changes from 2.0.0-beta3:
+  - Small bugfixes for Flow 0.24 compatibility.
+  - Don't assume `global.SVGElement`. Fixes JSDOM & [#123](https://github.com/mzabriskie/react-draggable/issues/123).
+
 ### 2.0.0-beta3 (Apr 19, 2016)
 
 - Flow comments are now in the build. Other projects, such as React-Grid-Layout and React-Resizable, will
@@ -10,7 +18,7 @@
 - We're making a small deviation from React Core's controlled vs. uncontrolled scheme; for convenience,
   `<Draggable>`s with a `position` property will still be draggable, but will revert to their old position
   on drag stop. Attach an `onStop` or `onDrag` handler to synchronize state.
-  - A warning has been added informing users of this. If you make `<Draggable>` controlled but no callback
+  - A warning has been added informing users of this. If you make `<Draggable>` controlled but attach no callback
     handlers, a warning will be printed.
 
 ### 2.0.0-beta1 (Apr 14, 2016)
