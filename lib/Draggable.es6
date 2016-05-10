@@ -174,7 +174,7 @@ export default class Draggable extends React.Component {
 
   componentDidMount() {
     // Check to see if the element passed is an instanceof SVGElement
-    if(ReactDOM.findDOMNode(this) instanceof SVGElement) {
+    if(typeof global.SVGElement !== 'undefined' && ReactDOM.findDOMNode(this) instanceof global.SVGElement) {
       this.setState({ isElementSVG: true });
     }
   }
