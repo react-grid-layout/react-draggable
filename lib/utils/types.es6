@@ -13,4 +13,4 @@ export type Bounds = {
   left: number, top: number, right: number, bottom: number
 };
 export type ControlPosition = {x: number, y: number};
-export type EventHandler<T> = (e: T) => void;
+export type EventHandler<T> = (e: T) => void | false;
