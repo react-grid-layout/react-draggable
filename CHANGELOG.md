@@ -1,6 +1,6 @@
 # Changelog
 
-### 2.0.0
+### 2.0.0 (May 10, 2016)
 
 - This is a breaking change. See the changes below in the beta releases.
   - Note the changes to event callbacks and `position` / `defaultPosition`.
