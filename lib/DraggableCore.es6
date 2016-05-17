@@ -1,6 +1,7 @@
 // @flow
 import React, {PropTypes} from 'react';
-import {matchesSelector, addEvent, removeEvent, addUserSelectStyles,
+import { findDOMNode } from 'react-dom';
+import {getOwnerDocument, matchesSelector, addEvent, removeEvent, addUserSelectStyles,
         removeUserSelectStyles, styleHacks} from './utils/domFns';
 import {createCoreData, getControlPosition, snapToGrid} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
@@ -168,12 +169,14 @@ export default class DraggableCore extends React.Component {
   };
 
   componentWillUnmount() {
+    var doc = getOwnerDocument(findDOMNode(this));
+
     // Remove any leftover event handlers. Remove both touch and mouse handlers in case
     // some browser quirk caused a touch event to fire during a mouse move, or vice versa.
-    removeEvent(document, eventsFor.mouse.move, this.handleDrag);
-    removeEvent(document, eventsFor.touch.move, this.handleDrag);
-    removeEvent(document, eventsFor.mouse.stop, this.handleDragStop);
-    removeEvent(document, eventsFor.touch.stop, this.handleDragStop);
+    removeEvent(doc, eventsFor.mouse.move, this.handleDrag);
+    removeEvent(doc, eventsFor.touch.move, this.handleDrag);
+    removeEvent(doc, eventsFor.mouse.stop, this.handleDragStop);
+    removeEvent(doc, eventsFor.touch.stop, this.handleDragStop);
     if (this.props.enableUserSelectHack) removeUserSelectStyles();
   }
 
@@ -229,8 +232,9 @@ export default class DraggableCore extends React.Component {
     // Add events to the document directly so we catch when the user's mouse/touch moves outside of
     // this element. We use different events depending on whether or not we have detected that this
     // is a touch-capable device.
-    addEvent(document, dragEventFor.move, this.handleDrag);
-    addEvent(document, dragEventFor.stop, this.handleDragStop);
+    var doc = getOwnerDocument(findDOMNode(this));
+    addEvent(doc, dragEventFor.move, this.handleDrag);
+    addEvent(doc, dragEventFor.stop, this.handleDragStop);
   };
 
   handleDrag: EventHandler<MouseEvent> = (e) => {
@@ -291,8 +295,9 @@ export default class DraggableCore extends React.Component {
 
     // Remove event handlers
     log('DraggableCore: Removing handlers');
-    removeEvent(document, dragEventFor.move, this.handleDrag);
-    removeEvent(document, dragEventFor.stop, this.handleDragStop);
+    var doc = getOwnerDocument(findDOMNode(this));
+    removeEvent(doc, dragEventFor.move, this.handleDrag);
+    removeEvent(doc, dragEventFor.stop, this.handleDragStop);
   };
 
   onMouseDown: EventHandler<MouseEvent> = (e) => {
