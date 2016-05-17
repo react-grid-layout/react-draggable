@@ -24,11 +24,11 @@ export function matchesSelector(el: Node, selector: string): boolean {
 }
 
 export function getOwnerDocument(node) {
-	if (node.contentWindow) {
-		return node.contentWindow.document;
-	}
+  if (node.contentWindow) {
+	  return node.contentWindow.document;
+  }
 
-	return node.contentDocument || node.ownerDocument || node.document;
+  return node.contentDocument || node.ownerDocument || node.document;
 }
 
 export function addEvent(el: ?Node, event: string, handler: Function): void {
