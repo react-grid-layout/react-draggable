@@ -536,6 +536,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.offsetXYFromParentOf = offsetXYFromParentOf;
 	exports.createCSSTransform = createCSSTransform;
 	exports.createSVGTransform = createSVGTransform;
+	exports.getTouch = getTouch;
+	exports.getTouchIdentifier = getTouchIdentifier;
 	exports.addUserSelectStyles = addUserSelectStyles;
 	exports.removeUserSelectStyles = removeUserSelectStyles;
 	exports.styleHacks = styleHacks;
@@ -630,9 +632,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	// Get from offsetParent
-	function offsetXYFromParentOf(e /*: MouseEvent*/, node /*: HTMLElement & {offsetParent: HTMLElement}*/) /*: ControlPosition*/ {
-	  var evt = e.targetTouches ? e.targetTouches[0] : e;
-	
+	function offsetXYFromParentOf(evt /*: {clientX: number, clientY: number}*/, node /*: HTMLElement & {offsetParent: HTMLElement}*/) /*: ControlPosition*/ {
 	  var offsetParent = node.offsetParent || document.body;
 	  var offsetParentRect = node.offsetParent === document.body ? { left: 0, top: 0 } : offsetParent.getBoundingClientRect();
 	
@@ -655,6 +655,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var y = _ref3.y;
 	
 	  return 'translate(' + x + ',' + y + ')';
+	}
+	
+	function getTouch(e /*: MouseEvent*/, identifier /*: number*/) /*: ?{clientX: number, clientY: number}*/ {
+	  return e.targetTouches && (0, _shims.findInArray)(e.targetTouches, function (t) {
+	    return identifier === t.identifier;
+	  }) || e.changedTouches && (0, _shims.findInArray)(e.changedTouches, function (t) {
+	    return identifier === t.identifier;
+	  });
+	}
+	
+	function getTouchIdentifier(e /*: MouseEvent*/) /*: ?number*/ {
+	  if (e.targetTouches && e.targetTouches[0]) return e.targetTouches[0].identifier;
+	  if (e.changedTouches && e.changedTouches[0]) return e.changedTouches[0].identifier;
 	}
 	
 	// User-select Hacks:
@@ -871,8 +884,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	// Get {x, y} positions from event.
-	function getControlPosition(e /*: MouseEvent*/, draggableCore /*: DraggableCore*/) /*: ControlPosition*/ {
-	  return (0, _domFns.offsetXYFromParentOf)(e, _reactDom2.default.findDOMNode(draggableCore));
+	function getControlPosition(e /*: MouseEvent*/, touchIdentifier /*: ?number*/, draggableCore /*: DraggableCore*/) /*: ?ControlPosition*/ {
+	  var touchObj = typeof touchIdentifier === 'number' ? (0, _domFns.getTouch)(e, touchIdentifier) : null;
+	  if (typeof touchIdentifier === 'number' && !touchObj) return null; // not the right touch
+	  return (0, _domFns.offsetXYFromParentOf)(touchObj || e, _reactDom2.default.findDOMNode(draggableCore));
 	}
 	
 	// Create an data object exposed by <DraggableCore>'s events
@@ -988,7 +1003,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  dragging: boolean,
 	  lastX: number,
 	  lastY: number,
-	  touchIdentifier: number
+	  touchIdentifier: ?number
 	};*/
 	
 	var DraggableCore = function (_React$Component) {
@@ -1009,7 +1024,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      dragging: false,
 	      // Used while dragging to determine deltas.
 	      lastX: NaN, lastY: NaN,
-	      touchIdentifier: NaN
+	      touchIdentifier: null
 	    }, _this.handleDragStart = function (e) {
 	      // Make it possible to attach event handlers on top of this one.
 	      _this.props.onMouseDown(e);
@@ -1025,16 +1040,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Set touch identifier in component state if this is a touch event. This allows us to
 	      // distinguish between individual touches on multitouch screens by identifying which
 	      // touchpoint was set to this element.
-	      if (e.targetTouches) {
-	        _this.setState({ touchIdentifier: e.targetTouches[0].identifier });
-	      }
+	      var touchIdentifier = (0, _domFns.getTouchIdentifier)(e);
+	      _this.setState({ touchIdentifier: touchIdentifier });
 	
 	      // Get the current drag point from the event. This is used as the offset.
-	
-	      var _getControlPosition = (0, _positionFns.getControlPosition)(e, _this);
-	
-	      var x = _getControlPosition.x;
-	      var y = _getControlPosition.y;
+	      var position = (0, _positionFns.getControlPosition)(e, touchIdentifier, _this);
+	      if (position == null) return; // not possible but satisfies flow
+	      var x = position.x;
+	      var y = position.y;
 	
 	      // Create an event object with all the data parents need to make a decision here.
 	
@@ -1067,15 +1080,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _domFns.addEvent)(document, dragEventFor.move, _this.handleDrag);
 	      (0, _domFns.addEvent)(document, dragEventFor.stop, _this.handleDragStop);
 	    }, _this.handleDrag = function (e) {
-	      // Return if this is a touch event, but not the correct one for this element
-	      if (e.targetTouches && e.targetTouches[0].identifier !== _this.state.touchIdentifier) return;
 	
-	      var _getControlPosition2 = (0, _positionFns.getControlPosition)(e, _this);
-	
-	      var x = _getControlPosition2.x;
-	      var y = _getControlPosition2.y;
+	      // Get the current drag point from the event. This is used as the offset.
+	      var position = (0, _positionFns.getControlPosition)(e, _this.state.touchIdentifier, _this);
+	      if (position == null) return;
+	      var x = position.x;
+	      var y = position.y;
 	
 	      // Snap to grid if prop has been provided
+	
+	      if (x !== x) debugger;
 	
 	      if (Array.isArray(_this.props.grid)) {
 	        var deltaX = x - _this.state.lastX,
@@ -1110,19 +1124,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, _this.handleDragStop = function (e) {
 	      if (!_this.state.dragging) return;
 	
-	      // Short circuit if this is not the correct touch event. `changedTouches` contains all
-	      // touch points that have been removed from the surface.
-	      if (e.changedTouches && e.changedTouches[0].identifier !== _this.state.touchIdentifier) return;
+	      var position = (0, _positionFns.getControlPosition)(e, _this.state.touchIdentifier, _this);
+	      if (position == null) return;
+	      var x = position.x;
+	      var y = position.y;
+	
+	      var coreEvent = (0, _positionFns.createCoreData)(_this, x, y);
 	
 	      // Remove user-select hack
 	      if (_this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)();
-	
-	      var _getControlPosition3 = (0, _positionFns.getControlPosition)(e, _this);
-	
-	      var x = _getControlPosition3.x;
-	      var y = _getControlPosition3.y;
-	
-	      var coreEvent = (0, _positionFns.createCoreData)(_this, x, y);
 	
 	      (0, _log2.default)('DraggableCore: handleDragStop: %j', coreEvent);
 	

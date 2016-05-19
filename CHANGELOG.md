@@ -1,5 +1,12 @@
 # Changelog
 
+### 2.0.2 (May 19, 2016)
+
+- Fix `cannot access clientX of undefined` on some touch-enabled platforms.
+  - Fixes [#159](https://github.com/mzabriskie/react-draggable/pull/159),
+    [#118](https://github.com/mzabriskie/react-draggable/pull/118)
+- Fixed a bug with multi-finger multitouch if > 1 finger triggered an event at the same time.
+
 ### 2.0.1 (May 19, 2016)
 
 - Finally fixed the IE10 constructor bug. Thanks @davidstubbs [#158](https://github.com/mzabriskie/react-draggable/pull/158)
