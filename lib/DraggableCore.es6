@@ -1,6 +1,6 @@
 // @flow
 import React, {PropTypes} from 'react';
-import {matchesSelector, addEvent, removeEvent, addUserSelectStyles,
+import {matchesSelector, addEvent, removeEvent, addUserSelectStyles, getTouchIdentifier,
         removeUserSelectStyles, styleHacks} from './utils/domFns';
 import {createCoreData, getControlPosition, snapToGrid} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
@@ -29,7 +29,7 @@ type CoreState = {
   dragging: boolean,
   lastX: number,
   lastY: number,
-  touchIdentifier: number
+  touchIdentifier: ?number
 };
 
 //
@@ -164,7 +164,7 @@ export default class DraggableCore extends React.Component {
     dragging: false,
     // Used while dragging to determine deltas.
     lastX: NaN, lastY: NaN,
-    touchIdentifier: NaN
+    touchIdentifier: null
   };
 
   componentWillUnmount() {
@@ -195,12 +195,13 @@ export default class DraggableCore extends React.Component {
     // Set touch identifier in component state if this is a touch event. This allows us to
     // distinguish between individual touches on multitouch screens by identifying which
     // touchpoint was set to this element.
-    if (e.targetTouches){
-      this.setState({touchIdentifier: e.targetTouches[0].identifier});
-    }
+    const touchIdentifier = getTouchIdentifier(e);
+    this.setState({touchIdentifier});
 
     // Get the current drag point from the event. This is used as the offset.
-    const {x, y} = getControlPosition(e, this);
+    const position = getControlPosition(e, touchIdentifier, this);
+    if (position == null) return; // not possible but satisfies flow
+    const {x, y} = position;
 
     // Create an event object with all the data parents need to make a decision here.
     const coreEvent = createCoreData(this, x, y);
@@ -234,12 +235,15 @@ export default class DraggableCore extends React.Component {
   };
 
   handleDrag: EventHandler<MouseEvent> = (e) => {
-    // Return if this is a touch event, but not the correct one for this element
-    if (e.targetTouches && (e.targetTouches[0].identifier !== this.state.touchIdentifier)) return;
 
-    let {x, y} = getControlPosition(e, this);
+    // Get the current drag point from the event. This is used as the offset.
+    const position = getControlPosition(e, this.state.touchIdentifier, this);
+    if (position == null) return;
+    let {x, y} = position;
 
     // Snap to grid if prop has been provided
+    if (x !== x) debugger;
+
     if (Array.isArray(this.props.grid)) {
       let deltaX = x - this.state.lastX, deltaY = y - this.state.lastY;
       [deltaX, deltaY] = snapToGrid(this.props.grid, deltaX, deltaY);
@@ -267,15 +271,13 @@ export default class DraggableCore extends React.Component {
   handleDragStop: EventHandler<MouseEvent> = (e) => {
     if (!this.state.dragging) return;
 
-    // Short circuit if this is not the correct touch event. `changedTouches` contains all
-    // touch points that have been removed from the surface.
-    if (e.changedTouches && (e.changedTouches[0].identifier !== this.state.touchIdentifier)) return;
+    const position = getControlPosition(e, this.state.touchIdentifier, this);
+    if (position == null) return;
+    const {x, y} = position;
+    const coreEvent = createCoreData(this, x, y);
 
     // Remove user-select hack
     if (this.props.enableUserSelectHack) removeUserSelectStyles();
-
-    const {x, y} = getControlPosition(e, this);
-    const coreEvent = createCoreData(this, x, y);
 
     log('DraggableCore: handleDragStop: %j', coreEvent);
 

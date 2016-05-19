@@ -83,9 +83,7 @@ export function innerWidth(node: HTMLElement): number {
 }
 
 // Get from offsetParent
-export function offsetXYFromParentOf(e: MouseEvent, node: HTMLElement & {offsetParent: HTMLElement}): ControlPosition {
-  const evt = e.targetTouches ? e.targetTouches[0] : e;
-
+export function offsetXYFromParentOf(evt: {clientX: number, clientY: number}, node: HTMLElement & {offsetParent: HTMLElement}): ControlPosition {
   const offsetParent = node.offsetParent || document.body;
   const offsetParentRect = node.offsetParent === document.body ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
 
@@ -102,6 +100,16 @@ export function createCSSTransform({x, y}: {x: number, y: number}): Object {
 
 export function createSVGTransform({x, y}: {x: number, y: number}): string {
   return 'translate(' + x + ',' + y + ')';
+}
+
+export function getTouch(e: MouseEvent, identifier: number): ?{clientX: number, clientY: number} {
+  return (e.targetTouches && findInArray(e.targetTouches, t => identifier === t.identifier)) ||
+         (e.changedTouches && findInArray(e.changedTouches, t => identifier === t.identifier));
+}
+
+export function getTouchIdentifier(e: MouseEvent): ?number {
+  if (e.targetTouches && e.targetTouches[0]) return e.targetTouches[0].identifier;
+  if (e.changedTouches && e.changedTouches[0]) return e.changedTouches[0].identifier;
 }
 
 // User-select Hacks:
