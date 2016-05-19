@@ -84,7 +84,7 @@ export function innerWidth(node: HTMLElement): number {
 
 // Get from offsetParent
 export function offsetXYFromParentOf(e: MouseEvent, node: HTMLElement & {offsetParent: HTMLElement}): ControlPosition {
-  const evt = e.targetTouches ? e.targetTouches[0] : e;
+  const evt = e.targetTouches && e.targetTouches.length ? e.targetTouches[0] : e;
 
   const offsetParent = node.offsetParent || document.body;
   const offsetParentRect = node.offsetParent === document.body ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
