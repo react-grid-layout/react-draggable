@@ -112,12 +112,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	/*:: import type {DraggableEventHandler} from './utils/types';*/
-	
-	
-	//
-	// Define <Draggable>
-	//
-	
 	/*:: type DraggableState = {
 	  dragging: boolean,
 	  dragged: boolean,
@@ -126,37 +120,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  isElementSVG: boolean
 	};*/
 	
+	
+	//
+	// Define <Draggable>
+	//
+	
+	/*:: type ConstructorProps = {
+	  position: { x: number, y: number },
+	  defaultPosition: { x: number, y: number }
+	}*/
+	
 	var Draggable = function (_React$Component) {
 	  _inherits(Draggable, _React$Component);
 	
-	  function Draggable() {
-	    var _Object$getPrototypeO;
-	
-	    var _temp, _this, _ret;
-	
+	  function Draggable(props /*: ConstructorProps*/) {
 	    _classCallCheck(this, Draggable);
 	
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Draggable).call(this, props));
 	
-	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Draggable)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
-	      // Whether or not we are currently dragging.
-	      dragging: false,
-	
-	      // Whether or not we have been dragged before.
-	      dragged: false,
-	
-	      // Current transform x and y.
-	      x: _this.props.position ? _this.props.position.x : _this.props.defaultPosition.x,
-	      y: _this.props.position ? _this.props.position.y : _this.props.defaultPosition.y,
-	
-	      // Used for compensating for out-of-bounds drags
-	      slackX: 0, slackY: 0,
-	
-	      // Can only determine if SVG after mounting
-	      isElementSVG: false
-	    }, _this.onDragStart = function (e, coreData) {
+	    _this.onDragStart = function (e, coreData) {
 	      (0, _log2.default)('Draggable: onDragStart: %j', coreData);
 	
 	      // Short-circuit if user's callback killed it.
@@ -165,7 +147,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (shouldStart === false) return false;
 	
 	      _this.setState({ dragging: true, dragged: true });
-	    }, _this.onDrag = function (e, coreData) {
+	    };
+	
+	    _this.onDrag = function (e, coreData) {
 	      if (!_this.state.dragging) return false;
 	      (0, _log2.default)('Draggable: onDrag: %j', coreData);
 	
@@ -216,7 +200,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (shouldUpdate === false) return false;
 	
 	      _this.setState(newState);
-	    }, _this.onDragStop = function (e, coreData) {
+	    };
+	
+	    _this.onDragStop = function (e, coreData) {
 	      if (!_this.state.dragging) return false;
 	
 	      // Short-circuit if user's callback killed it.
@@ -244,7 +230,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	
 	      _this.setState(newState);
-	    }, _temp), _possibleConstructorReturn(_this, _ret);
+	    };
+	
+	    _this.state = {
+	      // Whether or not we are currently dragging.
+	      dragging: false,
+	
+	      // Whether or not we have been dragged before.
+	      dragged: false,
+	
+	      // Current transform x and y.
+	      x: props.position ? props.position.x : props.defaultPosition.x,
+	      y: props.position ? props.position.y : props.defaultPosition.y,
+	
+	      // Used for compensating for out-of-bounds drags
+	      slackX: 0, slackY: 0,
+	
+	      // Can only determine if SVG after mounting
+	      isElementSVG: false
+	    };
+	    return _this;
 	  }
 	
 	  _createClass(Draggable, [{

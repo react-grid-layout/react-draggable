@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.0.1 (May 19, 2016)
+
+- Finally fixed the IE10 constructor bug. Thanks @davidstubbs [#158](https://github.com/mzabriskie/react-draggable/pull/158)
+
 ### 2.0.0 (May 10, 2016)
 
 - This is a breaking change. See the changes below in the beta releases.
