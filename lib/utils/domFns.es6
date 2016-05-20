@@ -23,6 +23,18 @@ export function matchesSelector(el: Node, selector: string): boolean {
   return el[matchesSelectorFunc].call(el, selector);
 }
 
+// Works up the tree to the draggable itself attempting to match selector.
+export function matchesSelectorAndParentsTo(el: Node, selector: string, baseNode: Node): boolean {
+  let node = el;
+  do {
+    if (matchesSelector(node, selector)) return true;
+    if (node === baseNode) return false;
+    node = node.parentNode;
+  } while (node);
+
+  return false;
+}
+
 export function addEvent(el: ?Node, event: string, handler: Function): void {
   if (!el) { return; }
   if (el.attachEvent) {

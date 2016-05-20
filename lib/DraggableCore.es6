@@ -1,6 +1,7 @@
 // @flow
 import React, {PropTypes} from 'react';
-import {matchesSelector, addEvent, removeEvent, addUserSelectStyles, getTouchIdentifier,
+import ReactDOM from 'react-dom';
+import {matchesSelectorAndParentsTo, addEvent, removeEvent, addUserSelectStyles, getTouchIdentifier,
         removeUserSelectStyles, styleHacks} from './utils/domFns';
 import {createCoreData, getControlPosition, snapToGrid} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
@@ -187,8 +188,8 @@ export default class DraggableCore extends React.Component {
     // Short circuit if handle or cancel prop was provided and selector doesn't match.
     if (this.props.disabled ||
       (!(e.target instanceof Node)) ||
-      (this.props.handle && !matchesSelector(e.target, this.props.handle)) ||
-      (this.props.cancel && matchesSelector(e.target, this.props.cancel))) {
+      (this.props.handle && !matchesSelectorAndParentsTo(e.target, this.props.handle, ReactDOM.findDOMNode(this))) ||
+      (this.props.cancel && matchesSelectorAndParentsTo(e.target, this.props.cancel, ReactDOM.findDOMNode(this)))) {
       return;
     }
 

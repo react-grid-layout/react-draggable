@@ -322,6 +322,20 @@ describe('react-draggable', function () {
   });
 
   describe('interaction', function () {
+
+    function mouseDownOn(drag, selector, shouldDrag) {
+      resetDragging(drag);
+      const node = ReactDOM.findDOMNode(drag).querySelector(selector);
+      if (!node) throw new Error(`Selector not found: ${selector}`);
+      TestUtils.Simulate.mouseDown(node);
+      expect(drag.state.dragging).toEqual(shouldDrag);
+    }
+
+    function resetDragging(drag) {
+      TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag));
+      expect(drag.state.dragging).toEqual(false);
+    }
+
     it('should initialize dragging onmousedown', function () {
       drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
@@ -339,11 +353,27 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag).querySelector('.content'));
-      expect(drag.state.dragging).toEqual(false);
+      mouseDownOn(drag, '.content', false);
+      mouseDownOn(drag, '.handle', true);
+    });
 
-      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag).querySelector('.handle'));
-      expect(drag.state.dragging).toEqual(true);
+    it('should only initialize dragging onmousedown of handle, even if children fire event', function () {
+      drag = TestUtils.renderIntoDocument(
+        <Draggable handle=".handle">
+          <div>
+            <div className="handle">
+              <div><span><div className="deep">Handle</div></span></div>
+            </div>
+            <div className="content">Lorem ipsum...</div>
+          </div>
+        </Draggable>
+      );
+
+      mouseDownOn(drag, '.content', false);
+      mouseDownOn(drag, '.deep', true);
+      mouseDownOn(drag, '.handle > div', true);
+      mouseDownOn(drag, '.handle span', true);
+      mouseDownOn(drag, '.handle', true);
     });
 
     it('should not initialize dragging onmousedown of cancel', function () {
@@ -356,11 +386,27 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag).querySelector('.cancel'));
-      expect(drag.state.dragging).toEqual(false);
+      mouseDownOn(drag, '.cancel', false);
+      mouseDownOn(drag, '.content', true);
+    });
 
-      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag).querySelector('.content'));
-      expect(drag.state.dragging).toEqual(true);
+    it('should not initialize dragging onmousedown of handle, even if children fire event', function () {
+      drag = TestUtils.renderIntoDocument(
+        <Draggable cancel=".cancel">
+          <div>
+            <div className="cancel">
+              <div><span><div className="deep">Cancel</div></span></div>
+            </div>
+            <div className="content">Lorem ipsum...</div>
+          </div>
+        </Draggable>
+      );
+
+      mouseDownOn(drag, '.content', true);
+      mouseDownOn(drag, '.deep', false);
+      mouseDownOn(drag, '.cancel > div', false);
+      mouseDownOn(drag, '.cancel span', false);
+      mouseDownOn(drag, '.cancel', false);
     });
 
     it('should discontinue dragging onmouseup', function () {
@@ -369,8 +415,7 @@ describe('react-draggable', function () {
       TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
       expect(drag.state.dragging).toEqual(true);
 
-      TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag));
-      expect(drag.state.dragging).toEqual(false);
+      resetDragging(drag);
     });
 
     it('should modulate position on scroll', function (done) {
