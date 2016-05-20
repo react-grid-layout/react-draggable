@@ -1,5 +1,11 @@
 # Changelog
 
+### 2.1.0 (May 20, 2016)
+
+- Fix improperly missed `handle` or `cancel` selectors if the event originates from a child of the handle or cancel.
+  - Fixes a longstanding issue, [#88](https://github.com/mzabriskie/react-draggable/pull/88)
+  - This was pushed to a minor release as there may be edge cases (perhaps workarounds) where this changes behavior.
+
 ### 2.0.2 (May 19, 2016)
 
 - Fix `cannot access clientX of undefined` on some touch-enabled platforms.

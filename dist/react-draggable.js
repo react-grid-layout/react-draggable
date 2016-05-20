@@ -527,6 +527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
 	exports.matchesSelector = matchesSelector;
+	exports.matchesSelectorAndParentsTo = matchesSelectorAndParentsTo;
 	exports.addEvent = addEvent;
 	exports.removeEvent = removeEvent;
 	exports.outerHeight = outerHeight;
@@ -566,6 +567,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  // $FlowIgnore: Doesn't think elements are indexable
 	  return el[matchesSelectorFunc].call(el, selector);
+	}
+	
+	// Works up the tree to the draggable itself attempting to match selector.
+	function matchesSelectorAndParentsTo(el /*: Node*/, selector /*: string*/, baseNode /*: Node*/) /*: boolean*/ {
+	  var node = el;
+	  do {
+	    if (matchesSelector(node, selector)) return true;
+	    if (node === baseNode) return false;
+	    node = node.parentNode;
+	  } while (node);
+	
+	  return false;
 	}
 	
 	function addEvent(el /*: ?Node*/, event /*: string*/, handler /*: Function*/) /*: void*/ {
@@ -956,6 +969,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _reactDom = __webpack_require__(3);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
 	var _domFns = __webpack_require__(5);
 	
 	var _positionFns = __webpack_require__(8);
@@ -1033,7 +1050,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!_this.props.allowAnyClick && typeof e.button === 'number' && e.button !== 0) return false;
 	
 	      // Short circuit if handle or cancel prop was provided and selector doesn't match.
-	      if (_this.props.disabled || !(e.target instanceof Node) || _this.props.handle && !(0, _domFns.matchesSelector)(e.target, _this.props.handle) || _this.props.cancel && (0, _domFns.matchesSelector)(e.target, _this.props.cancel)) {
+	      if (_this.props.disabled || !(e.target instanceof Node) || _this.props.handle && !(0, _domFns.matchesSelectorAndParentsTo)(e.target, _this.props.handle, _reactDom2.default.findDOMNode(_this)) || _this.props.cancel && (0, _domFns.matchesSelectorAndParentsTo)(e.target, _this.props.cancel, _reactDom2.default.findDOMNode(_this))) {
 	        return;
 	      }
 	
