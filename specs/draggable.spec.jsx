@@ -10,9 +10,17 @@ const transformStyle = browserPrefixToStyle('transform', getPrefix('transform'))
 const transformKey = browserPrefixToKey('transform', getPrefix('transform'));
 const userSelectStyle = browserPrefixToStyle('user-select', getPrefix('user-select'));
 
-/*global describe,it,expect, afterEach */
 describe('react-draggable', function () {
   var drag;
+
+  // Remove body margin so offsetParent calculations work properly
+  beforeAll(function() {
+    const styleNode = document.createElement('style');
+    // browser detection (based on prototype.js)
+    const styleText = document.createTextNode('body {margin: 0;}');
+    styleNode.appendChild(styleText);
+    document.getElementsByTagName('head')[0].appendChild(styleNode);
+  });
 
   beforeEach(function() {
     spyOn(console, 'error');
