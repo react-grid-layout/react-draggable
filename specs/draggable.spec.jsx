@@ -3,13 +3,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react/lib/ReactTestUtils';
 import Draggable, {DraggableCore} from '../index';
+import assert from 'power-assert';
 import _ from 'lodash';
 import {getPrefix, browserPrefixToKey, browserPrefixToStyle} from '../lib/utils/getPrefix';
 const transformStyle = browserPrefixToStyle('transform', getPrefix('transform'));
 const transformKey = browserPrefixToKey('transform', getPrefix('transform'));
 const userSelectStyle = browserPrefixToStyle('user-select', getPrefix('user-select'));
 
-/*global describe,it,expect,afterEach */
+/*global describe,it,expect, afterEach */
 describe('react-draggable', function () {
   var drag;
 
@@ -28,14 +29,14 @@ describe('react-draggable', function () {
     it('should have default properties', function () {
       drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
-      expect(drag.props.axis).toEqual('both');
-      expect(drag.props.handle).toEqual(null);
-      expect(drag.props.cancel).toEqual(null);
-      expect(drag.props.bounds).toBeFalsy();
-      expect(isNaN(drag.props.zIndex)).toEqual(true);
-      expect(typeof drag.props.onStart).toEqual('function');
-      expect(typeof drag.props.onDrag).toEqual('function');
-      expect(typeof drag.props.onStop).toEqual('function');
+      assert(drag.props.axis === 'both');
+      assert(drag.props.handle === null);
+      assert(drag.props.cancel === null);
+      assert(drag.props.bounds == false);
+      assert(isNaN(drag.props.zIndex) === true);
+      assert(typeof drag.props.onStart === 'function');
+      assert(typeof drag.props.onDrag === 'function');
+      assert(typeof drag.props.onStop === 'function');
     });
 
     it('should pass style and className properly from child', function () {
@@ -43,11 +44,11 @@ describe('react-draggable', function () {
 
       var node = renderToNode(drag);
       if ('touchAction' in document.body.style) {
-        expect(node.getAttribute('style')).toMatch('touch-action: none');
+        assert(node.getAttribute('style').indexOf('touch-action: none') >= 0);
       }
-      expect(node.getAttribute('style')).toMatch('color: black');
-      expect(node.getAttribute('style')).toMatch(transformStyle + ': translate\\\(0px, 0px\\\)');
-      expect(node.getAttribute('class')).toEqual('foo react-draggable');
+      assert(node.getAttribute('style').indexOf('color: black') >= 0);
+      assert(node.getAttribute('style').indexOf(transformStyle + ': translate(0px, 0px)') >= 0);
+      assert(node.getAttribute('class') === 'foo react-draggable');
     });
 
     // NOTE: this runs a shallow renderer, which DOES NOT actually render <DraggableCore>
@@ -70,10 +71,10 @@ describe('react-draggable', function () {
 
       // Not easy to actually test equality here. The functions are bound as static props so we can't test those easily.
       var toOmit = ['onStart', 'onStop', 'onDrag', 'onMouseDown', 'children'];
-      expect(_.isEqual(
+      assert(_.isEqual(
         _.omit(output.props, toOmit),
         _.omit(expected.props, toOmit))
-      ).toEqual(true);
+      );
     });
 
     it('should honor props', function () {
@@ -98,14 +99,14 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      expect(drag.props.axis).toEqual('y');
-      expect(drag.props.handle).toEqual('.handle');
-      expect(drag.props.cancel).toEqual('.cancel');
-      expect(drag.props.grid).toEqual([10, 10]);
-      expect(drag.props.zIndex).toEqual(1000);
-      expect(drag.props.onStart).toEqual(handleStart);
-      expect(drag.props.onDrag).toEqual(handleDrag);
-      expect(drag.props.onStop).toEqual(handleStop);
+      assert(drag.props.axis === 'y');
+      assert(drag.props.handle === '.handle');
+      assert(drag.props.cancel === '.cancel');
+      assert(_.isEqual(drag.props.grid, [10, 10]));
+      assert(drag.props.zIndex === 1000);
+      assert(drag.props.onStart === handleStart);
+      assert(drag.props.onDrag === handleDrag);
+      assert(drag.props.onStop === handleStop);
     });
 
     it('should throw when setting className', function () {
@@ -141,7 +142,7 @@ describe('react-draggable', function () {
       );
 
       TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
-      expect(called).toEqual(true);
+      assert(called === true);
     });
 
     it('should call onStop when dragging ends', function () {
@@ -154,7 +155,7 @@ describe('react-draggable', function () {
 
       TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
       TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag));
-      expect(called).toEqual(true);
+      assert(called === true);
     });
 
     it('should not call onStart when dragging begins and disabled', function () {
@@ -166,7 +167,7 @@ describe('react-draggable', function () {
       );
 
       TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
-      expect(called).toEqual(false);
+      assert(called === false);
     });
 
     it('should render with style translate() for DOM nodes', function () {
@@ -181,8 +182,8 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
       var style = node.getAttribute('style');
-      expect(dragged).toEqual(true);
-      expect(style.indexOf('transform: translate(100px, 100px);')).not.toEqual(-1);
+      assert(dragged === true);
+      assert(style.indexOf('transform: translate(100px, 100px);') >= 0);
     });
 
     it('should honor "x" axis', function () {
@@ -197,8 +198,8 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
       var style = node.getAttribute('style');
-      expect(dragged).toEqual(true);
-      expect(style.indexOf('transform: translate(100px, 0px);')).not.toEqual(-1);
+      assert(dragged === true);
+      assert(style.indexOf('transform: translate(100px, 0px);') >= 0);
     });
 
     it('should honor "y" axis', function () {
@@ -213,8 +214,8 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
       var style = node.getAttribute('style');
-      expect(dragged).toEqual(true);
-      expect(style.indexOf('transform: translate(0px, 100px);')).not.toEqual(-1);
+      assert(dragged === true);
+      assert(style.indexOf('transform: translate(0px, 100px);') >= 0);
     });
 
     it('should honor "none" axis', function () {
@@ -229,8 +230,8 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
       var style = node.getAttribute('style');
-      expect(dragged).toEqual(true);
-      expect(style.indexOf('transform: translate(0px, 0px);')).not.toEqual(-1);
+      assert(dragged === true);
+      assert(style.indexOf('transform: translate(0px, 0px);') >= 0);
     });
 
     it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
@@ -240,7 +241,7 @@ describe('react-draggable', function () {
           </Draggable>
       );
 
-      expect(drag.state.isElementSVG).toEqual(true);
+      assert(drag.state.isElementSVG === true);
     });
 
     it('should detect if an element is NOT an instanceof SVGElement and set state.isElementSVG to false', function() {
@@ -250,7 +251,7 @@ describe('react-draggable', function () {
           </Draggable>
       );
 
-      expect(drag.state.isElementSVG).toEqual(false);
+      assert(drag.state.isElementSVG === false);
     });
 
     it('should render with transform translate() for SVG nodes', function () {
@@ -264,7 +265,7 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
       var transform = node.getAttribute('transform');
-      expect(transform.indexOf('translate(100,100)')).not.toEqual(-1);
+      assert(transform.indexOf('translate(100,100)') >= 0);
     });
 
     it('should add and remove user-select styles', function () {
@@ -278,11 +279,11 @@ describe('react-draggable', function () {
 
       var node = ReactDOM.findDOMNode(drag);
 
-      expect(document.body.getAttribute('style')).toEqual('');
+      assert(document.body.getAttribute('style') === '');
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      expect(document.body.getAttribute('style')).toEqual(userSelectStyleStr);
+      assert(document.body.getAttribute('style') === userSelectStyleStr);
       TestUtils.Simulate.mouseUp(node);
-      expect(document.body.getAttribute('style')).toEqual('');
+      assert(document.body.getAttribute('style') === '');
     });
 
     it('should not add and remove user-select styles when disabled', function () {
@@ -295,11 +296,11 @@ describe('react-draggable', function () {
 
       var node = ReactDOM.findDOMNode(drag);
 
-      expect(document.body.getAttribute('style')).toEqual('');
+      assert(document.body.getAttribute('style') === '');
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      expect(document.body.getAttribute('style')).toEqual('');
+      assert(document.body.getAttribute('style') === '');
       TestUtils.Simulate.mouseUp(node);
-      expect(document.body.getAttribute('style')).toEqual('');
+      assert(document.body.getAttribute('style') === '');
     });
 
     it('should not add and remove user-select styles when onStart returns false', function () {
@@ -313,11 +314,11 @@ describe('react-draggable', function () {
 
       var node = ReactDOM.findDOMNode(drag);
 
-      expect(document.body.getAttribute('style')).toEqual('');
+      assert(document.body.getAttribute('style') === '');
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      expect(document.body.getAttribute('style')).toEqual('');
+      assert(document.body.getAttribute('style') === '');
       TestUtils.Simulate.mouseUp(node);
-      expect(document.body.getAttribute('style')).toEqual('');
+      assert(document.body.getAttribute('style') === '');
     });
   });
 
@@ -328,19 +329,19 @@ describe('react-draggable', function () {
       const node = ReactDOM.findDOMNode(drag).querySelector(selector);
       if (!node) throw new Error(`Selector not found: ${selector}`);
       TestUtils.Simulate.mouseDown(node);
-      expect(drag.state.dragging).toEqual(shouldDrag);
+      assert(drag.state.dragging === shouldDrag);
     }
 
     function resetDragging(drag) {
       TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag));
-      expect(drag.state.dragging).toEqual(false);
+      assert(drag.state.dragging === false);
     }
 
     it('should initialize dragging onmousedown', function () {
       drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
       TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
-      expect(drag.state.dragging).toEqual(true);
+      assert(drag.state.dragging === true);
     });
 
     it('should only initialize dragging onmousedown of handle', function () {
@@ -413,7 +414,7 @@ describe('react-draggable', function () {
       drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
       TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
-      expect(drag.state.dragging).toEqual(true);
+      assert(drag.state.dragging === true);
 
       resetDragging(drag);
     });
@@ -427,21 +428,21 @@ describe('react-draggable', function () {
       var dragCalled = false;
 
       function onDrag(e, coreEvent) {
-        expect(coreEvent.deltaY).toEqual(500);
+        assert(coreEvent.deltaY === 500);
         dragCalled = true;
       }
       drag = TestUtils.renderIntoDocument(<Draggable onDrag={onDrag}><div/></Draggable>);
       var node = ReactDOM.findDOMNode(drag);
 
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      expect(drag.state.dragging).toEqual(true);
+      assert(drag.state.dragging === true);
 
       document.body.style.height = '10000px';
       window.scrollTo(0, 500);
       TestUtils.Simulate.mouseUp(node, {clientX: 0, clientY: 0});
       setTimeout(function() {
-        expect(dragCalled).toEqual(true);
-        expect(drag.state.clientY).toEqual(500);
+        assert(dragCalled === true);
+        assert(drag.state.clientY === 500);
         done();
       }, 50);
     });
@@ -450,10 +451,10 @@ describe('react-draggable', function () {
   describe('draggable callbacks', function () {
     it('should call back on drag', function () {
       function onDrag(event, data) {
-        expect(data.x).toEqual(100);
-        expect(data.y).toEqual(100);
-        expect(data.deltaX).toEqual(100);
-        expect(data.deltaY).toEqual(100);
+        assert(data.x === 100);
+        assert(data.y === 100);
+        assert(data.deltaX === 100);
+        assert(data.deltaY === 100);
       }
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={onDrag}>
@@ -467,10 +468,10 @@ describe('react-draggable', function () {
 
     it('should call back with offset left/top, not client', function () {
       function onDrag(event, data) {
-        expect(data.x).toEqual(100);
-        expect(data.y).toEqual(100);
-        expect(data.deltaX).toEqual(100);
-        expect(data.deltaY).toEqual(100);
+        assert(data.x === 100);
+        assert(data.y === 100);
+        assert(data.deltaX === 100);
+        assert(data.deltaY === 100);
       }
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={onDrag} style={{position: 'relative', top: '200px', left: '200px'}}>
@@ -481,6 +482,27 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 200, 200, 300, 300);
     });
   });
+
+  describe('DraggableCore callbacks', function () {
+    it('should call back with node on drag', function () {
+      function onDrag(event, data) {
+        assert(data.x === 100);
+        assert(data.y === 100);
+        assert(data.deltaX === 100);
+        assert(data.deltaY === 100);
+        assert(data.node === ReactDOM.findDOMNode(drag));
+      }
+      drag = TestUtils.renderIntoDocument(
+        <DraggableCore onDrag={onDrag}>
+          <div />
+        </DraggableCore>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
+  });
+
 
   describe('validation', function () {
     it('should result with invariant when there isn\'t a child', function () {
@@ -493,7 +515,7 @@ describe('react-draggable', function () {
         error = true;
       }
 
-      expect(error).toEqual(true);
+      assert(error === true);
     });
 
     it('should result with invariant if there\'s more than a single child', function () {
@@ -506,7 +528,7 @@ describe('react-draggable', function () {
         error = true;
       }
 
-      expect(error).toEqual(true);
+      assert(error === true);
     });
   });
 });

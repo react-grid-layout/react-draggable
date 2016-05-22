@@ -24,14 +24,18 @@ module.exports = function(config) {
       module: {
         loaders: [
           {
-            test: /\.(?:js|es).?$/,
-            loader: 'babel-loader',
+            test: /\.(?:jsx?|es6)$/,
+            loader: 'babel',
             query: {
               cacheDirectory: true,
             },
-            exclude: /(node_modules)/
+            exclude: /node_modules/
+          },
+          {
+            test: /\.json$/,
+            loader: 'json'
           }
-        ]
+        ],
       },
       plugins: [
         new webpack.DefinePlugin({

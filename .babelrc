@@ -6,5 +6,13 @@
   ],
   "plugins": [
     "transform-flow-comments",
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        // Makes power-assert work
+        "espower"
+      ]
+    }
+  }
 }
