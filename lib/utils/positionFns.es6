@@ -78,7 +78,7 @@ export function createCoreData(draggable: DraggableCore, x: number, y: number): 
   if (isStart) {
     // If this is our first move, use the x and y as last coords.
     return {
-      node: ReactDOM.findDOMNode(this),
+      node: ReactDOM.findDOMNode(draggable),
       deltaX: 0, deltaY: 0,
       lastX: x, lastY: y,
       x: x, y: y
@@ -86,7 +86,7 @@ export function createCoreData(draggable: DraggableCore, x: number, y: number): 
   } else {
     // Otherwise calculate proper values.
     return {
-      node: ReactDOM.findDOMNode(this),
+      node: ReactDOM.findDOMNode(draggable),
       deltaX: x - state.lastX, deltaY: y - state.lastY,
       lastX: state.lastX, lastY: state.lastY,
       x: x, y: y
