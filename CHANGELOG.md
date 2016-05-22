@@ -1,5 +1,10 @@
 # Changelog
 
+### 2.1.1 (May 22, 2016)
+
+- Bugfix: `<DraggableCore>` wasn't calling back with the DOM node.
+- Internal: Rework test suite to use power-assert.
+
 ### 2.1.0 (May 20, 2016)
 
 - Fix improperly missed `handle` or `cancel` selectors if the event originates from a child of the handle or cancel.

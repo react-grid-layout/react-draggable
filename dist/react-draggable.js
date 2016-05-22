@@ -912,7 +912,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (isStart) {
 	    // If this is our first move, use the x and y as last coords.
 	    return {
-	      node: _reactDom2.default.findDOMNode(this),
+	      node: _reactDom2.default.findDOMNode(draggable),
 	      deltaX: 0, deltaY: 0,
 	      lastX: x, lastY: y,
 	      x: x, y: y
@@ -920,7 +920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  } else {
 	    // Otherwise calculate proper values.
 	    return {
-	      node: _reactDom2.default.findDOMNode(this),
+	      node: _reactDom2.default.findDOMNode(draggable),
 	      deltaX: x - state.lastX, deltaY: y - state.lastY,
 	      lastX: state.lastX, lastY: state.lastY,
 	      x: x, y: y
