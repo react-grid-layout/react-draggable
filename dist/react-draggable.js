@@ -1130,7 +1130,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Call event handler. If it returns explicit false, trigger end.
 	      var shouldUpdate = _this.props.onDrag(e, coreEvent);
 	      if (shouldUpdate === false) {
-	        _this.handleDragStop(new MouseEvent());
+	        try {
+	          _this.handleDragStop(new MouseEvent('mouseup'));
+	        } catch (err) {
+	          // Old browsers
+	          var event = document.createEvent('MouseEvents');
+	          // I see why this insanity was deprecated
+	          // $FlowIgnore
+	          event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	          // $FlowIgnore
+	          _this.handleDragStop(event);
+	        }
 	        return;
 	      }
 	

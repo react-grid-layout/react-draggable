@@ -1,5 +1,10 @@
 # Changelog
 
+### 2.1.2 (Jun 5, 2016)
+
+- Bugfix: Fix `return false` to cancel `onDrag` breaking on both old and new browsers due to missing `typeArg` and/or
+  unsupported `MouseEventConstructor`. Fixes [#164](https://github.com/mzabriskie/react-draggable/issues/164).
+
 ### 2.1.1 (May 22, 2016)
 
 - Bugfix: `<DraggableCore>` wasn't calling back with the DOM node.
