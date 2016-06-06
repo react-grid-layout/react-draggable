@@ -263,11 +263,10 @@ export default class DraggableCore extends React.Component {
         this.handleDragStop(new MouseEvent('mouseup'));
       } catch (err) {
         // Old browsers
-        const event = document.createEvent('MouseEvents');
+        const event = ((document.createEvent('MouseEvents'): any): MouseEvent);
         // I see why this insanity was deprecated
         // $FlowIgnore
         event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        // $FlowIgnore
         this.handleDragStop(event);
       }
       return;
