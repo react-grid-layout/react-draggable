@@ -178,6 +178,22 @@ describe('react-draggable', function () {
       assert(called === false);
     });
 
+    it('should immediately call onStop if onDrag returns false', function () {
+      var called = false;
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={function () { return false; }} onStop={function () { called = true; }}>
+          <div/>
+        </Draggable>
+      );
+
+      TestUtils.Simulate.mouseDown(ReactDOM.findDOMNode(drag));
+      assert(called === false);
+      mouseMove(10, 10);
+      assert(called === true);
+      assert(drag.state.x === 0);
+      assert(drag.state.y === 0);
+    });
+
     it('should render with style translate() for DOM nodes', function () {
       var dragged = false;
       drag = TestUtils.renderIntoDocument(
