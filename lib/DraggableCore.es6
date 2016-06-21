@@ -283,8 +283,6 @@ export default class DraggableCore extends React.Component {
   };
 
   handleDragStop: EventHandler<MouseEvent> = (e) => {
-    // Remove the event listener that stopped document scrolling
-    document.removeEventListener('touchmove', this.removeScroll, false);
 
     if (!this.state.dragging) return;
 
@@ -342,6 +340,9 @@ export default class DraggableCore extends React.Component {
   onTouchEnd: EventHandler<MouseEvent> = (e) => {
     // We're on a touch device now, so change the event handlers
     dragEventFor = eventsFor.touch;
+
+    // Remove the event listener that stopped document scrolling on touch devices
+    document.removeEventListener('touchmove', this.removeScroll, false);
 
     return this.handleDragStop(e);
   };

@@ -1151,8 +1151,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        lastY: y
 	      });
 	    }, _this.handleDragStop = function (e) {
-	      // Remove the event listener that stopped document scrolling
-	      document.removeEventListener('touchmove', _this.removeScroll, false);
 	
 	      if (!_this.state.dragging) return;
 	
@@ -1201,6 +1199,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, _this.onTouchEnd = function (e) {
 	      // We're on a touch device now, so change the event handlers
 	      dragEventFor = eventsFor.touch;
+	
+	      // Remove the event listener that stopped document scrolling on touch devices
+	      document.removeEventListener('touchmove', _this.removeScroll, false);
 	
 	      return _this.handleDragStop(e);
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
