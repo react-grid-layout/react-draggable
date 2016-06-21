@@ -121,7 +121,7 @@ export default class Draggable extends React.Component {
      *      let App = React.createClass({
      *          render: function () {
      *              return (
-     *                  <Draggable defaultPosition={{x: 25, y: 25}}>
+     *                  <Draggable position={{x: 25, y: 25}}>
      *                      <div>I start with transformX: 25px and transformY: 25px;</div>
      *                  </Draggable>
      *              );
