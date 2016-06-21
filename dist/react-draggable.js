@@ -1043,6 +1043,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      lastX: NaN, lastY: NaN,
 	      touchIdentifier: null
 	    }, _this.handleDragStart = function (e) {
+	      // Stop scrolling on touch devices while user is dragging as this is an issue for ipad.
+	      document.addEventListener('touchmove', _this.removeScroll);
+	
 	      // Make it possible to attach event handlers on top of this one.
 	      _this.props.onMouseDown(e);
 	
@@ -1148,6 +1151,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        lastY: y
 	      });
 	    }, _this.handleDragStop = function (e) {
+	      // Remove the event listener that stopped document scrolling
+	      document.removeEventListener('touchmove', _this.removeScroll, false);
+	
 	      if (!_this.state.dragging) return;
 	
 	      var position = (0, _positionFns.getControlPosition)(e, _this.state.touchIdentifier, _this);
@@ -1191,18 +1197,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // We're on a touch device now, so change the event handlers
 	      dragEventFor = eventsFor.touch;
 	
-	      // Stop the touch device from scrolling while user is dragging.
-	      if (_this.state.dragging) {
-	        document.addEventListener('touchmove', _this.removeScroll);
-	      }
-	
 	      return _this.handleDragStart(e);
 	    }, _this.onTouchEnd = function (e) {
 	      // We're on a touch device now, so change the event handlers
 	      dragEventFor = eventsFor.touch;
-	
-	      // Remove the event listener that stopped document scrolling
-	      document.removeEventListener('touchmove', _this.removeScroll, false);
 	
 	      return _this.handleDragStop(e);
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
