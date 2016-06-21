@@ -245,7 +245,7 @@ export default class DraggableCore extends React.Component {
     // Stop scrolling on touch devices while user is dragging as this is an issue for ipad.
     if (this.state.dragging && this.state.scrolling) {
       document.addEventListener('touchmove', this.removeScroll);
-      this.setState({scrolling: false});
+      this.state.scrolling = false;
     }
 
     // Get the current drag point from the event. This is used as the offset.
