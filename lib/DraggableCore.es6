@@ -180,6 +180,9 @@ export default class DraggableCore extends React.Component {
   }
 
   handleDragStart: EventHandler<MouseEvent> = (e) => {
+    // Stop scrolling on touch devices while user is dragging as this is an issue for ipad.
+    document.addEventListener('touchmove', this.removeScroll);
+
     // Make it possible to attach event handlers on top of this one.
     this.props.onMouseDown(e);
 
@@ -280,6 +283,9 @@ export default class DraggableCore extends React.Component {
   };
 
   handleDragStop: EventHandler<MouseEvent> = (e) => {
+    // Remove the event listener that stopped document scrolling
+    document.removeEventListener('touchmove', this.removeScroll, false);
+
     if (!this.state.dragging) return;
 
     const position = getControlPosition(e, this.state.touchIdentifier, this);
@@ -330,20 +336,12 @@ export default class DraggableCore extends React.Component {
     // We're on a touch device now, so change the event handlers
     dragEventFor = eventsFor.touch;
 
-    // Stop the touch device from scrolling while user is dragging.
-    if (this.state.dragging) {
-      document.addEventListener('touchmove', this.removeScroll)
-    }
-
     return this.handleDragStart(e);
   };
 
   onTouchEnd: EventHandler<MouseEvent> = (e) => {
     // We're on a touch device now, so change the event handlers
     dragEventFor = eventsFor.touch;
-
-    // Remove the event listener that stopped document scrolling
-    document.removeEventListener('touchmove', this.removeScroll, false);
 
     return this.handleDragStop(e);
   };
