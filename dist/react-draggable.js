@@ -1104,7 +1104,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Stop scrolling on touch devices while user is dragging as this is an issue for ipad.
 	      if (_this.state.dragging && _this.state.scrolling) {
 	        document.addEventListener('touchmove', _this.removeScroll);
-	        _this.state.scrolling = false;
+	        _this.setState({ scrolling: false });
 	      }
 	
 	      // Get the current drag point from the event. This is used as the offset.
