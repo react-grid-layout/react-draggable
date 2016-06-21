@@ -1134,11 +1134,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _this.handleDragStop(new MouseEvent('mouseup'));
 	        } catch (err) {
 	          // Old browsers
-	          var event = document.createEvent('MouseEvents');
+	          var event = ((document.createEvent('MouseEvents') /*: any*/) /*: MouseEvent*/);
 	          // I see why this insanity was deprecated
 	          // $FlowIgnore
 	          event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-	          // $FlowIgnore
 	          _this.handleDragStop(event);
 	        }
 	        return;
@@ -1185,14 +1184,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	      dragEventFor = eventsFor.mouse;
 	
 	      return _this.handleDragStop(e);
+	    }, _this.removeScroll = function (e) {
+	      e.preventDefault();
+	      return false;
 	    }, _this.onTouchStart = function (e) {
 	      // We're on a touch device now, so change the event handlers
 	      dragEventFor = eventsFor.touch;
+	
+	      // Stop the touch device from scrolling while user is dragging.
+	      if (_this.state.dragging) {
+	        document.addEventListener('touchmove', _this.removeScroll);
+	      }
 	
 	      return _this.handleDragStart(e);
 	    }, _this.onTouchEnd = function (e) {
 	      // We're on a touch device now, so change the event handlers
 	      dragEventFor = eventsFor.touch;
+	
+	      // Remove the event listener that stopped document scrolling
+	      document.removeEventListener('touchmove', _this.removeScroll, false);
 	
 	      return _this.handleDragStop(e);
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
@@ -1207,6 +1217,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _domFns.removeEvent)(document, eventsFor.touch.move, this.handleDrag);
 	      (0, _domFns.removeEvent)(document, eventsFor.mouse.stop, this.handleDragStop);
 	      (0, _domFns.removeEvent)(document, eventsFor.touch.stop, this.handleDragStop);
+	      document.removeEventListener('touchmove', this.removeScroll);
 	      if (this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)();
 	    }
 	
