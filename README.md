@@ -253,7 +253,7 @@ on itself and thus must have callbacks attached to be useful.
   handle: string,
   onStart: DraggableEventHandler,
   onDrag: DraggableEventHandler,
-  onStop: DraggableEventHandler
+  onStop: DraggableEventHandler,
   onMouseDown: (e: MouseEvent) => void
 }
 ```
