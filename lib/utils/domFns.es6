@@ -2,6 +2,7 @@
 import {findInArray, isFunction, int} from './shims';
 import browserPrefix, {getPrefix, browserPrefixToStyle, browserPrefixToKey} from './getPrefix';
 
+import type DraggableCore from '../DraggableCore';
 import type {ControlPosition} from './types';
 
 let matchesSelectorFunc = '';
@@ -95,9 +96,9 @@ export function innerWidth(node: HTMLElement): number {
 }
 
 // Get from offsetParent
-export function offsetXYFromParentOf(evt: {clientX: number, clientY: number}, node: HTMLElement & {offsetParent: HTMLElement}): ControlPosition {
-  const offsetParent = node.offsetParent || document.body;
-  const offsetParentRect = node.offsetParent === document.body ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
+export function offsetXYFromParentOf(evt: {clientX: number, clientY: number}, node: HTMLElement & {offsetParent: HTMLElement}, draggableCore: DraggableCore): ControlPosition {
+  const offsetParent = draggableCore.props.offsetParent || node.offsetParent || document.body;
+  const offsetParentRect = offsetParent ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
 
   const x = evt.clientX + offsetParent.scrollLeft - offsetParentRect.left;
   const y = evt.clientY + offsetParent.scrollTop - offsetParentRect.top;
