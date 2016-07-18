@@ -72,7 +72,7 @@ View the [Demo](http://mzabriskie.github.io/react-draggable/example/) and its
 [source](/example/index.html) for more.
 
 ```js
-import React from 'react');
+import React from 'react';
 import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 
