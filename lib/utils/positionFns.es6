@@ -17,17 +17,17 @@ export function getBoundPosition(draggable: Draggable, x: number, y: number): [n
   const node = ReactDOM.findDOMNode(draggable);
 
   if (typeof bounds === 'string') {
-    const {currentDocument} = node;
-    const currentWindow = node.defaultView;
+    const {ownerDocument} = node;
+    const ownerWindow = node.defaultView;
     let boundNode;
     if (bounds === 'parent') {
       boundNode = node.parentNode;
     } else {
-      boundNode = currentDocument.querySelector(bounds);
+      boundNode = ownerDocument.querySelector(bounds);
       if (!boundNode) throw new Error('Bounds selector "' + bounds + '" could not find an element.');
     }
-    const nodeStyle = currentWindow.getComputedStyle(node);
-    const boundNodeStyle = currentWindow.getComputedStyle(boundNode);
+    const nodeStyle = ownerWindow.getComputedStyle(node);
+    const boundNodeStyle = ownerWindow.getComputedStyle(boundNode);
     // Compute bounds. This is a pain with padding and offsets but this gets it exactly right.
     bounds = {
       left: -node.offsetLeft + int(boundNodeStyle.paddingLeft) +
