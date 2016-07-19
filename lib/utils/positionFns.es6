@@ -66,7 +66,7 @@ export function canDragY(draggable: Draggable): boolean {
 export function getControlPosition(e: MouseEvent, touchIdentifier: ?number, draggableCore: DraggableCore): ?ControlPosition {
   const touchObj = typeof touchIdentifier === 'number' ? getTouch(e, touchIdentifier) : null;
   if (typeof touchIdentifier === 'number' && !touchObj) return null; // not the right touch
-  return offsetXYFromParentOf(touchObj || e, ReactDOM.findDOMNode(draggableCore));
+  return offsetXYFromParentOf(touchObj || e, ReactDOM.findDOMNode(draggableCore), draggableCore);
 }
 
 // Create an data object exposed by <DraggableCore>'s events
