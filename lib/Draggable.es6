@@ -21,7 +21,7 @@ type DraggableState = {
 type ConstructorProps = {
   position: { x: number, y: number },
   defaultPosition: { x: number, y: number }
-}
+};
 
 //
 // Define <Draggable>
@@ -288,7 +288,7 @@ export default class Draggable extends React.Component {
     this.setState(newState);
   };
 
-  render(): React.Element {
+  render(): React.Element<any> {
     let style = {}, svgTransform = null;
 
     // If this is controlled, we don't want to move it - unless it's dragging.
