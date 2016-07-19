@@ -67,6 +67,16 @@ export default class DraggableCore extends React.Component {
     enableUserSelectHack: PropTypes.bool,
 
     /**
+     * `offsetParent`, if set, uses the passed DOM node to compute drag offsets
+     * instead of using the parent node.
+     */
+    offsetParent: function(props, propName) {
+      if (process.browser && props[propName] && props[propName].nodeType !== 1) {
+        throw new Error('Draggable\'s offsetParent must be a DOM Node.');
+      }
+    },
+
+    /**
      * `grid` specifies the x and y that dragging should snap to.
      */
     grid: PropTypes.arrayOf(PropTypes.number),
@@ -152,6 +162,7 @@ export default class DraggableCore extends React.Component {
     cancel: null,
     disabled: false,
     enableUserSelectHack: true,
+    offsetParent: null,
     handle: null,
     grid: null,
     transform: null,

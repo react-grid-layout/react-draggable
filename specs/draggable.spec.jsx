@@ -456,32 +456,74 @@ describe('react-draggable', function () {
     });
 
     it('should modulate position on scroll', function (done) {
-      // This test fails in karma under Chrome & Firefox, positioning quirks
-      // FIXME: Why? Chrome reports 2x scrollTo, Phantom reports 0x, Firefox reports 1x as it should
-      var is_ff = navigator.userAgent.toLowerCase().indexOf('Firefox') > -1;
-      if (!is_ff) return done();
-
-      var dragCalled = false;
+      let dragCalled = false;
 
       function onDrag(e, coreEvent) {
         assert(coreEvent.deltaY === 500);
         dragCalled = true;
       }
       drag = TestUtils.renderIntoDocument(<Draggable onDrag={onDrag}><div/></Draggable>);
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
+
+      // Create a container we can scroll. I'm doing it this way so we can still access <Draggable>.
+      // Enzyme (airbnb project) would make this a lot easier.
+      const fragment = fragmentFromString(`
+        <div style="overflow: auto; height: 100px;">
+          <div style="height: 10000px; position: relative;">
+          </div>
+        </div>
+      `);
+      transplantNodeInto(node, fragment, (f) => f.children[0]);
 
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
       assert(drag.state.dragging === true);
 
-      document.body.style.height = '10000px';
-      window.scrollTo(0, 500);
-      TestUtils.Simulate.mouseUp(node, {clientX: 0, clientY: 0});
+      // Scroll the inner container & trigger a scroll
+      fragment.scrollTop = 500;
+      mouseMove(0, 0);
+      TestUtils.Simulate.mouseUp(node);
       setTimeout(function() {
+        assert(drag.state.dragging === false);
         assert(dragCalled === true);
-        assert(drag.state.clientY === 500);
+        assert(drag.state.y === 500);
+        // Cleanup
+        document.body.removeChild(fragment);
         done();
       }, 50);
+
     });
+
+    it('should respect offsetParent on nested div scroll', function (done) {
+      let dragCalled = false;
+      function onDrag(e, coreEvent) {
+        dragCalled = true;
+        // Because the offsetParent is the body, we technically haven't moved at all relative to it
+        assert(coreEvent.deltaY === 0);
+      }
+      drag = TestUtils.renderIntoDocument(<Draggable onDrag={onDrag} offsetParent={document.body}><div/></Draggable>);
+      const node = ReactDOM.findDOMNode(drag);
+
+      // Create a container we can scroll. I'm doing it this way so we can still access <Draggable>.
+      // Enzyme (airbnb project) would make this a lot easier.
+      const fragment = fragmentFromString(`
+        <div style="overflow: auto; height: 100px;">
+          <div style="height: 10000px; position: relative;">
+          </div>
+        </div>
+      `);
+      transplantNodeInto(node, fragment, (f) => f.children[0]);
+
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      fragment.scrollTop = 500;
+
+      mouseMove(0, 0);
+      TestUtils.Simulate.mouseUp(node);
+      setTimeout(function() {
+        assert(dragCalled);
+        // Cleanup
+        document.body.removeChild(fragment);
+        done();
+      }, 50);
   });
 
   describe('draggable callbacks', function () {
@@ -596,4 +638,16 @@ function simulateMovementFromTo(drag, fromX, fromY, toX, toY) {
   TestUtils.Simulate.mouseDown(node, {clientX: fromX, clientY: fromX});
   mouseMove(toX, toY);
   TestUtils.Simulate.mouseUp(node);
+}
+
+function fragmentFromString(strHTML) {
+  var temp = document.createElement('div');
+  temp.innerHTML = strHTML;
+  return temp.children[0];
+}
+
+function transplantNodeInto(node, into, selector) {
+  node.parentNode.removeChild(node);
+  selector(into).appendChild(node);
+  document.body.appendChild(into);
 }

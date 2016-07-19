@@ -182,6 +182,11 @@ grid: [number, number],
 // Example: '.handle'
 handle: string,
 
+// If desired, you can provide your own offsetParent for drag calculations.
+// By default, we use the Draggable's offsetParent. This can be useful for elements
+// with odd display types or floats.
+offsetParent: HTMLElement,
+
 // Called whenever the user mouses down. Called regardless of handle or
 // disabled status.
 onMouseDown: (e: MouseEvent) => void,
@@ -249,6 +254,7 @@ on itself and thus must have callbacks attached to be useful.
   cancel: string,
   disabled: boolean,
   enableUserSelectHack: boolean,
+  offsetParent: HTMLElement,
   grid: [number, number],
   handle: string,
   onStart: DraggableEventHandler,

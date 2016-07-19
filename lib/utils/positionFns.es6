@@ -1,7 +1,7 @@
 // @flow
 import {isNum, int} from './shims';
 import ReactDOM from 'react-dom';
-import {getTouch, innerWidth, innerHeight, offsetXYFromParentOf, outerWidth, outerHeight} from './domFns';
+import {getTouch, innerWidth, innerHeight, offsetXYFromParent, outerWidth, outerHeight} from './domFns';
 
 import type Draggable from '../Draggable';
 import type {Bounds, ControlPosition, DraggableData} from './types';
@@ -66,7 +66,11 @@ export function canDragY(draggable: Draggable): boolean {
 export function getControlPosition(e: MouseEvent, touchIdentifier: ?number, draggableCore: DraggableCore): ?ControlPosition {
   const touchObj = typeof touchIdentifier === 'number' ? getTouch(e, touchIdentifier) : null;
   if (typeof touchIdentifier === 'number' && !touchObj) return null; // not the right touch
-  return offsetXYFromParentOf(touchObj || e, ReactDOM.findDOMNode(draggableCore));
+  // User can provide an offsetParent if desired.
+  const offsetParent = draggableCore.props.offsetParent ||
+                       ReactDOM.findDOMNode(draggableCore).offsetParent ||
+                       document.body;
+  return offsetXYFromParent(touchObj || e, offsetParent);
 }
 
 // Create an data object exposed by <DraggableCore>'s events
