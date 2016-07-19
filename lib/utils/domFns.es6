@@ -63,7 +63,7 @@ export function outerHeight(node: HTMLElement): number {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetTop which is including margin. See getBoundPosition
   let height = node.clientHeight;
-  const computedStyle = window.getComputedStyle(node);
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
   height += int(computedStyle.borderTopWidth);
   height += int(computedStyle.borderBottomWidth);
   return height;
@@ -73,14 +73,14 @@ export function outerWidth(node: HTMLElement): number {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetLeft which is including margin. See getBoundPosition
   let width = node.clientWidth;
-  const computedStyle = window.getComputedStyle(node);
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
   width += int(computedStyle.borderLeftWidth);
   width += int(computedStyle.borderRightWidth);
   return width;
 }
 export function innerHeight(node: HTMLElement): number {
   let height = node.clientHeight;
-  const computedStyle = window.getComputedStyle(node);
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
   height -= int(computedStyle.paddingTop);
   height -= int(computedStyle.paddingBottom);
   return height;
@@ -88,7 +88,7 @@ export function innerHeight(node: HTMLElement): number {
 
 export function innerWidth(node: HTMLElement): number {
   let width = node.clientWidth;
-  const computedStyle = window.getComputedStyle(node);
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
   width -= int(computedStyle.paddingLeft);
   width -= int(computedStyle.paddingRight);
   return width;
@@ -96,8 +96,8 @@ export function innerWidth(node: HTMLElement): number {
 
 // Get from offsetParent
 export function offsetXYFromParentOf(evt: {clientX: number, clientY: number}, node: HTMLElement & {offsetParent: HTMLElement}): ControlPosition {
-  const offsetParent = node.offsetParent || document.body;
-  const offsetParentRect = node.offsetParent === document.body ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
+  const offsetParent = node.offsetParent || node.ownerDocument.body;
+  const offsetParentRect = node.offsetParent === node.ownerDocument.body ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
 
   const x = evt.clientX + offsetParent.scrollLeft - offsetParentRect.left;
   const y = evt.clientY + offsetParent.scrollTop - offsetParentRect.top;
