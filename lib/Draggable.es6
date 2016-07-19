@@ -319,10 +319,14 @@ export default class Draggable extends React.Component {
       style = createCSSTransform(transformOpts);
     }
 
+    const childProps = this.props.children.props
+
     // Mark with class while dragging
-    const className = classNames((this.props.children.props.className || ''), 'react-draggable', {
+    const className = classNames(childProps.className, 'react-draggable', {
       'react-draggable-dragging': this.state.dragging,
-      'react-draggable-dragged': this.state.dragged
+      [childProps.classNameDragging]: this.state.dragging,
+      'react-draggable-dragged': this.state.dragged,
+      [childProps.classNameDragged]: this.state.dragged
     });
 
     // Reuse the child provided
@@ -331,7 +335,7 @@ export default class Draggable extends React.Component {
       <DraggableCore {...this.props} onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragStop}>
         {React.cloneElement(React.Children.only(this.props.children), {
           className: className,
-          style: {...this.props.children.props.style, ...style},
+          style: {...childProps.style, ...style},
           transform: svgTransform
         })}
       </DraggableCore>

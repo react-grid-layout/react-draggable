@@ -116,7 +116,8 @@ The `<Draggable/>` component transparently adds draggability to its children.
 For the `<Draggable/>` component to correctly attach itself to its child, the child element must provide support
 for the following props:
 - `style` is used to give the transform css to the child.
-- `className` is used to apply the proper classes to the object being dragged.
+- `className` is used to apply the proper classes to the draggable object.
+- `classNameDragging` and `classNameDragged` is used to apply state-specific styles to the draggable object.
 - `onMouseDown`, `onMouseUp`, `onTouchStart`, and `onTouchEnd`  are used to keep track of dragging state.
 
 React.DOM elements support the above properties by default, so you may use those elements as children without
