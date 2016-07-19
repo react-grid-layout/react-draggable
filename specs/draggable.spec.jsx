@@ -122,7 +122,11 @@ describe('react-draggable', function () {
 
       TestUtils.renderIntoDocument(drag);
 
-      expect(console.error).toHaveBeenCalledWith('Warning: Failed propType: Invalid prop className passed to Draggable - do not set this, set it on the child.');
+      expect(
+        console.error.calls.argsFor(0)[0].replace('propType:', 'prop type:').split('\n')[0]
+      ).toBe(
+        'Warning: Failed prop type: Invalid prop className passed to Draggable - do not set this, set it on the child.'
+      );
     });
 
     it('should throw when setting style', function () {
@@ -130,7 +134,11 @@ describe('react-draggable', function () {
 
       TestUtils.renderIntoDocument(drag);
 
-      expect(console.error).toHaveBeenCalledWith('Warning: Failed propType: Invalid prop style passed to Draggable - do not set this, set it on the child.');
+      expect(
+        console.error.calls.argsFor(0)[0].replace('propType:', 'prop type:').split('\n')[0]
+      ).toBe(
+        'Warning: Failed prop type: Invalid prop style passed to Draggable - do not set this, set it on the child.'
+      );
     });
 
     it('should throw when setting transform', function () {
@@ -138,7 +146,11 @@ describe('react-draggable', function () {
 
       TestUtils.renderIntoDocument(drag);
 
-      expect(console.error).toHaveBeenCalledWith('Warning: Failed propType: Invalid prop transform passed to Draggable - do not set this, set it on the child.');
+      expect(
+        console.error.calls.argsFor(0)[0].replace('propType:', 'prop type:').split('\n')[0]
+      ).toBe(
+        'Warning: Failed prop type: Invalid prop transform passed to Draggable - do not set this, set it on the child.'
+      );
     });
 
     it('should call onStart when dragging begins', function () {
