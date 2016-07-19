@@ -153,8 +153,6 @@ export default class DraggableCore extends React.Component {
      * These properties should be defined on the child, not here.
      */
     className: dontSetMe,
-    classNameDragged: dontSetMe,
-    classNameDragging: dontSetMe,
     style: dontSetMe,
     transform: dontSetMe
   };

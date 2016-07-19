@@ -116,8 +116,7 @@ The `<Draggable/>` component transparently adds draggability to its children.
 For the `<Draggable/>` component to correctly attach itself to its child, the child element must provide support
 for the following props:
 - `style` is used to give the transform css to the child.
-- `className` is used to apply the proper classes to the draggable object.
-- `classNameDragging` and `classNameDragged` is used to apply state-specific styles to the draggable object.
+- `className` is used to apply the proper classes to the object being dragged.
 - `onMouseDown`, `onMouseUp`, `onTouchStart`, and `onTouchEnd`  are used to keep track of dragging state.
 
 React.DOM elements support the above properties by default, so you may use those elements as children without
@@ -166,6 +165,12 @@ bounds: {left: number, top: number, right: number, bottom: number} | string,
 // Specifies a selector to be used to prevent drag initialization.
 // Example: '.body'
 cancel: string,
+
+// Class names for draggable UI.
+// Default to 'react-draggable', 'react-draggable-dragging', and 'react-draggable-dragged'
+defaultClassName: string,
+defaultClassNameDragging: string,
+defaultClassNameDragged: string,
 
 // Specifies the `x` and `y` that the dragged item should start at.
 // This is generally not necessary to use (you can use absolute or relative

@@ -2,7 +2,7 @@
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 // $FlowIgnore
-import classNamesUtil from 'classnames';
+import classNames from 'classnames';
 import {createCSSTransform, createSVGTransform} from './utils/domFns';
 import {canDragX, canDragY, createDraggableData, getBoundPosition} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
@@ -87,6 +87,10 @@ export default class Draggable extends React.Component {
       PropTypes.oneOf([false])
     ]),
 
+    defaultClassName: PropTypes.string,
+    defaultClassNameDragging: PropTypes.string,
+    defaultClassNameDragged: PropTypes.string,
+
     /**
      * `defaultPosition` specifies the x and y that the dragged item should start at
      *
@@ -138,8 +142,6 @@ export default class Draggable extends React.Component {
      * These properties should be defined on the child, not here.
      */
     className: dontSetMe,
-    classNameDragged: dontSetMe,
-    classNameDragging: dontSetMe,
     style: dontSetMe,
     transform: dontSetMe
   };
@@ -148,6 +150,9 @@ export default class Draggable extends React.Component {
     ...DraggableCore.defaultProps,
     axis: 'both',
     bounds: false,
+    defaultClassName: 'react-draggable',
+    defaultClassNameDragging: 'react-draggable-dragging',
+    defaultClassNameDragged: 'react-draggable-dragged',
     defaultPosition: {x: 0, y: 0},
     position: null
   };
@@ -321,15 +326,16 @@ export default class Draggable extends React.Component {
       style = createCSSTransform(transformOpts);
     }
 
-    const childProps = this.props.children.props
-    const className = childProps.className || 'react-draggable'
-    const classNameDragging = childProps.classNameDragging || 'react-draggable-dragging'
-    const classNameDragged = childProps.classNameDragged || 'react-draggable-dragged'
+    const {
+      defaultClassName,
+      defaultClassNameDragging,
+      defaultClassNameDragged
+    } = this.props;
 
     // Mark with class while dragging
-    const classNames = classNamesUtil(className, {
-      [classNameDragging]: this.state.dragging,
-      [classNameDragged]: this.state.dragged
+    const className = classNames((this.props.children.props.className || ''), defaultClassName, {
+      [defaultClassNameDragging]: this.state.dragging,
+      [defaultClassNameDragged]: this.state.dragged
     });
 
     // Reuse the child provided
@@ -337,8 +343,8 @@ export default class Draggable extends React.Component {
     return (
       <DraggableCore {...this.props} onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragStop}>
         {React.cloneElement(React.Children.only(this.props.children), {
-          className: classNames,
-          style: {...childProps.style, ...style},
+          className: className,
+          style: {...this.props.children.props.style, ...style},
           transform: svgTransform
         })}
       </DraggableCore>
