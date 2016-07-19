@@ -2,7 +2,7 @@
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 // $FlowIgnore
-import classNames from 'classnames';
+import classNamesUtil from 'classnames';
 import {createCSSTransform, createSVGTransform} from './utils/domFns';
 import {canDragX, canDragY, createDraggableData, getBoundPosition} from './utils/positionFns';
 import {dontSetMe} from './utils/shims';
@@ -138,6 +138,8 @@ export default class Draggable extends React.Component {
      * These properties should be defined on the child, not here.
      */
     className: dontSetMe,
+    classNameDragged: dontSetMe,
+    classNameDragging: dontSetMe,
     style: dontSetMe,
     transform: dontSetMe
   };
@@ -320,13 +322,14 @@ export default class Draggable extends React.Component {
     }
 
     const childProps = this.props.children.props
+    const className = childProps.className || 'react-draggable'
+    const classNameDragging = childProps.classNameDragging || 'react-draggable-dragging'
+    const classNameDragged = childProps.classNameDragged || 'react-draggable-dragged'
 
     // Mark with class while dragging
-    const className = classNames(childProps.className, 'react-draggable', {
-      'react-draggable-dragging': this.state.dragging,
-      [childProps.classNameDragging]: this.state.dragging,
-      'react-draggable-dragged': this.state.dragged,
-      [childProps.classNameDragged]: this.state.dragged
+    const classNames = classNamesUtil(className, {
+      [classNameDragging]: this.state.dragging,
+      [classNameDragged]: this.state.dragged
     });
 
     // Reuse the child provided
@@ -334,7 +337,7 @@ export default class Draggable extends React.Component {
     return (
       <DraggableCore {...this.props} onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragStop}>
         {React.cloneElement(React.Children.only(this.props.children), {
-          className: className,
+          className: classNames,
           style: {...childProps.style, ...style},
           transform: svgTransform
         })}
