@@ -17,15 +17,17 @@ export function getBoundPosition(draggable: Draggable, x: number, y: number): [n
   const node = ReactDOM.findDOMNode(draggable);
 
   if (typeof bounds === 'string') {
+    const {currentDocument} = node;
+    const currentWindow = node.defaultView;
     let boundNode;
     if (bounds === 'parent') {
       boundNode = node.parentNode;
     } else {
-      boundNode = document.querySelector(bounds);
+      boundNode = currentDocument.querySelector(bounds);
       if (!boundNode) throw new Error('Bounds selector "' + bounds + '" could not find an element.');
     }
-    const nodeStyle = window.getComputedStyle(node);
-    const boundNodeStyle = window.getComputedStyle(boundNode);
+    const nodeStyle = currentWindow.getComputedStyle(node);
+    const boundNodeStyle = currentWindow.getComputedStyle(boundNode);
     // Compute bounds. This is a pain with padding and offsets but this gets it exactly right.
     bounds = {
       left: -node.offsetLeft + int(boundNodeStyle.paddingLeft) +
@@ -66,10 +68,9 @@ export function canDragY(draggable: Draggable): boolean {
 export function getControlPosition(e: MouseEvent, touchIdentifier: ?number, draggableCore: DraggableCore): ?ControlPosition {
   const touchObj = typeof touchIdentifier === 'number' ? getTouch(e, touchIdentifier) : null;
   if (typeof touchIdentifier === 'number' && !touchObj) return null; // not the right touch
+  const node = ReactDOM.findDOMNode(draggableCore);
   // User can provide an offsetParent if desired.
-  const offsetParent = draggableCore.props.offsetParent ||
-                       ReactDOM.findDOMNode(draggableCore).offsetParent ||
-                       document.body;
+  const offsetParent = draggableCore.props.offsetParent || node.offsetParent || node.ownerDocument.body;
   return offsetXYFromParent(touchObj || e, offsetParent);
 }
 

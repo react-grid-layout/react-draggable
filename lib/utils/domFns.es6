@@ -63,7 +63,7 @@ export function outerHeight(node: HTMLElement): number {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetTop which is including margin. See getBoundPosition
   let height = node.clientHeight;
-  const computedStyle = window.getComputedStyle(node);
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
   height += int(computedStyle.borderTopWidth);
   height += int(computedStyle.borderBottomWidth);
   return height;
@@ -73,14 +73,14 @@ export function outerWidth(node: HTMLElement): number {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetLeft which is including margin. See getBoundPosition
   let width = node.clientWidth;
-  const computedStyle = window.getComputedStyle(node);
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
   width += int(computedStyle.borderLeftWidth);
   width += int(computedStyle.borderRightWidth);
   return width;
 }
 export function innerHeight(node: HTMLElement): number {
   let height = node.clientHeight;
-  const computedStyle = window.getComputedStyle(node);
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
   height -= int(computedStyle.paddingTop);
   height -= int(computedStyle.paddingBottom);
   return height;
@@ -88,15 +88,14 @@ export function innerHeight(node: HTMLElement): number {
 
 export function innerWidth(node: HTMLElement): number {
   let width = node.clientWidth;
-  const computedStyle = window.getComputedStyle(node);
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
   width -= int(computedStyle.paddingLeft);
   width -= int(computedStyle.paddingRight);
   return width;
 }
 
 // Get from offsetParent
-export function offsetXYFromParent(evt: {clientX: number, clientY: number}, offsetParent: ?HTMLElement): ControlPosition {
-  if (!offsetParent) offsetParent = document.body;
+export function offsetXYFromParent(evt: {clientX: number, clientY: number}, offsetParent: HTMLElement): ControlPosition {
   const isBody = offsetParent === offsetParent.ownerDocument.body;
   const offsetParentRect = isBody ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
 
@@ -132,14 +131,15 @@ const userSelectPrefix = getPrefix('user-select');
 const userSelect = browserPrefixToStyle('user-select', userSelectPrefix);
 const userSelectStyle = `;${userSelect}: none;`;
 
-export function addUserSelectStyles() {
-  const style = document.body.getAttribute('style') || '';
-  document.body.setAttribute('style', style + userSelectStyle);
+// Note we're passing `document` b/c we could be iframed
+export function addUserSelectStyles(body: HTMLElement) {
+  const style = body.getAttribute('style') || '';
+  body.setAttribute('style', style + userSelectStyle);
 }
 
-export function removeUserSelectStyles() {
-  const style = document.body.getAttribute('style') || '';
-  document.body.setAttribute('style', style.replace(userSelectStyle, ''));
+export function removeUserSelectStyles(body: HTMLElement) {
+  const style = body.getAttribute('style') || '';
+  body.setAttribute('style', style.replace(userSelectStyle, ''));
 }
 
 export function styleHacks(childStyle: Object = {}): Object {
