@@ -50,7 +50,7 @@ describe('react-draggable', function () {
     it('should pass style and className properly from child', function () {
       drag = (<Draggable><div className="foo" style={{color: 'black'}}/></Draggable>);
 
-      var node = renderToNode(drag);
+      const node = renderToNode(drag);
       if ('touchAction' in document.body.style) {
         assert(node.getAttribute('style').indexOf('touch-action: none') >= 0);
       }
@@ -75,11 +75,11 @@ describe('react-draggable', function () {
     // NOTE: this runs a shallow renderer, which DOES NOT actually render <DraggableCore>
     it('should pass handle on to <DraggableCore>', function () {
       drag = <Draggable handle=".foo"><div /></Draggable>;
-      var renderer = TestUtils.createRenderer();
+      const renderer = TestUtils.createRenderer();
       renderer.render(drag);
-      var output = renderer.getRenderOutput();
+      const output = renderer.getRenderOutput();
 
-      var expected = (
+      const expected = (
         <DraggableCore {...Draggable.defaultProps} handle=".foo">
           <div
             className="react-draggable"
@@ -91,7 +91,7 @@ describe('react-draggable', function () {
       );
 
       // Not easy to actually test equality here. The functions are bound as static props so we can't test those easily.
-      var toOmit = ['onStart', 'onStop', 'onDrag', 'onMouseDown', 'children'];
+      const toOmit = ['onStart', 'onStop', 'onDrag', 'onMouseDown', 'children'];
       assert(_.isEqual(
         _.omit(output.props, toOmit),
         _.omit(expected.props, toOmit))
@@ -135,7 +135,11 @@ describe('react-draggable', function () {
 
       TestUtils.renderIntoDocument(drag);
 
-      expect(console.error).toHaveBeenCalledWith('Warning: Failed propType: Invalid prop className passed to Draggable - do not set this, set it on the child.');
+      expect(
+        console.error.calls.argsFor(0)[0].replace('propType:', 'prop type:').split('\n')[0]
+      ).toBe(
+        'Warning: Failed prop type: Invalid prop className passed to Draggable - do not set this, set it on the child.'
+      );
     });
 
     it('should throw when setting style', function () {
@@ -143,7 +147,11 @@ describe('react-draggable', function () {
 
       TestUtils.renderIntoDocument(drag);
 
-      expect(console.error).toHaveBeenCalledWith('Warning: Failed propType: Invalid prop style passed to Draggable - do not set this, set it on the child.');
+      expect(
+        console.error.calls.argsFor(0)[0].replace('propType:', 'prop type:').split('\n')[0]
+      ).toBe(
+        'Warning: Failed prop type: Invalid prop style passed to Draggable - do not set this, set it on the child.'
+      );
     });
 
     it('should throw when setting transform', function () {
@@ -151,11 +159,15 @@ describe('react-draggable', function () {
 
       TestUtils.renderIntoDocument(drag);
 
-      expect(console.error).toHaveBeenCalledWith('Warning: Failed propType: Invalid prop transform passed to Draggable - do not set this, set it on the child.');
+      expect(
+        console.error.calls.argsFor(0)[0].replace('propType:', 'prop type:').split('\n')[0]
+      ).toBe(
+        'Warning: Failed prop type: Invalid prop transform passed to Draggable - do not set this, set it on the child.'
+      );
     });
 
     it('should call onStart when dragging begins', function () {
-      var called = false;
+      let called = false;
       drag = TestUtils.renderIntoDocument(
         <Draggable onStart={function () { called = true; }}>
           <div/>
@@ -167,7 +179,7 @@ describe('react-draggable', function () {
     });
 
     it('should call onStop when dragging ends', function () {
-      var called = false;
+      let called = false;
       drag = TestUtils.renderIntoDocument(
         <Draggable onStop={function () { called = true; }}>
           <div/>
@@ -180,7 +192,7 @@ describe('react-draggable', function () {
     });
 
     it('should not call onStart when dragging begins and disabled', function () {
-      var called = false;
+      let called = false;
       drag = TestUtils.renderIntoDocument(
         <Draggable onStart={function () { called = true; }} disabled={true}>
           <div/>
@@ -192,7 +204,7 @@ describe('react-draggable', function () {
     });
 
     it('should immediately call onStop if onDrag returns false', function () {
-      var called = false;
+      let called = false;
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={function () { return false; }} onStop={function () { called = true; }}>
           <div/>
@@ -208,65 +220,65 @@ describe('react-draggable', function () {
     });
 
     it('should render with style translate() for DOM nodes', function () {
-      var dragged = false;
+      let dragged = false;
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={function() { dragged = true; }}>
           <div />
         </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
-      var style = node.getAttribute('style');
+      const style = node.getAttribute('style');
       assert(dragged === true);
       assert(style.indexOf('transform: translate(100px, 100px);') >= 0);
     });
 
     it('should honor "x" axis', function () {
-      var dragged = false;
+      let dragged = false;
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={function() { dragged = true; }} axis="x">
           <div />
         </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
-      var style = node.getAttribute('style');
+      const style = node.getAttribute('style');
       assert(dragged === true);
       assert(style.indexOf('transform: translate(100px, 0px);') >= 0);
     });
 
     it('should honor "y" axis', function () {
-      var dragged = false;
+      let dragged = false;
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={function() { dragged = true; }} axis="y">
           <div />
         </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
-      var style = node.getAttribute('style');
+      const style = node.getAttribute('style');
       assert(dragged === true);
       assert(style.indexOf('transform: translate(0px, 100px);') >= 0);
     });
 
     it('should honor "none" axis', function () {
-      var dragged = false;
+      let dragged = false;
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={function() { dragged = true; }} axis="none">
           <div />
         </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
-      var style = node.getAttribute('style');
+      const style = node.getAttribute('style');
       assert(dragged === true);
       assert(style.indexOf('transform: translate(0px, 0px);') >= 0);
     });
@@ -298,15 +310,15 @@ describe('react-draggable', function () {
           </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
-      var transform = node.getAttribute('transform');
+      const transform = node.getAttribute('transform');
       assert(transform.indexOf('translate(100,100)') >= 0);
     });
 
     it('should add and remove user-select styles', function () {
-      var userSelectStyleStr = `;${userSelectStyle}: none;`;
+      const userSelectStyleStr = `;${userSelectStyle}: none;`;
 
       drag = TestUtils.renderIntoDocument(
         <Draggable>
@@ -314,7 +326,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
 
       assert(document.body.getAttribute('style') === '');
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
@@ -331,7 +343,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
 
       assert(document.body.getAttribute('style') === '');
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
@@ -349,7 +361,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
 
       assert(document.body.getAttribute('style') === '');
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
@@ -457,29 +469,72 @@ describe('react-draggable', function () {
     });
 
     it('should modulate position on scroll', function (done) {
-      // This test fails in karma under Chrome & Firefox, positioning quirks
-      // FIXME: Why? Chrome reports 2x scrollTo, Phantom reports 0x, Firefox reports 1x as it should
-      var is_ff = navigator.userAgent.toLowerCase().indexOf('Firefox') > -1;
-      if (!is_ff) return done();
-
-      var dragCalled = false;
+      let dragCalled = false;
 
       function onDrag(e, coreEvent) {
         assert(coreEvent.deltaY === 500);
         dragCalled = true;
       }
       drag = TestUtils.renderIntoDocument(<Draggable onDrag={onDrag}><div/></Draggable>);
-      var node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
+
+      // Create a container we can scroll. I'm doing it this way so we can still access <Draggable>.
+      // Enzyme (airbnb project) would make this a lot easier.
+      const fragment = fragmentFromString(`
+        <div style="overflow: auto; height: 100px;">
+          <div style="height: 10000px; position: relative;">
+          </div>
+        </div>
+      `);
+      transplantNodeInto(node, fragment, (f) => f.children[0]);
 
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
       assert(drag.state.dragging === true);
 
-      document.body.style.height = '10000px';
-      window.scrollTo(0, 500);
-      TestUtils.Simulate.mouseUp(node, {clientX: 0, clientY: 0});
+      // Scroll the inner container & trigger a scroll
+      fragment.scrollTop = 500;
+      mouseMove(0, 0);
+      TestUtils.Simulate.mouseUp(node);
       setTimeout(function() {
+        assert(drag.state.dragging === false);
         assert(dragCalled === true);
-        assert(drag.state.clientY === 500);
+        assert(drag.state.y === 500);
+        // Cleanup
+        document.body.removeChild(fragment);
+        done();
+      }, 50);
+
+    });
+
+    it('should respect offsetParent on nested div scroll', function (done) {
+      let dragCalled = false;
+      function onDrag(e, coreEvent) {
+        dragCalled = true;
+        // Because the offsetParent is the body, we technically haven't moved at all relative to it
+        assert(coreEvent.deltaY === 0);
+      }
+      drag = TestUtils.renderIntoDocument(<Draggable onDrag={onDrag} offsetParent={document.body}><div/></Draggable>);
+      const node = ReactDOM.findDOMNode(drag);
+
+      // Create a container we can scroll. I'm doing it this way so we can still access <Draggable>.
+      // Enzyme (airbnb project) would make this a lot easier.
+      const fragment = fragmentFromString(`
+        <div style="overflow: auto; height: 100px;">
+          <div style="height: 10000px; position: relative;">
+          </div>
+        </div>
+      `);
+      transplantNodeInto(node, fragment, (f) => f.children[0]);
+
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      fragment.scrollTop = 500;
+
+      mouseMove(0, 0);
+      TestUtils.Simulate.mouseUp(node);
+      setTimeout(function() {
+        assert(dragCalled);
+        // Cleanup
+        document.body.removeChild(fragment);
         done();
       }, 50);
     });
@@ -545,7 +600,7 @@ describe('react-draggable', function () {
     it('should result with invariant when there isn\'t a child', function () {
       drag = (<Draggable/>);
 
-      var error = false;
+      let error = false;
       try {
         TestUtils.renderIntoDocument(drag);
       } catch (e) {
@@ -558,7 +613,7 @@ describe('react-draggable', function () {
     it('should result with invariant if there\'s more than a single child', function () {
       drag = (<Draggable><div/><div/></Draggable>);
 
-      var error = false;
+      let error = false;
       try {
         TestUtils.renderIntoDocument(drag);
       } catch (e) {
@@ -583,7 +638,7 @@ function renderToNode(component) {
 // Would love to new MouseEvent() here but it doesn't work with PhantomJS / old browsers.
 // var e = new MouseEvent('mousemove', {clientX: 100, clientY: 100});
 function mouseMove(x, y) {
-  var evt = document.createEvent('MouseEvents');
+  const evt = document.createEvent('MouseEvents');
   evt.initMouseEvent('mousemove', true, true, window,
       0, 0, 0, x, y, false, false, false, false, 0, null);
   document.dispatchEvent(evt);
@@ -592,9 +647,21 @@ function mouseMove(x, y) {
 
 
 function simulateMovementFromTo(drag, fromX, fromY, toX, toY) {
-  var node = ReactDOM.findDOMNode(drag);
+  const node = ReactDOM.findDOMNode(drag);
 
   TestUtils.Simulate.mouseDown(node, {clientX: fromX, clientY: fromX});
   mouseMove(toX, toY);
   TestUtils.Simulate.mouseUp(node);
+}
+
+function fragmentFromString(strHTML) {
+  var temp = document.createElement('div');
+  temp.innerHTML = strHTML;
+  return temp.children[0];
+}
+
+function transplantNodeInto(node, into, selector) {
+  node.parentNode.removeChild(node);
+  selector(into).appendChild(node);
+  document.body.appendChild(into);
 }

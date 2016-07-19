@@ -19,8 +19,6 @@ module.exports = function(config) {
     },
 
     webpack: {
-      cache: true,
-      devtool: 'eval',
       module: {
         loaders: [
           {
@@ -51,6 +49,7 @@ module.exports = function(config) {
 
     webpackServer: {
       stats: {
+        chunks: false,
         colors: true
       }
     },
@@ -65,16 +64,22 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['PhantomJS', 'Firefox', process.env.TRAVIS ? 'Chrome_travis_ci' : 'Chrome'],
+    browsers: ['PhantomJS_custom', 'Firefox', process.env.TRAVIS ? 'Chrome_travis_ci' : 'Chrome'],
 
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
         flags: ['--no-sandbox']
+      },
+      PhantomJS_custom: {
+        base: 'PhantomJS',
+        options: {
+          viewportSize: {width: 1024, height: 768}
+        }
       }
     },
 
-    singleRun: false,
+    singleRun: true,
 
     plugins: [
       require('karma-jasmine'),
