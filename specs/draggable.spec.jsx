@@ -59,6 +59,24 @@ describe('react-draggable', function () {
       assert(node.getAttribute('class') === 'foo react-draggable');
     });
 
+    it('should set the appropriate custom className when dragging or dragged', function () {
+      drag = TestUtils.renderIntoDocument(
+        <Draggable
+          defaultClassName='foo'
+          defaultClassNameDragging='bar'
+          defaultClassNameDragged='baz'
+        >
+          <div/>
+        </Draggable>
+      );
+      var node = ReactDOM.findDOMNode(drag);
+      assert(node.getAttribute('class').indexOf('foo') >= 0);
+      TestUtils.Simulate.mouseDown(node);
+      assert(node.getAttribute('class').indexOf('bar') >= 0);
+      TestUtils.Simulate.mouseUp(node);
+      assert(node.getAttribute('class').indexOf('baz') >= 0);
+    });
+
     // NOTE: this runs a shallow renderer, which DOES NOT actually render <DraggableCore>
     it('should pass handle on to <DraggableCore>', function () {
       drag = <Draggable handle=".foo"><div /></Draggable>;

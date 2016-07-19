@@ -87,6 +87,10 @@ export default class Draggable extends React.Component {
       PropTypes.oneOf([false])
     ]),
 
+    defaultClassName: PropTypes.string,
+    defaultClassNameDragging: PropTypes.string,
+    defaultClassNameDragged: PropTypes.string,
+
     /**
      * `defaultPosition` specifies the x and y that the dragged item should start at
      *
@@ -146,6 +150,9 @@ export default class Draggable extends React.Component {
     ...DraggableCore.defaultProps,
     axis: 'both',
     bounds: false,
+    defaultClassName: 'react-draggable',
+    defaultClassNameDragging: 'react-draggable-dragging',
+    defaultClassNameDragged: 'react-draggable-dragged',
     defaultPosition: {x: 0, y: 0},
     position: null
   };
@@ -319,10 +326,16 @@ export default class Draggable extends React.Component {
       style = createCSSTransform(transformOpts);
     }
 
+    const {
+      defaultClassName,
+      defaultClassNameDragging,
+      defaultClassNameDragged
+    } = this.props;
+
     // Mark with class while dragging
-    const className = classNames((this.props.children.props.className || ''), 'react-draggable', {
-      'react-draggable-dragging': this.state.dragging,
-      'react-draggable-dragged': this.state.dragged
+    const className = classNames((this.props.children.props.className || ''), defaultClassName, {
+      [defaultClassNameDragging]: this.state.dragging,
+      [defaultClassNameDragged]: this.state.dragged
     });
 
     // Reuse the child provided

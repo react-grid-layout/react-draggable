@@ -166,6 +166,12 @@ bounds: {left: number, top: number, right: number, bottom: number} | string,
 // Example: '.body'
 cancel: string,
 
+// Class names for draggable UI.
+// Default to 'react-draggable', 'react-draggable-dragging', and 'react-draggable-dragged'
+defaultClassName: string,
+defaultClassNameDragging: string,
+defaultClassNameDragged: string,
+
 // Specifies the `x` and `y` that the dragged item should start at.
 // This is generally not necessary to use (you can use absolute or relative
 // positioning of the child directly), but can be helpful for uniformity in
