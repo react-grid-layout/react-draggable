@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react/lib/ReactTestUtils';
 import Draggable, {DraggableCore} from '../index';
+import FrameComponent from 'react-frame-component';
 import assert from 'power-assert';
 import _ from 'lodash';
 import {getPrefix, browserPrefixToKey, browserPrefixToStyle} from '../lib/utils/getPrefix';
@@ -289,7 +290,7 @@ describe('react-draggable', function () {
     });
 
     it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
-       drag = TestUtils.renderIntoDocument(
+      drag = TestUtils.renderIntoDocument(
           <Draggable>
             <svg />
           </Draggable>
@@ -299,7 +300,7 @@ describe('react-draggable', function () {
     });
 
     it('should detect if an element is NOT an instanceof SVGElement and set state.isElementSVG to false', function() {
-       drag = TestUtils.renderIntoDocument(
+      drag = TestUtils.renderIntoDocument(
           <Draggable>
             <div />
           </Draggable>
@@ -373,6 +374,60 @@ describe('react-draggable', function () {
       assert(document.body.getAttribute('style') === '');
       TestUtils.Simulate.mouseUp(node);
       assert(document.body.getAttribute('style') === '');
+    });
+
+    it('should be draggable when in an iframe', function (done) {
+      let dragged = false;
+      const dragElement = (
+        <Draggable onDrag={function() { dragged = true; }}>
+          <div />
+        </Draggable>
+      );
+      const renderRoot = document.body.appendChild(document.createElement('div'));
+      const frame = ReactDOM.render(<FrameComponent>{ dragElement }</FrameComponent>, renderRoot);
+
+      setTimeout(() => {
+        const body = ReactDOM.findDOMNode(frame).contentDocument.body;
+        const node = body.querySelector('.react-draggable');
+        simulateMovementFromTo(node, 0, 0, 100, 100);
+
+        const style = node.getAttribute('style');
+        assert(dragged === true);
+        assert(style.indexOf('transform: translate(100px, 100px);') >= 0);
+
+        renderRoot.parentNode.removeChild(renderRoot);
+        done();
+      }, 50);
+    });
+
+    it('should add and remove user-select styles to iframe’s body when in an iframe', function (done) {
+      const userSelectStyleStr = `;${userSelectStyle}: none;`;
+
+      const dragElement = (
+        <Draggable onDrag={function() { dragged = true; }}>
+          <div />
+        </Draggable>
+      );
+      const renderRoot = document.body.appendChild(document.createElement('div'));
+      const frame = ReactDOM.render(<FrameComponent>{ dragElement }</FrameComponent>, renderRoot);
+
+      setTimeout(() => {
+        const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
+        const node = iframeDoc.querySelector('.react-draggable');
+        iframeDoc.body.setAttribute('style', '');
+
+        assert(iframeDoc.body.getAttribute('style') === '');
+        assert(document.body.getAttribute('style') === '');
+        TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+        assert(iframeDoc.body.getAttribute('style') === userSelectStyleStr);
+        assert(document.body.getAttribute('style') === '');
+        TestUtils.Simulate.mouseUp(node);
+        assert(iframeDoc.body.getAttribute('style') === '');
+        assert(document.body.getAttribute('style') === '');
+
+        renderRoot.parentNode.removeChild(renderRoot);
+        done();
+      }, 50);
     });
   });
 
@@ -477,7 +532,7 @@ describe('react-draggable', function () {
       let dragCalled = false;
 
       function onDrag(e, coreEvent) {
-        assert(coreEvent.deltaY === 500);
+        assert(Math.round(coreEvent.deltaY) === 500);
         dragCalled = true;
       }
       drag = TestUtils.renderIntoDocument(<Draggable onDrag={onDrag}><div/></Draggable>);
@@ -642,11 +697,12 @@ function renderToNode(component) {
 // but <DraggableCore> attaches event listeners directly to the document.
 // Would love to new MouseEvent() here but it doesn't work with PhantomJS / old browsers.
 // var e = new MouseEvent('mousemove', {clientX: 100, clientY: 100});
-function mouseMove(x, y) {
-  const evt = document.createEvent('MouseEvents');
+function mouseMove(x, y, node) {
+  const doc = node ? node.ownerDocument : document;
+  const evt = doc.createEvent('MouseEvents');
   evt.initMouseEvent('mousemove', true, true, window,
       0, 0, 0, x, y, false, false, false, false, 0, null);
-  document.dispatchEvent(evt);
+  doc.dispatchEvent(evt);
   return evt;
 }
 
@@ -655,7 +711,7 @@ function simulateMovementFromTo(drag, fromX, fromY, toX, toY) {
   const node = ReactDOM.findDOMNode(drag);
 
   TestUtils.Simulate.mouseDown(node, {clientX: fromX, clientY: fromX});
-  mouseMove(toX, toY);
+  mouseMove(toX, toY, node);
   TestUtils.Simulate.mouseUp(node);
 }
 
