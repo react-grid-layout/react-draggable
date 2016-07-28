@@ -68,6 +68,16 @@ export default class DraggableCore extends React.Component {
     enableUserSelectHack: PropTypes.bool,
 
     /**
+     * `offsetParent`, if set, uses the passed DOM node to compute drag offsets
+     * instead of using the parent node.
+     */
+    offsetParent: function(props, propName) {
+      if (process.browser && props[propName] && props[propName].nodeType !== 1) {
+        throw new Error('Draggable\'s offsetParent must be a DOM Node.');
+      }
+    },
+
+    /**
      * `grid` specifies the x and y that dragging should snap to.
      */
     grid: PropTypes.arrayOf(PropTypes.number),
@@ -153,6 +163,7 @@ export default class DraggableCore extends React.Component {
     cancel: null,
     disabled: false,
     enableUserSelectHack: true,
+    offsetParent: null,
     handle: null,
     grid: null,
     transform: null,
@@ -174,13 +185,14 @@ export default class DraggableCore extends React.Component {
   componentWillUnmount() {
     // Remove any leftover event handlers. Remove both touch and mouse handlers in case
     // some browser quirk caused a touch event to fire during a mouse move, or vice versa.
-    removeEvent(document, eventsFor.mouse.move, this.handleDrag);
-    removeEvent(document, eventsFor.touch.move, this.handleDrag);
-    removeEvent(document, eventsFor.mouse.stop, this.handleDragStop);
-    removeEvent(document, eventsFor.touch.stop, this.handleDragStop);
-    document.removeEventListener('touchmove', this.removeScroll);
+    const {ownerDocument} = ReactDOM.findDOMNode(this);
+    removeEvent(ownerDocument, eventsFor.mouse.move, this.handleDrag);
+    removeEvent(ownerDocument, eventsFor.touch.move, this.handleDrag);
+    removeEvent(ownerDocument, eventsFor.mouse.stop, this.handleDragStop);
+    removeEvent(ownerDocument, eventsFor.touch.stop, this.handleDragStop);
+    removeEvent(ownerDocument, eventsFor.touch.move, this.removeScroll);
     this.setState({scrolling: true});
-    if (this.props.enableUserSelectHack) removeUserSelectStyles();
+    if (this.props.enableUserSelectHack) removeUserSelectStyles(ownerDocument.body);
   }
 
   handleDragStart: EventHandler<MouseEvent> = (e) => {
@@ -191,11 +203,15 @@ export default class DraggableCore extends React.Component {
     // Only accept left-clicks.
     if (!this.props.allowAnyClick && typeof e.button === 'number' && e.button !== 0) return false;
 
+    // Get nodes. Be sure to grab relative document (could be iframed)
+    const domNode = ReactDOM.findDOMNode(this);
+    const {ownerDocument} = domNode;
+
     // Short circuit if handle or cancel prop was provided and selector doesn't match.
     if (this.props.disabled ||
-      (!(e.target instanceof Node)) ||
-      (this.props.handle && !matchesSelectorAndParentsTo(e.target, this.props.handle, ReactDOM.findDOMNode(this))) ||
-      (this.props.cancel && matchesSelectorAndParentsTo(e.target, this.props.cancel, ReactDOM.findDOMNode(this)))) {
+      (!(e.target instanceof ownerDocument.defaultView.Node)) ||
+      (this.props.handle && !matchesSelectorAndParentsTo(e.target, this.props.handle, domNode)) ||
+      (this.props.cancel && matchesSelectorAndParentsTo(e.target, this.props.cancel, domNode))) {
       return;
     }
 
@@ -222,7 +238,7 @@ export default class DraggableCore extends React.Component {
 
     // Add a style to the body to disable user-select. This prevents text from
     // being selected all over the page.
-    if (this.props.enableUserSelectHack) addUserSelectStyles();
+    if (this.props.enableUserSelectHack) addUserSelectStyles(ownerDocument.body);
 
     // Initiate dragging. Set the current x and y as offsets
     // so we know how much we've moved during the drag. This allows us
@@ -237,17 +253,16 @@ export default class DraggableCore extends React.Component {
     // Add events to the document directly so we catch when the user's mouse/touch moves outside of
     // this element. We use different events depending on whether or not we have detected that this
     // is a touch-capable device.
-    addEvent(document, dragEventFor.move, this.handleDrag);
-    addEvent(document, dragEventFor.stop, this.handleDragStop);
+    addEvent(ownerDocument, dragEventFor.move, this.handleDrag);
+    addEvent(ownerDocument, dragEventFor.stop, this.handleDragStop);
   };
 
   handleDrag: EventHandler<MouseEvent> = (e) => {
     // Stop scrolling on touch devices while user is dragging as this is an issue for ipad.
     if (this.state.dragging && this.state.scrolling) {
-      document.addEventListener('touchmove', this.removeScroll);
+      addEvent(ownerDocument, eventsFor.touch.move, this.removeScroll);
       this.setState({scrolling: false})
     }
-
     // Get the current drag point from the event. This is used as the offset.
     const position = getControlPosition(e, this.state.touchIdentifier, this);
     if (position == null) return;
@@ -299,7 +314,7 @@ export default class DraggableCore extends React.Component {
     const coreEvent = createCoreData(this, x, y);
 
     // Remove user-select hack
-    if (this.props.enableUserSelectHack) removeUserSelectStyles();
+    if (this.props.enableUserSelectHack) removeUserSelectStyles(ReactDOM.findDOMNode(this).ownerDocument.body);
 
     log('DraggableCore: handleDragStop: %j', coreEvent);
 
@@ -314,9 +329,10 @@ export default class DraggableCore extends React.Component {
     this.props.onStop(e, coreEvent);
 
     // Remove event handlers
+    const {ownerDocument} = ReactDOM.findDOMNode(this);
     log('DraggableCore: Removing handlers');
-    removeEvent(document, dragEventFor.move, this.handleDrag);
-    removeEvent(document, dragEventFor.stop, this.handleDragStop);
+    removeEvent(ownerDocument, dragEventFor.move, this.handleDrag);
+    removeEvent(ownerDocument, dragEventFor.stop, this.handleDragStop);
   };
 
   onMouseDown: EventHandler<MouseEvent> = (e) => {
@@ -347,15 +363,14 @@ export default class DraggableCore extends React.Component {
   onTouchEnd: EventHandler<MouseEvent> = (e) => {
     // We're on a touch device now, so change the event handlers
     dragEventFor = eventsFor.touch;
-
     // Remove the event listener that stopped document scrolling on touch devices
-    document.removeEventListener('touchmove', this.removeScroll, false);
+    removeEvent(ownerDocument, eventsFor.touch.move, this.removeScroll);
     this.setState({scrolling: true});
 
     return this.handleDragStop(e);
   };
 
-  render(): React.Element {
+  render(): React.Element<any> {
     // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     return React.cloneElement(React.Children.only(this.props.children), {
