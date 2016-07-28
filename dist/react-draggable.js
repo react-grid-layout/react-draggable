@@ -1018,6 +1018,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	/*:: type CoreState = {
 	  dragging: boolean,
+	  scrolling: boolean,
 	  lastX: number,
 	  lastY: number,
 	  touchIdentifier: ?number
@@ -1039,10 +1040,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(DraggableCore)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
 	      dragging: false,
+	      // Used in fix for ipad so we can keep up with when we've stopped scrolling.
+	      scrolling: true,
 	      // Used while dragging to determine deltas.
 	      lastX: NaN, lastY: NaN,
 	      touchIdentifier: null
 	    }, _this.handleDragStart = function (e) {
+	
 	      // Make it possible to attach event handlers on top of this one.
 	      _this.props.onMouseDown(e);
 	
@@ -1097,6 +1101,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _domFns.addEvent)(document, dragEventFor.move, _this.handleDrag);
 	      (0, _domFns.addEvent)(document, dragEventFor.stop, _this.handleDragStop);
 	    }, _this.handleDrag = function (e) {
+	      // Stop scrolling on touch devices while user is dragging as this is an issue for ipad.
+	      if (_this.state.dragging && _this.state.scrolling) {
+	        document.addEventListener('touchmove', _this.removeScroll);
+	        _this.setState({ scrolling: false });
+	      }
 	
 	      // Get the current drag point from the event. This is used as the offset.
 	      var position = (0, _positionFns.getControlPosition)(e, _this.state.touchIdentifier, _this);
@@ -1134,11 +1143,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _this.handleDragStop(new MouseEvent('mouseup'));
 	        } catch (err) {
 	          // Old browsers
-	          var event = document.createEvent('MouseEvents');
+	          var event = ((document.createEvent('MouseEvents') /*: any*/) /*: MouseEvent*/);
 	          // I see why this insanity was deprecated
 	          // $FlowIgnore
 	          event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-	          // $FlowIgnore
 	          _this.handleDragStop(event);
 	        }
 	        return;
@@ -1149,6 +1157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        lastY: y
 	      });
 	    }, _this.handleDragStop = function (e) {
+	
 	      if (!_this.state.dragging) return;
 	
 	      var position = (0, _positionFns.getControlPosition)(e, _this.state.touchIdentifier, _this);
@@ -1185,6 +1194,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      dragEventFor = eventsFor.mouse;
 	
 	      return _this.handleDragStop(e);
+	    }, _this.removeScroll = function (e) {
+	      e.preventDefault();
+	      return false;
 	    }, _this.onTouchStart = function (e) {
 	      // We're on a touch device now, so change the event handlers
 	      dragEventFor = eventsFor.touch;
@@ -1193,6 +1205,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, _this.onTouchEnd = function (e) {
 	      // We're on a touch device now, so change the event handlers
 	      dragEventFor = eventsFor.touch;
+	
+	      // Remove the event listener that stopped document scrolling on touch devices
+	      document.removeEventListener('touchmove', _this.removeScroll, false);
+	      _this.setState({ scrolling: true });
 	
 	      return _this.handleDragStop(e);
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
@@ -1207,6 +1223,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _domFns.removeEvent)(document, eventsFor.touch.move, this.handleDrag);
 	      (0, _domFns.removeEvent)(document, eventsFor.mouse.stop, this.handleDragStop);
 	      (0, _domFns.removeEvent)(document, eventsFor.touch.stop, this.handleDragStop);
+	      document.removeEventListener('touchmove', this.removeScroll);
+	      this.setState({ scrolling: true });
 	      if (this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)();
 	    }
 	
