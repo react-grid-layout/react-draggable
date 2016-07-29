@@ -97,11 +97,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _DraggableCore2 = _interopRequireDefault(_DraggableCore);
 	
-	var _log = __webpack_require__(10);
+	var _log = __webpack_require__(11);
 	
 	var _log2 = _interopRequireDefault(_log);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -128,7 +130,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/*:: type ConstructorProps = {
 	  position: { x: number, y: number },
 	  defaultPosition: { x: number, y: number }
-	}*/
+	};*/
 	
 	var Draggable = function (_React$Component) {
 	  _inherits(Draggable, _React$Component);
@@ -284,6 +286,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _classNames;
+	
 	      var style = {},
 	          svgTransform = null;
 	
@@ -311,11 +315,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        style = (0, _domFns.createCSSTransform)(transformOpts);
 	      }
 	
+	      var _props = this.props;
+	      var defaultClassName = _props.defaultClassName;
+	      var defaultClassNameDragging = _props.defaultClassNameDragging;
+	      var defaultClassNameDragged = _props.defaultClassNameDragged;
+	
 	      // Mark with class while dragging
-	      var className = (0, _classnames2.default)(this.props.children.props.className || '', 'react-draggable', {
-	        'react-draggable-dragging': this.state.dragging,
-	        'react-draggable-dragged': this.state.dragged
-	      });
+	
+	      var className = (0, _classnames2.default)(this.props.children.props.className || '', defaultClassName, (_classNames = {}, _defineProperty(_classNames, defaultClassNameDragging, this.state.dragging), _defineProperty(_classNames, defaultClassNameDragged, this.state.dragged), _classNames));
 	
 	      // Reuse the child provided
 	      // This makes it flexible to use whatever element is wanted (div, ul, etc)
@@ -385,6 +392,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    bottom: _react.PropTypes.number
 	  }), _react.PropTypes.string, _react.PropTypes.oneOf([false])]),
 	
+	  defaultClassName: _react.PropTypes.string,
+	  defaultClassNameDragging: _react.PropTypes.string,
+	  defaultClassNameDragged: _react.PropTypes.string,
+	
 	  /**
 	   * `defaultPosition` specifies the x and y that the dragged item should start at
 	   *
@@ -419,7 +430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *      let App = React.createClass({
 	   *          render: function () {
 	   *              return (
-	   *                  <Draggable defaultPosition={{x: 25, y: 25}}>
+	   *                  <Draggable position={{x: 25, y: 25}}>
 	   *                      <div>I start with transformX: 25px and transformY: 25px;</div>
 	   *                  </Draggable>
 	   *              );
@@ -442,6 +453,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	Draggable.defaultProps = _extends({}, _DraggableCore2.default.defaultProps, {
 	  axis: 'both',
 	  bounds: false,
+	  defaultClassName: 'react-draggable',
+	  defaultClassNameDragging: 'react-draggable-dragging',
+	  defaultClassNameDragged: 'react-draggable-dragged',
 	  defaultPosition: { x: 0, y: 0 },
 	  position: null
 	});
@@ -534,7 +548,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.outerWidth = outerWidth;
 	exports.innerHeight = innerHeight;
 	exports.innerWidth = innerWidth;
-	exports.offsetXYFromParentOf = offsetXYFromParentOf;
+	exports.offsetXYFromParent = offsetXYFromParent;
 	exports.createCSSTransform = createCSSTransform;
 	exports.createSVGTransform = createSVGTransform;
 	exports.getTouch = getTouch;
@@ -613,7 +627,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // This is deliberately excluding margin for our calculations, since we are using
 	  // offsetTop which is including margin. See getBoundPosition
 	  var height = node.clientHeight;
-	  var computedStyle = window.getComputedStyle(node);
+	  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
 	  height += (0, _shims.int)(computedStyle.borderTopWidth);
 	  height += (0, _shims.int)(computedStyle.borderBottomWidth);
 	  return height;
@@ -623,14 +637,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // This is deliberately excluding margin for our calculations, since we are using
 	  // offsetLeft which is including margin. See getBoundPosition
 	  var width = node.clientWidth;
-	  var computedStyle = window.getComputedStyle(node);
+	  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
 	  width += (0, _shims.int)(computedStyle.borderLeftWidth);
 	  width += (0, _shims.int)(computedStyle.borderRightWidth);
 	  return width;
 	}
 	function innerHeight(node /*: HTMLElement*/) /*: number*/ {
 	  var height = node.clientHeight;
-	  var computedStyle = window.getComputedStyle(node);
+	  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
 	  height -= (0, _shims.int)(computedStyle.paddingTop);
 	  height -= (0, _shims.int)(computedStyle.paddingBottom);
 	  return height;
@@ -638,16 +652,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function innerWidth(node /*: HTMLElement*/) /*: number*/ {
 	  var width = node.clientWidth;
-	  var computedStyle = window.getComputedStyle(node);
+	  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
 	  width -= (0, _shims.int)(computedStyle.paddingLeft);
 	  width -= (0, _shims.int)(computedStyle.paddingRight);
 	  return width;
 	}
 	
 	// Get from offsetParent
-	function offsetXYFromParentOf(evt /*: {clientX: number, clientY: number}*/, node /*: HTMLElement & {offsetParent: HTMLElement}*/) /*: ControlPosition*/ {
-	  var offsetParent = node.offsetParent || document.body;
-	  var offsetParentRect = node.offsetParent === document.body ? { left: 0, top: 0 } : offsetParent.getBoundingClientRect();
+	function offsetXYFromParent(evt /*: {clientX: number, clientY: number}*/, offsetParent /*: HTMLElement*/) /*: ControlPosition*/ {
+	  var isBody = offsetParent === offsetParent.ownerDocument.body;
+	  var offsetParentRect = isBody ? { left: 0, top: 0 } : offsetParent.getBoundingClientRect();
 	
 	  var x = evt.clientX + offsetParent.scrollLeft - offsetParentRect.left;
 	  var y = evt.clientY + offsetParent.scrollTop - offsetParentRect.top;
@@ -690,14 +704,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	var userSelect = (0, _getPrefix.browserPrefixToStyle)('user-select', userSelectPrefix);
 	var userSelectStyle = ';' + userSelect + ': none;';
 	
-	function addUserSelectStyles() {
-	  var style = document.body.getAttribute('style') || '';
-	  document.body.setAttribute('style', style + userSelectStyle);
+	// Note we're passing `document` b/c we could be iframed
+	function addUserSelectStyles(body /*: HTMLElement*/) {
+	  var style = body.getAttribute('style') || '';
+	  body.setAttribute('style', style + userSelectStyle);
 	}
 	
-	function removeUserSelectStyles() {
-	  var style = document.body.getAttribute('style') || '';
-	  document.body.setAttribute('style', style.replace(userSelectStyle, ''));
+	function removeUserSelectStyles(body /*: HTMLElement*/) {
+	  var style = body.getAttribute('style') || '';
+	  body.setAttribute('style', style.replace(userSelectStyle, ''));
 	}
 	
 	function styleHacks() /*: Object*/ {
@@ -853,15 +868,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var node = _reactDom2.default.findDOMNode(draggable);
 	
 	  if (typeof bounds === 'string') {
+	    var ownerDocument = node.ownerDocument;
+	
+	    var ownerWindow = node.defaultView;
 	    var boundNode = void 0;
 	    if (bounds === 'parent') {
 	      boundNode = node.parentNode;
 	    } else {
-	      boundNode = document.querySelector(bounds);
+	      boundNode = ownerDocument.querySelector(bounds);
 	      if (!boundNode) throw new Error('Bounds selector "' + bounds + '" could not find an element.');
 	    }
-	    var nodeStyle = window.getComputedStyle(node);
-	    var boundNodeStyle = window.getComputedStyle(boundNode);
+	    var nodeStyle = ownerWindow.getComputedStyle(node);
+	    var boundNodeStyle = ownerWindow.getComputedStyle(boundNode);
 	    // Compute bounds. This is a pain with padding and offsets but this gets it exactly right.
 	    bounds = {
 	      left: -node.offsetLeft + (0, _shims.int)(boundNodeStyle.paddingLeft) + (0, _shims.int)(nodeStyle.borderLeftWidth) + (0, _shims.int)(nodeStyle.marginLeft),
@@ -900,7 +918,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	function getControlPosition(e /*: MouseEvent*/, touchIdentifier /*: ?number*/, draggableCore /*: DraggableCore*/) /*: ?ControlPosition*/ {
 	  var touchObj = typeof touchIdentifier === 'number' ? (0, _domFns.getTouch)(e, touchIdentifier) : null;
 	  if (typeof touchIdentifier === 'number' && !touchObj) return null; // not the right touch
-	  return (0, _domFns.offsetXYFromParentOf)(touchObj || e, _reactDom2.default.findDOMNode(draggableCore));
+	  var node = _reactDom2.default.findDOMNode(draggableCore);
+	  // User can provide an offsetParent if desired.
+	  var offsetParent = draggableCore.props.offsetParent || node.offsetParent || node.ownerDocument.body;
+	  return (0, _domFns.offsetXYFromParent)(touchObj || e, offsetParent);
 	}
 	
 	// Create an data object exposed by <DraggableCore>'s events
@@ -955,7 +976,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -979,7 +1000,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _shims = __webpack_require__(6);
 	
-	var _log = __webpack_require__(10);
+	var _log = __webpack_require__(11);
 	
 	var _log2 = _interopRequireDefault(_log);
 	
@@ -1049,8 +1070,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Only accept left-clicks.
 	      if (!_this.props.allowAnyClick && typeof e.button === 'number' && e.button !== 0) return false;
 	
+	      // Get nodes. Be sure to grab relative document (could be iframed)
+	      var domNode = _reactDom2.default.findDOMNode(_this);
+	      var ownerDocument = domNode.ownerDocument;
+	
 	      // Short circuit if handle or cancel prop was provided and selector doesn't match.
-	      if (_this.props.disabled || !(e.target instanceof Node) || _this.props.handle && !(0, _domFns.matchesSelectorAndParentsTo)(e.target, _this.props.handle, _reactDom2.default.findDOMNode(_this)) || _this.props.cancel && (0, _domFns.matchesSelectorAndParentsTo)(e.target, _this.props.cancel, _reactDom2.default.findDOMNode(_this))) {
+	
+	      if (_this.props.disabled || !(e.target instanceof ownerDocument.defaultView.Node) || _this.props.handle && !(0, _domFns.matchesSelectorAndParentsTo)(e.target, _this.props.handle, domNode) || _this.props.cancel && (0, _domFns.matchesSelectorAndParentsTo)(e.target, _this.props.cancel, domNode)) {
 	        return;
 	      }
 	
@@ -1079,7 +1105,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // Add a style to the body to disable user-select. This prevents text from
 	      // being selected all over the page.
-	      if (_this.props.enableUserSelectHack) (0, _domFns.addUserSelectStyles)();
+	      if (_this.props.enableUserSelectHack) (0, _domFns.addUserSelectStyles)(ownerDocument.body);
 	
 	      // Initiate dragging. Set the current x and y as offsets
 	      // so we know how much we've moved during the drag. This allows us
@@ -1094,8 +1120,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Add events to the document directly so we catch when the user's mouse/touch moves outside of
 	      // this element. We use different events depending on whether or not we have detected that this
 	      // is a touch-capable device.
-	      (0, _domFns.addEvent)(document, dragEventFor.move, _this.handleDrag);
-	      (0, _domFns.addEvent)(document, dragEventFor.stop, _this.handleDragStop);
+	      (0, _domFns.addEvent)(ownerDocument, dragEventFor.move, _this.handleDrag);
+	      (0, _domFns.addEvent)(ownerDocument, dragEventFor.stop, _this.handleDragStop);
 	    }, _this.handleDrag = function (e) {
 	
 	      // Get the current drag point from the event. This is used as the offset.
@@ -1134,11 +1160,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _this.handleDragStop(new MouseEvent('mouseup'));
 	        } catch (err) {
 	          // Old browsers
-	          var event = document.createEvent('MouseEvents');
+	          var event = ((document.createEvent('MouseEvents') /*: any*/) /*: MouseEvent*/);
 	          // I see why this insanity was deprecated
 	          // $FlowIgnore
 	          event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-	          // $FlowIgnore
 	          _this.handleDragStop(event);
 	        }
 	        return;
@@ -1159,7 +1184,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var coreEvent = (0, _positionFns.createCoreData)(_this, x, y);
 	
 	      // Remove user-select hack
-	      if (_this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)();
+	      if (_this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)(_reactDom2.default.findDOMNode(_this).ownerDocument.body);
 	
 	      (0, _log2.default)('DraggableCore: handleDragStop: %j', coreEvent);
 	
@@ -1174,9 +1199,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _this.props.onStop(e, coreEvent);
 	
 	      // Remove event handlers
+	
+	      var _ReactDOM$findDOMNode = _reactDom2.default.findDOMNode(_this);
+	
+	      var ownerDocument = _ReactDOM$findDOMNode.ownerDocument;
+	
 	      (0, _log2.default)('DraggableCore: Removing handlers');
-	      (0, _domFns.removeEvent)(document, dragEventFor.move, _this.handleDrag);
-	      (0, _domFns.removeEvent)(document, dragEventFor.stop, _this.handleDragStop);
+	      (0, _domFns.removeEvent)(ownerDocument, dragEventFor.move, _this.handleDrag);
+	      (0, _domFns.removeEvent)(ownerDocument, dragEventFor.stop, _this.handleDragStop);
 	    }, _this.onMouseDown = function (e) {
 	      dragEventFor = eventsFor.mouse; // on touchscreen laptops we could switch back to mouse
 	
@@ -1203,11 +1233,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function componentWillUnmount() {
 	      // Remove any leftover event handlers. Remove both touch and mouse handlers in case
 	      // some browser quirk caused a touch event to fire during a mouse move, or vice versa.
-	      (0, _domFns.removeEvent)(document, eventsFor.mouse.move, this.handleDrag);
-	      (0, _domFns.removeEvent)(document, eventsFor.touch.move, this.handleDrag);
-	      (0, _domFns.removeEvent)(document, eventsFor.mouse.stop, this.handleDragStop);
-	      (0, _domFns.removeEvent)(document, eventsFor.touch.stop, this.handleDragStop);
-	      if (this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)();
+	
+	      var _ReactDOM$findDOMNode2 = _reactDom2.default.findDOMNode(this);
+	
+	      var ownerDocument = _ReactDOM$findDOMNode2.ownerDocument;
+	
+	      (0, _domFns.removeEvent)(ownerDocument, eventsFor.mouse.move, this.handleDrag);
+	      (0, _domFns.removeEvent)(ownerDocument, eventsFor.touch.move, this.handleDrag);
+	      (0, _domFns.removeEvent)(ownerDocument, eventsFor.mouse.stop, this.handleDragStop);
+	      (0, _domFns.removeEvent)(ownerDocument, eventsFor.touch.stop, this.handleDragStop);
+	      if (this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)(ownerDocument.body);
 	    }
 	
 	    // Same as onMouseDown (start drag), but now consider this a touch device.
@@ -1255,6 +1290,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * for your app, set this to `false`.
 	   */
 	  enableUserSelectHack: _react.PropTypes.bool,
+	
+	  /**
+	   * `offsetParent`, if set, uses the passed DOM node to compute drag offsets
+	   * instead of using the parent node.
+	   */
+	  offsetParent: function offsetParent(props, propName) {
+	    if (process.browser && props[propName] && props[propName].nodeType !== 1) {
+	      throw new Error('Draggable\'s offsetParent must be a DOM Node.');
+	    }
+	  },
 	
 	  /**
 	   * `grid` specifies the x and y that dragging should snap to.
@@ -1341,6 +1386,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  cancel: null,
 	  disabled: false,
 	  enableUserSelectHack: true,
+	  offsetParent: null,
 	  handle: null,
 	  grid: null,
 	  transform: null,
@@ -1350,9 +1396,135 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onMouseDown: function onMouseDown() {}
 	};
 	exports.default = DraggableCore;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ },
 /* 10 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+	
+	var process = module.exports = {};
+	
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+	
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+	
+	(function () {
+	  try {
+	    cachedSetTimeout = setTimeout;
+	  } catch (e) {
+	    cachedSetTimeout = function () {
+	      throw new Error('setTimeout is not defined');
+	    }
+	  }
+	  try {
+	    cachedClearTimeout = clearTimeout;
+	  } catch (e) {
+	    cachedClearTimeout = function () {
+	      throw new Error('clearTimeout is not defined');
+	    }
+	  }
+	} ())
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+	
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+	
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = cachedSetTimeout(cleanUpNextTick);
+	    draining = true;
+	
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    cachedClearTimeout(timeout);
+	}
+	
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        cachedSetTimeout(drainQueue, 0);
+	    }
+	};
+	
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+	
+	function noop() {}
+	
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+	
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+	
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

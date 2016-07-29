@@ -1,12 +1,13 @@
 # Changelog
 
-### Prerelease
+### 2.2.0 (Jul 29, 2016)
 
 - Addition: `offsetParent` property for an arbitrary ancestor for offset calculations.
   - Fixes e.g. dragging with a floating `offsetParent`.
     - Ref: https://github.com/mzabriskie/react-draggable/issues/170
 - Enhancement: Make this library iframe-aware.
   - Ref: https://github.com/mzabriskie/react-draggable/pull/177
+  - Thanks to @acusti for tests
 - Bugfix: Lint/Test Fixes for new Flow & React versions
 
 ### 2.1.2 (Jun 5, 2016)
