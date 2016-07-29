@@ -196,7 +196,6 @@ export default class DraggableCore extends React.Component {
   }
 
   handleDragStart: EventHandler<MouseEvent> = (e) => {
-
     // Make it possible to attach event handlers on top of this one.
     this.props.onMouseDown(e);
 
@@ -258,6 +257,7 @@ export default class DraggableCore extends React.Component {
   };
 
   handleDrag: EventHandler<MouseEvent> = (e) => {
+
     // Stop scrolling on touch devices while user is dragging as this is an issue for ipad.
     if (this.state.dragging && this.state.scrolling) {
       const {ownerDocument} = ReactDOM.findDOMNode(this);
@@ -306,7 +306,6 @@ export default class DraggableCore extends React.Component {
   };
 
   handleDragStop: EventHandler<MouseEvent> = (e) => {
-
     if (!this.state.dragging) return;
 
     const position = getControlPosition(e, this.state.touchIdentifier, this);
