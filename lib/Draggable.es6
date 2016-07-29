@@ -1,13 +1,14 @@
 // @flow
-import React, {PropTypes} from 'react';
+import * as React from 'react';
+const {PropTypes} = React;
 import ReactDOM from 'react-dom';
 // $FlowIgnore
 import classNames from 'classnames';
-import {createCSSTransform, createSVGTransform} from './utils/domFns';
-import {canDragX, canDragY, createDraggableData, getBoundPosition} from './utils/positionFns';
-import {dontSetMe} from './utils/shims';
-import DraggableCore from './DraggableCore';
-import log from './utils/log';
+import {createCSSTransform, createSVGTransform} from './utils/domFns.es6';
+import {canDragX, canDragY, createDraggableData, getBoundPosition} from './utils/positionFns.es6';
+import {dontSetMe} from './utils/shims.es6';
+import DraggableCore from './DraggableCore.es6';
+import log from './utils/log.es6';
 import type {DraggableEventHandler} from './utils/types';
 
 type DraggableState = {

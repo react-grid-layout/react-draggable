@@ -2,11 +2,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react/lib/ReactTestUtils';
-import Draggable, {DraggableCore} from '../index';
+import Draggable from '../lib/Draggable.es6';
+import DraggableCore from '../lib/DraggableCore.es6';
 import FrameComponent from 'react-frame-component';
 import assert from 'power-assert';
 import _ from 'lodash';
-import {getPrefix, browserPrefixToKey, browserPrefixToStyle} from '../lib/utils/getPrefix';
+import {getPrefix, browserPrefixToKey, browserPrefixToStyle} from '../lib/utils/getPrefix.es6';
 const transformStyle = browserPrefixToStyle('transform', getPrefix('transform'));
 const transformKey = browserPrefixToKey('transform', getPrefix('transform'));
 const userSelectStyle = browserPrefixToStyle('user-select', getPrefix('user-select'));

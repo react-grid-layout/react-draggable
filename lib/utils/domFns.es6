@@ -1,6 +1,6 @@
 // @flow
-import {findInArray, isFunction, int} from './shims';
-import browserPrefix, {getPrefix, browserPrefixToStyle, browserPrefixToKey} from './getPrefix';
+import {findInArray, isFunction, int} from './shims.es6';
+import browserPrefix, {getPrefix, browserPrefixToStyle, browserPrefixToKey} from './getPrefix.es6';
 
 import type {ControlPosition} from './types';
 

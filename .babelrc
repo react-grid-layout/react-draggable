@@ -1,6 +1,6 @@
 {
   "presets": [
-    "es2015",
+    "es2015-rollup",
     "stage-1",
     "react"
   ],

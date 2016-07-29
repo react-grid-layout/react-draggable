@@ -32,7 +32,7 @@ dist/%.min.js: $(LIB) $(BIN)
 	  --compress warnings=false
 
 dist/%.js: $(BIN)
-	@$(BIN)/webpack --devtool source-map
+	@$(BIN)/rollup -c
 
 test: $(BIN)
 	@$(BIN)/karma start --single-run

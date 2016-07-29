@@ -1,11 +1,12 @@
 // @flow
-import React, {PropTypes} from 'react';
+import * as React from 'react';
+const {PropTypes} = React;
 import ReactDOM from 'react-dom';
 import {matchesSelectorAndParentsTo, addEvent, removeEvent, addUserSelectStyles, getTouchIdentifier,
-        removeUserSelectStyles, styleHacks} from './utils/domFns';
-import {createCoreData, getControlPosition, snapToGrid} from './utils/positionFns';
-import {dontSetMe} from './utils/shims';
-import log from './utils/log';
+        removeUserSelectStyles, styleHacks} from './utils/domFns.es6';
+import {createCoreData, getControlPosition, snapToGrid} from './utils/positionFns.es6';
+import {dontSetMe} from './utils/shims.es6';
+import log from './utils/log.es6';
 
 import type {EventHandler} from './utils/types';
 

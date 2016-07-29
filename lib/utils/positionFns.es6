@@ -1,7 +1,7 @@
 // @flow
-import {isNum, int} from './shims';
+import {isNum, int} from './shims.es6';
 import ReactDOM from 'react-dom';
-import {getTouch, innerWidth, innerHeight, offsetXYFromParent, outerWidth, outerHeight} from './domFns';
+import {getTouch, innerWidth, innerHeight, offsetXYFromParent, outerWidth, outerHeight} from './domFns.es6';
 
 import type Draggable from '../Draggable';
 import type {Bounds, ControlPosition, DraggableData} from './types';

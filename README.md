@@ -51,7 +51,7 @@ import {DraggableCore} from 'react-draggable'; // <DraggableCore>
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 
 // CommonJS
-let Draggable = require('react-draggable');
+let Draggable = require('react-draggable').default;
 let DraggableCore = Draggable.DraggableCore;
 ```
 

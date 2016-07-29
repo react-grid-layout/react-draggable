@@ -1,4 +1,4 @@
-var webpack = require('webpack');
+var rollupConfig = require('./rollup.karma.config');
 
 module.exports = function(config) {
   config.set({
@@ -8,51 +8,17 @@ module.exports = function(config) {
     frameworks: ['phantomjs-shim', 'jasmine'],
 
     files: [
-      'specs/main.js'
+      'specs/draggable.spec.es6'
     ],
 
     exclude: [
     ],
 
     preprocessors: {
-      'specs/main.js': ['webpack']
+      'specs/draggable.spec.es6': ['rollup']
     },
 
-    webpack: {
-      module: {
-        loaders: [
-          {
-            test: /\.(?:jsx?|es6)$/,
-            loader: 'babel',
-            query: {
-              cacheDirectory: true,
-            },
-            exclude: /node_modules/
-          },
-          {
-            test: /\.json$/,
-            loader: 'json'
-          }
-        ],
-      },
-      plugins: [
-        new webpack.DefinePlugin({
-          'process.env': {
-            NODE_ENV: '"test"'
-          }
-        })
-      ],
-      resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.es6']
-      }
-    },
-
-    webpackServer: {
-      stats: {
-        chunks: false,
-        colors: true
-      }
-    },
+    rollupPreprocessor: rollupConfig,
 
     reporters: ['progress'],
 
@@ -86,7 +52,7 @@ module.exports = function(config) {
       require('karma-phantomjs-launcher'),
       require('karma-firefox-launcher'),
       require('karma-chrome-launcher'),
-      require('karma-webpack'),
+      require('karma-rollup-plugin'),
       require('karma-phantomjs-shim')
     ]
   });
