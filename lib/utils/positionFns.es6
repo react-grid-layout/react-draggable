@@ -18,7 +18,7 @@ export function getBoundPosition(draggable: Draggable, x: number, y: number): [n
 
   if (typeof bounds === 'string') {
     const {ownerDocument} = node;
-    const ownerWindow = node.defaultView;
+    const ownerWindow = ownerDocument.defaultView;
     let boundNode;
     if (bounds === 'parent') {
       boundNode = node.parentNode;
