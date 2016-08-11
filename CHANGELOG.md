@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.2.1 (Aug 11, 2016)
+
+- Bugfix: Fix `getComputedStyle` error: see [#186](https://github.com/mzabriskie/react-draggable/issues/186), #190
+
 ### 2.2.0 (Jul 29, 2016)
 
 - Addition: `offsetParent` property for an arbitrary ancestor for offset calculations.

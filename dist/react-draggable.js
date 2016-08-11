@@ -870,7 +870,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (typeof bounds === 'string') {
 	    var ownerDocument = node.ownerDocument;
 	
-	    var ownerWindow = node.defaultView;
+	    var ownerWindow = ownerDocument.defaultView;
 	    var boundNode = void 0;
 	    if (bounds === 'parent') {
 	      boundNode = node.parentNode;
