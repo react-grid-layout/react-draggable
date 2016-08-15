@@ -1,0 +1,10 @@
+cache:
+  - node_modules
+environment:
+  IE_BIN: C:\Program Files
+install:
+  - npm install
+test_script:
+  - karma start --single-run --browsers ie
+
+build: off
