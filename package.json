@@ -67,7 +67,6 @@
     "test"
   ],
   "dependencies": {
-    "classnames": "^2.2.5",
-    "global": "^4.3.0"
+    "classnames": "^2.2.5"
   }
 }

@@ -8,7 +8,6 @@ import {canDragX, canDragY, createDraggableData, getBoundPosition} from './utils
 import {dontSetMe} from './utils/shims';
 import DraggableCore from './DraggableCore';
 import log from './utils/log';
-import global from 'global';
 import type {DraggableEventHandler} from './utils/types';
 
 type DraggableState = {
@@ -193,7 +192,7 @@ export default class Draggable extends React.Component {
 
   componentDidMount() {
     // Check to see if the element passed is an instanceof SVGElement
-    if(typeof global.SVGElement !== 'undefined' && ReactDOM.findDOMNode(this) instanceof global.SVGElement) {
+    if(typeof SVGElement !== 'undefined' && ReactDOM.findDOMNode(this) instanceof SVGElement) {
       this.setState({ isElementSVG: true });
     }
   }
