@@ -8,6 +8,7 @@ import {canDragX, canDragY, createDraggableData, getBoundPosition} from './utils
 import {dontSetMe} from './utils/shims';
 import DraggableCore from './DraggableCore';
 import log from './utils/log';
+import global from 'global';
 import type {DraggableEventHandler} from './utils/types';
 
 type DraggableState = {
