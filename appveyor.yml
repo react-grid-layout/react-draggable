@@ -10,6 +10,6 @@ install:
   - npm install
 
 test_script:
-  - karma start --single-run --browsers ie
+  - npm run test-ie
 
 build: off
