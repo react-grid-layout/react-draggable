@@ -301,9 +301,10 @@ export default class DraggableCore extends React.Component {
     if (position == null) return;
     const {x, y} = position;
     const coreEvent = createCoreData(this, x, y);
+    const {ownerDocument} = ReactDOM.findDOMNode(this);
 
     // Remove user-select hack
-    if (this.props.enableUserSelectHack) removeUserSelectStyles(ReactDOM.findDOMNode(this).ownerDocument.body);
+    if (this.props.enableUserSelectHack) removeUserSelectStyles(ownerDocument.body);
 
     log('DraggableCore: handleDragStop: %j', coreEvent);
 
@@ -318,7 +319,6 @@ export default class DraggableCore extends React.Component {
     this.props.onStop(e, coreEvent);
 
     // Remove event handlers
-    const {ownerDocument} = ReactDOM.findDOMNode(this);
     log('DraggableCore: Removing handlers');
     removeEvent(ownerDocument, dragEventFor.move, this.handleDrag);
     removeEvent(ownerDocument, dragEventFor.stop, this.handleDragStop);
