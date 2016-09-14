@@ -1,5 +1,10 @@
 # Changelog
 
+### 2.2.2 (Sep 14, 2016)
+
+- Bugfix: Fix references to global when grabbing `SVGElement`, see [#162](https://github.com/mzabriskie/react-draggable/issues/162)
+- Bugfix: Get `ownerDocument` before `onStop`, fixes [#198](https://github.com/mzabriskie/react-draggable/issues/198)
+
 ### 2.2.1 (Aug 11, 2016)
 
 - Bugfix: Fix `getComputedStyle` error: see [#186](https://github.com/mzabriskie/react-draggable/issues/186), #190
