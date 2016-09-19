@@ -157,6 +157,7 @@ axis: string,
 // Specifies movement boundaries. Accepted values:
 // - `parent` restricts movement within the node's offsetParent
 //    (nearest node with position relative or absolute), or
+// - a selector, restricts movement within the targeted node
 // - An object with `left, top, right, and bottom` properties.
 //   These indicate how far in each direction the draggable
 //   can be moved.
