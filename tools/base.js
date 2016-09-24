@@ -32,15 +32,15 @@ module.exports = function doBundle(src/*: string*/, dest/*: string*/, rollupOpts
     ['es', 'cjs', 'umd'].map(format => {
       return rollup.rollup(Object.assign({
         entry: src,
-        external: Object.keys(pkg.dependencies),
+        external: Object.keys(pkg.dependencies).concat(Object.keys(pkg.peerDependencies)),
         plugins: [
           nodeResolve(),
-          commonjs(),
           babel(Object.assign(babelrc, {
             babelrc: false,
             exclude: 'node_modules/**',
             runtimeHelpers: true,
           })),
+          commonjs(),
           // uglify({}, minify),
         ],
       }, rollupOpts))
