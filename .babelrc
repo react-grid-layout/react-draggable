@@ -6,6 +6,7 @@
   ],
   "plugins": [
     "transform-flow-comments",
+    "external-helpers",
   ],
   "env": {
     "test": {
