@@ -1,6 +1,6 @@
 // @flow
-import {findInArray, isFunction, int} from './shims.es6';
-import browserPrefix, {getPrefix, browserPrefixToStyle, browserPrefixToKey} from './getPrefix.es6';
+import {findInArray, isFunction, int} from './shims';
+import browserPrefix, {getPrefix, browserPrefixToStyle, browserPrefixToKey} from './getPrefix';
 
 import type {ControlPosition} from './types';
 
@@ -114,14 +114,19 @@ export function createSVGTransform({x, y}: {x: number, y: number}): string {
   return 'translate(' + x + ',' + y + ')';
 }
 
-export function getTouch(e: MouseEvent, identifier: number): ?{clientX: number, clientY: number} {
-  return (e.targetTouches && findInArray(e.targetTouches, t => identifier === t.identifier)) ||
-         (e.changedTouches && findInArray(e.changedTouches, t => identifier === t.identifier));
+export function getTouch(e: MouseTouchEvent, identifier: number): ?{clientX: number, clientY: number} {
+  return (
+    Array.isArray(e.targetTouches) ?
+      findInArray(e.targetTouches, t => identifier === t.identifier) :
+      Array.isArray(e.changedTouches) ?
+        findInArray(e.changedTouches, t => identifier === t.identifier) :
+        null
+  );
 }
 
-export function getTouchIdentifier(e: MouseEvent): ?number {
-  if (e.targetTouches && e.targetTouches[0]) return e.targetTouches[0].identifier;
-  if (e.changedTouches && e.changedTouches[0]) return e.changedTouches[0].identifier;
+export function getTouchIdentifier(e: MouseTouchEvent): ?number {
+  if (Array.isArray(e.targetTouches) && e.targetTouches.length) return e.targetTouches[0].identifier;
+  if (Array.isArray(e.changedTouches) && e.changedTouches.length > 1) return e.changedTouches[0].identifier;
 }
 
 // User-select Hacks:

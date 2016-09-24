@@ -1,7 +1,7 @@
 // @flow
-import {isNum, int} from './shims.es6';
+import {isNum, int} from './shims';
 import ReactDOM from 'react-dom';
-import {getTouch, innerWidth, innerHeight, offsetXYFromParent, outerWidth, outerHeight} from './domFns.es6';
+import {getTouch, innerWidth, innerHeight, offsetXYFromParent, outerWidth, outerHeight} from './domFns';
 
 import type Draggable from '../Draggable';
 import type {Bounds, ControlPosition, DraggableData} from './types';
@@ -65,7 +65,7 @@ export function canDragY(draggable: Draggable): boolean {
 }
 
 // Get {x, y} positions from event.
-export function getControlPosition(e: MouseEvent, touchIdentifier: ?number, draggableCore: DraggableCore): ?ControlPosition {
+export function getControlPosition(e: MouseTouchEvent, touchIdentifier: ?number, draggableCore: DraggableCore): ?ControlPosition {
   const touchObj = typeof touchIdentifier === 'number' ? getTouch(e, touchIdentifier) : null;
   if (typeof touchIdentifier === 'number' && !touchObj) return null; // not the right touch
   const node = ReactDOM.findDOMNode(draggableCore);
@@ -77,7 +77,7 @@ export function getControlPosition(e: MouseEvent, touchIdentifier: ?number, drag
 // Create an data object exposed by <DraggableCore>'s events
 export function createCoreData(draggable: DraggableCore, x: number, y: number): DraggableData {
   // State changes are often (but not always!) async. We want the latest value.
-  const state = draggable._pendingState || draggable.state;
+  const {state} = draggable;
   const isStart = !isNum(state.lastX);
 
   if (isStart) {

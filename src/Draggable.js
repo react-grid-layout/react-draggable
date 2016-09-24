@@ -2,13 +2,12 @@
 import * as React from 'react';
 const {PropTypes} = React;
 import ReactDOM from 'react-dom';
-// $FlowIgnore
 import classNames from 'classnames';
-import {createCSSTransform, createSVGTransform} from './utils/domFns.es6';
-import {canDragX, canDragY, createDraggableData, getBoundPosition} from './utils/positionFns.es6';
-import {dontSetMe} from './utils/shims.es6';
-import DraggableCore from './DraggableCore.es6';
-import log from './utils/log.es6';
+import {createCSSTransform, createSVGTransform} from './utils/domFns';
+import {canDragX, canDragY, createDraggableData, getBoundPosition} from './utils/positionFns';
+import {dontSetMe} from './utils/shims';
+import DraggableCore from './DraggableCore';
+import log from './utils/log';
 import type {DraggableEventHandler} from './utils/types';
 
 type DraggableState = {

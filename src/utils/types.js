@@ -1,6 +1,6 @@
 // @flow
 
-export type DraggableEventHandler = (e: MouseEvent, data: DraggableData) => void | false;
+export type DraggableEventHandler = (e: MouseTouchEvent, data: DraggableData) => void | false;
 
 export type DraggableData = {
   node: HTMLElement,
