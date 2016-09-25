@@ -8,14 +8,16 @@ module.exports = function(config) {
     frameworks: ['phantomjs-shim', 'jasmine'],
 
     files: [
-      'specs/draggable.spec.es6'
+      'node_modules/react/dist/react.js',
+      'node_modules/react-dom/dist/react-dom.js',
+      'specs/draggable.spec.js',
     ],
 
     exclude: [
     ],
 
     preprocessors: {
-      'specs/draggable.spec.es6': ['rollup']
+      'specs/draggable.spec.js': ['rollup']
     },
 
     rollupPreprocessor: rollupConfig,

@@ -19,6 +19,7 @@ export function int(a: string): number {
 }
 
 export function dontSetMe(props: Object, propName: string, componentName: string) {
+  console.log('wat wat wat wat', propName)
   if (props[propName]) {
     return new Error(`Invalid prop ${propName} passed to ${componentName} - do not set this, set it on the child.`);
   }

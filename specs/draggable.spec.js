@@ -1,13 +1,13 @@
 /*eslint no-unused-vars:0, no-console:0*/
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react/lib/ReactTestUtils';
-import Draggable from '../lib/Draggable.es6';
-import DraggableCore from '../lib/DraggableCore.es6';
+import TestUtils from 'react-addons-test-utils';
+import Draggable from '../src/Draggable';
+import DraggableCore from '../src/DraggableCore';
 import FrameComponent from 'react-frame-component';
 import assert from 'power-assert';
 import _ from 'lodash';
-import {getPrefix, browserPrefixToKey, browserPrefixToStyle} from '../lib/utils/getPrefix.es6';
+import {getPrefix, browserPrefixToKey, browserPrefixToStyle} from '../src/utils/getPrefix';
 const transformStyle = browserPrefixToStyle('transform', getPrefix('transform'));
 const transformKey = browserPrefixToKey('transform', getPrefix('transform'));
 const userSelectStyle = browserPrefixToStyle('user-select', getPrefix('user-select'));
@@ -141,6 +141,8 @@ describe('react-draggable', function () {
       drag = (<Draggable className="foo"><span /></Draggable>);
 
       TestUtils.renderIntoDocument(drag);
+
+      console.log(console.error.calls.allArgs());
 
       expect(
         console.error.calls.argsFor(0)[0].replace('propType:', 'prop type:').split('\n')[0]

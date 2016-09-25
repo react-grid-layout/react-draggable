@@ -1,31 +1,37 @@
-var globals = require('rollup-plugin-node-globals');
-var json = require('rollup-plugin-json');
-var babel = require('rollup-plugin-babel');
-var commonjs = require('rollup-plugin-commonjs');
-var nodeResolve = require('rollup-plugin-node-resolve');
+'use strict';
+const nodeGlobals = require('rollup-plugin-node-globals');
+const json = require('rollup-plugin-json');
+const babel = require('rollup-plugin-babel');
+const commonjs = require('rollup-plugin-commonjs');
+const replace = require('rollup-plugin-replace');
+const nodeResolve = require('rollup-plugin-node-resolve');
 
 
-export default {
-  entry: './specs/draggable.spec.es6',
+// const externals = ['react', 'react-dom'];
+const externals = [];
+
+module.exports = {
+  entry: './specs/draggable.spec.js',
   // rollup settings. See Rollup documentation
   plugins: [
     nodeResolve({
+      preferBuiltins: false,
       browser: true,
-      preferBuiltins: false
+      skip: externals,
     }),
-    commonjs({
-      ignoreGlobal: true,
-      // include: 'node_modules/**',  // Default: undefined
-    }),
-    globals(),
-    json(),
     babel({
       exclude: 'node_modules/**',
+      runtimeHelpers: true,
     }),
+    commonjs({
+      // ignoreGlobal: true,
+      // include: 'node_modules/**',  // Default: undefined
+    }),
+    nodeGlobals(),
+    json(),
   ],
-  // external: external,
+  external: externals,
   moduleName: 'draggable',
-  format: 'iife',
-  sourceMap: 'inline',
+  format: 'umd',
   dest: './derp.js'
 };

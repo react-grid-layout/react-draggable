@@ -1,5 +1,5 @@
 // @flow
-import * as React from 'react';
+import React from 'react';
 const {PropTypes} = React;
 import ReactDOM from 'react-dom';
 import {matchesSelectorAndParentsTo, addEvent, removeEvent, addUserSelectStyles, getTouchIdentifier,
@@ -280,10 +280,10 @@ export default class DraggableCore extends React.Component {
         this.handleDragStop(new MouseTouchEvent('mouseup'));
       } catch (err) {
         // Old browsers
-        const event = ((document.createEvent('MouseTouchEvents'): any): MouseTouchEvent);
+        const event = ((document.createEvent('MouseEvents'): any): MouseTouchEvent);
         // I see why this insanity was deprecated
         // $FlowIgnore
-        event.initMouseTouchEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         this.handleDragStop(event);
       }
       return;

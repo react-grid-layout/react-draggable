@@ -1,5 +1,5 @@
 // @flow
-import * as React from 'react';
+import React from 'react';
 const {PropTypes} = React;
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
