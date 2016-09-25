@@ -6,10 +6,6 @@ const commonjs = require('rollup-plugin-commonjs');
 const replace = require('rollup-plugin-replace');
 const nodeResolve = require('rollup-plugin-node-resolve');
 
-
-// const externals = ['react', 'react-dom'];
-const externals = [];
-
 module.exports = {
   entry: './specs/draggable.spec.js',
   // rollup settings. See Rollup documentation
@@ -17,21 +13,20 @@ module.exports = {
     nodeResolve({
       preferBuiltins: false,
       browser: true,
-      skip: externals,
+    }),
+    replace({
+      // This is totally broken somehow - DCE eliminates the function in CSSPropertyOperations
+      include: 'node_modules/react/lib/CSSPropertyOperations.js',
+      'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     babel({
       exclude: 'node_modules/**',
       runtimeHelpers: true,
     }),
-    commonjs({
-      // ignoreGlobal: true,
-      // include: 'node_modules/**',  // Default: undefined
-    }),
+    commonjs(),
     nodeGlobals(),
     json(),
   ],
-  external: externals,
   moduleName: 'draggable',
-  format: 'umd',
-  dest: './derp.js'
+  format: 'umd'
 };

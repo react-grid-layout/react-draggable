@@ -142,8 +142,6 @@ describe('react-draggable', function () {
 
       TestUtils.renderIntoDocument(drag);
 
-      console.log(console.error.calls.allArgs());
-
       expect(
         console.error.calls.argsFor(0)[0].replace('propType:', 'prop type:').split('\n')[0]
       ).toBe(
