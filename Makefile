@@ -32,7 +32,7 @@ dist/%.min.js: $(LIB) $(BIN)
 	  --compress warnings=false
 
 dist/%.js: $(BIN)
-	@$(BIN)/rollup -c
+	node tools/build-main.js
 
 test: $(BIN)
 	@$(BIN)/karma start --single-run

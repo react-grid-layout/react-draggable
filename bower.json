@@ -7,22 +7,13 @@
     "Samuel Reed"
   ],
   "description": "React draggable component",
-  "main": "./dist/react-draggable.js",
+  "main": "index.umd.js",
   "keywords": [
     "react",
     "draggable"
   ],
   "license": "MIT",
   "ignore": [
-    "**/.*",
-    "example",
-    "lib",
-    "node_modules",
-    "script",
-    "specs",
-    "index.js",
-    "karma.conf.js",
-    "webpack.config.js",
-    "package.json"
+    "**/.*"
   ]
 }

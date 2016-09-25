@@ -13,10 +13,8 @@ const fs = require('fs');
 const del = require('del');
 const rollup = require('rollup');
 const babel = require('rollup-plugin-babel');
-const uglify = require('rollup-plugin-uglify');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
-const {minify} = require ('uglify-js');
 const path = require('path');
 const BASE = path.join(__dirname, '..');
 const babelrc = require('json5').parse(fs.readFileSync(path.join(BASE, '.babelrc')));
@@ -41,7 +39,6 @@ module.exports = function doBundle(src/*: string*/, dest/*: string*/, rollupOpts
             runtimeHelpers: true,
           })),
           commonjs(),
-          // uglify({}, minify),
         ],
       }, rollupOpts))
       .then(bundle => {
@@ -63,9 +60,10 @@ module.exports = function doBundle(src/*: string*/, dest/*: string*/, rollupOpts
     delete pkg.eslintConfig;
     delete pkg.babel;
     delete pkg['pre-commit'];
-    pkg.main.replace('src/', ''); // We munge the main so it works both when git cloning & when downloading the pkg
+    pkg.main = pkg.main.replace('src/', ''); // We munge the main so it works both when git cloning & when downloading the pkg
     pkg['jsnext:main'] = 'index.es.js'; // this doesn't exist in the git pkg
     fs.writeFileSync(`${dest}/package.json`, JSON.stringify(pkg, null, '  '), 'utf-8');
+    cp('bower.json', `${dest}/bower.json`);
     cp('LICENSE.txt', `${dest}/LICENSE.txt`);
     cp('.flowconfig', `${dest}/.flowconfig`);
   })

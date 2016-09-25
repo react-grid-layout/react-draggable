@@ -2,7 +2,7 @@
   "name": "react-draggable",
   "version": "2.2.0",
   "description": "React draggable component",
-  "main": "src/index",
+  "main": "src/index.js",
   "scripts": {
     "test": "make test",
     "test-debug": "karma start --browsers=Chrome --single-run=false",
@@ -29,7 +29,6 @@
     "babel-cli": "^6.14.0",
     "babel-core": "^6.14.0",
     "babel-eslint": "^6.1.2",
-    "babel-loader": "^6.2.5",
     "babel-plugin-espower": "^2.3.1",
     "babel-plugin-external-helpers": "^6.8.0",
     "babel-plugin-transform-flow-comments": "^6.8.0",
@@ -40,7 +39,6 @@
     "eslint": "^3.6.0",
     "eslint-plugin-react": "^6.3.0",
     "jasmine-core": "^2.5.2",
-    "json-loader": "^0.5.4",
     "karma": "^1.3.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-cli": "1.0.1",
@@ -49,7 +47,6 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-phantomjs-shim": "^1.4.0",
     "karma-rollup-plugin": "^0.2.4",
-    "karma-webpack": "^1.8.0",
     "lodash": "^4.16.1",
     "open": "0.0.5",
     "phantomjs-prebuilt": ">=2.1",
@@ -68,10 +65,7 @@
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-uglify": "^1.0.1",
     "semver": "^5.3.0",
-    "static-server": "^2.0.3",
-    "uglify-js": "^2.7.3",
-    "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.16.1"
+    "static-server": "^2.0.3"
   },
   "precommit": [
     "lint",
