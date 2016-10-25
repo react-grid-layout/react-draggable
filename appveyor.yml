@@ -5,21 +5,15 @@ environment:
     - node_version: "7"
     - node_version: "6"
     - node_version: "4"
-
-cache:
-  - node_modules
-
-environment:
   IE_BIN: "%PROGRAMFILES%\\Internet Explorer\\iexplorer.exe"
 
+cache:
+  - "%LOCALAPPDATA%/Yarn"
+
 install:
-  - ps: Install-Product node $env:node_version
   - choco install -i yarn
   - refreshenv
   - yarn install
-
-cache:
- - "%LOCALAPPDATA%/Yarn"
 
 test_script:
   - npm run test-ie
