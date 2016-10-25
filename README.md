@@ -1,4 +1,4 @@
-# React-Draggable [![Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable) [![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)]()
+# React-Draggable [![Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable) ![https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true) [![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)]()
 
 A simple component for making elements draggable.
 
