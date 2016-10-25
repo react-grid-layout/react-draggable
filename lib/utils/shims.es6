@@ -1,6 +1,6 @@
 // @flow
 // @credits https://gist.github.com/rogozhnikoff/a43cfed27c41e4e68cdc
-export function findInArray(array: Array<any>, callback: Function): any {
+export function findInArray(array: Array<any> | TouchList, callback: Function): any {
   for (let i = 0, length = array.length; i < length; i++) {
     if (callback.apply(callback, [array[i], i, array])) return array[i];
   }

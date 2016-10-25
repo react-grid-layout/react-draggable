@@ -13,8 +13,7 @@ clean:
 	rm -rf dist
 
 lint:
-	# FIXME this is usually global
-	flow check
+	@$(BIN)/flow
 	@$(BIN)/eslint lib/* lib/utils/* specs/*
 
 build: $(LIB) $(MIN)

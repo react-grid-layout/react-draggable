@@ -114,12 +114,12 @@ export function createSVGTransform({x, y}: {x: number, y: number}): string {
   return 'translate(' + x + ',' + y + ')';
 }
 
-export function getTouch(e: MouseEvent, identifier: number): ?{clientX: number, clientY: number} {
+export function getTouch(e: MouseTouchEvent, identifier: number): ?{clientX: number, clientY: number} {
   return (e.targetTouches && findInArray(e.targetTouches, t => identifier === t.identifier)) ||
          (e.changedTouches && findInArray(e.changedTouches, t => identifier === t.identifier));
 }
 
-export function getTouchIdentifier(e: MouseEvent): ?number {
+export function getTouchIdentifier(e: MouseTouchEvent): ?number {
   if (e.targetTouches && e.targetTouches[0]) return e.targetTouches[0].identifier;
   if (e.changedTouches && e.changedTouches[0]) return e.changedTouches[0].identifier;
 }

@@ -14,6 +14,7 @@ before_install:
 install:
   - node --version
   - yarn install
+  - npm run lint
 cache:
   directories:
   - $HOME/.yarn-cache

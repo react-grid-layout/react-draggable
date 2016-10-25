@@ -1,5 +1,6 @@
 // @flow
 
+// eslint-disable-next-line no-use-before-define
 export type DraggableEventHandler = (e: MouseEvent, data: DraggableData) => void | false;
 
 export type DraggableData = {
