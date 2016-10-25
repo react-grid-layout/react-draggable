@@ -4,6 +4,7 @@ node_js:
   - "0.12"
   - "4"
   - "6"
+  - "7"
 before_script:
   - export CHROME_BIN=chromium-browser
   - export DISPLAY=:99.0
