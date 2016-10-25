@@ -86,6 +86,7 @@ module.exports = function(config) {
       require('karma-phantomjs-launcher'),
       require('karma-firefox-launcher'),
       require('karma-chrome-launcher'),
+      require('karma-ie-launcher'),
       require('karma-webpack'),
       require('karma-phantomjs-shim')
     ]
