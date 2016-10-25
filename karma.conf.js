@@ -82,13 +82,13 @@ module.exports = function(config) {
     singleRun: true,
 
     plugins: [
-      require('karma-jasmine'),
-      require('karma-phantomjs-launcher'),
-      require('karma-firefox-launcher'),
-      require('karma-chrome-launcher'),
-      require('karma-ie-launcher'),
-      require('karma-webpack'),
-      require('karma-phantomjs-shim')
+      'karma-jasmine',
+      'karma-phantomjs-launcher',
+      'karma-firefox-launcher',
+      'karma-chrome-launcher',
+      'karma-ie-launcher',
+      'karma-webpack',
+      'karma-phantomjs-shim',
     ]
   });
 };
