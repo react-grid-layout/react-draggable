@@ -1,0 +1,15 @@
+# https://www.appveyor.com/docs/appveyor-yml/
+
+cache:
+  - node_modules
+
+environment:
+  IE_BIN: "%PROGRAMFILES%\\Internet Explorer\\iexplorer.exe"
+
+install:
+  - npm install
+
+test_script:
+  - npm run test-ie
+
+build: off
