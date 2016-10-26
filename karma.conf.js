@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+process.env.NODE_ENV = 'test';
 
 module.exports = function(config) {
   config.set({
