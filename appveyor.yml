@@ -5,9 +5,10 @@ environment:
     # - node_version: "7"
     - node_version: "6"
     - node_version: "4"
-  IE_BIN: "%PROGRAMFILES%\\Internet Explorer\\iexplorer.exe"
+  IE_BIN: "%PROGRAMFILES%\\Internet Explorer\\iexplore.exe"
 
 cache:
+  - node_modules
   - "%LOCALAPPDATA%/Yarn"
 
 install:
