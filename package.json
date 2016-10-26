@@ -6,8 +6,8 @@
   "browser": "dist/react-draggable.js",
   "scripts": {
     "test": "make test",
-    "test-debug": "karma start --browsers=Chrome --single-run",
-    "test-ie": "karma start --browsers=IE --single-run",
+    "test-debug": "karma start --browsers=Chrome",
+    "test-ie": "karma start --browsers=IE",
     "dev": "make dev",
     "build": "make clean build",
     "lint": "make lint"

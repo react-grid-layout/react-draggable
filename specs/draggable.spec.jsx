@@ -324,7 +324,7 @@ describe('react-draggable', function () {
     });
 
     it('should add and remove user-select styles', function () {
-      const userSelectStyleStr = `;${userSelectStyle}: none;`;
+      const userSelectStyleStr = `${userSelectStyle}: none;`;
 
       drag = TestUtils.renderIntoDocument(
         <Draggable>
@@ -334,11 +334,11 @@ describe('react-draggable', function () {
 
       const node = ReactDOM.findDOMNode(drag);
 
-      assert(document.body.getAttribute('style') === '');
+      assert(!document.body.getAttribute('style'));
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      assert(document.body.getAttribute('style') === userSelectStyleStr);
+      assert(document.body.getAttribute('style').indexOf(userSelectStyleStr) !== -1);
       TestUtils.Simulate.mouseUp(node);
-      assert(document.body.getAttribute('style') === '');
+      assert(!document.body.getAttribute('style'));
     });
 
     it('should not add and remove user-select styles when disabled', function () {
@@ -351,11 +351,11 @@ describe('react-draggable', function () {
 
       const node = ReactDOM.findDOMNode(drag);
 
-      assert(document.body.getAttribute('style') === '');
+      assert(!document.body.getAttribute('style'));
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      assert(document.body.getAttribute('style') === '');
+      assert(!document.body.getAttribute('style'));
       TestUtils.Simulate.mouseUp(node);
-      assert(document.body.getAttribute('style') === '');
+      assert(!document.body.getAttribute('style'));
     });
 
     it('should not add and remove user-select styles when onStart returns false', function () {
@@ -369,11 +369,11 @@ describe('react-draggable', function () {
 
       const node = ReactDOM.findDOMNode(drag);
 
-      assert(document.body.getAttribute('style') === '');
+      assert(!document.body.getAttribute('style'));
       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      assert(document.body.getAttribute('style') === '');
+      assert(!document.body.getAttribute('style'));
       TestUtils.Simulate.mouseUp(node);
-      assert(document.body.getAttribute('style') === '');
+      assert(!document.body.getAttribute('style'));
     });
 
     it('should be draggable when in an iframe', function (done) {
@@ -401,7 +401,7 @@ describe('react-draggable', function () {
     });
 
     it('should add and remove user-select styles to iframe’s body when in an iframe', function (done) {
-      const userSelectStyleStr = `;${userSelectStyle}: none;`;
+      const userSelectStyleStr = `${userSelectStyle}: none;`;
 
       const dragElement = (
         <Draggable onDrag={function() { dragged = true; }}>
@@ -416,14 +416,14 @@ describe('react-draggable', function () {
         const node = iframeDoc.querySelector('.react-draggable');
         iframeDoc.body.setAttribute('style', '');
 
-        assert(iframeDoc.body.getAttribute('style') === '');
-        assert(document.body.getAttribute('style') === '');
+        assert(!iframeDoc.body.getAttribute('style'));
+        assert(!document.body.getAttribute('style'));
         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-        assert(iframeDoc.body.getAttribute('style') === userSelectStyleStr);
-        assert(document.body.getAttribute('style') === '');
+        assert(iframeDoc.body.getAttribute('style').indexOf(userSelectStyleStr) !== -1);
+        assert(!document.body.getAttribute('style'));
         TestUtils.Simulate.mouseUp(node);
-        assert(iframeDoc.body.getAttribute('style') === '');
-        assert(document.body.getAttribute('style') === '');
+        assert(!iframeDoc.body.getAttribute('style'));
+        assert(!document.body.getAttribute('style'));
 
         renderRoot.parentNode.removeChild(renderRoot);
         done();

@@ -130,6 +130,7 @@ export function getTouchIdentifier(e: MouseTouchEvent): ?number {
 const userSelectPrefix = getPrefix('user-select');
 const userSelect = browserPrefixToStyle('user-select', userSelectPrefix);
 const userSelectStyle = `;${userSelect}: none;`;
+const userSelectReplaceRegExp = new RegExp(`;?${userSelect}: none;`); // leading ; not present on IE
 
 // Note we're passing `document` b/c we could be iframed
 export function addUserSelectStyles(body: HTMLElement) {
@@ -139,7 +140,7 @@ export function addUserSelectStyles(body: HTMLElement) {
 
 export function removeUserSelectStyles(body: HTMLElement) {
   const style = body.getAttribute('style') || '';
-  body.setAttribute('style', style.replace(userSelectStyle, ''));
+  body.setAttribute('style', style.replace(userSelectReplaceRegExp, ''));
 }
 
 export function styleHacks(childStyle: Object = {}): Object {
