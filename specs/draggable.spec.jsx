@@ -1,7 +1,7 @@
 /*eslint no-unused-vars:0, no-console:0*/
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react/lib/ReactTestUtils';
+import TestUtils from 'react-addons-test-utils';
 import Draggable, {DraggableCore} from '../index';
 import FrameComponent from 'react-frame-component';
 import assert from 'power-assert';
