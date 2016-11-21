@@ -138,7 +138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Draggable(props /*: ConstructorProps*/) {
 	    _classCallCheck(this, Draggable);
 	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Draggable).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Draggable.__proto__ || Object.getPrototypeOf(Draggable)).call(this, props));
 	
 	    _this.onDragStart = function (e, coreData) {
 	      (0, _log2.default)('Draggable: onDragStart: %j', coreData);
@@ -165,8 +165,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Keep within bounds.
 	      if (_this.props.bounds) {
 	        // Save original x and y.
-	        var _x = newState.x;
-	        var _y = newState.y;
+	        var _x = newState.x,
+	            _y = newState.y;
 	
 	        // Add slack to the values used to calculate bound position. This will ensure that if
 	        // we start removing slack, the element won't react to it right away until it's been
@@ -178,9 +178,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // Get bound position. This will ceil/floor the x and y within the boundaries.
 	        // $FlowBug
 	
-	
 	        // Recalculate slack by noting how much was shaved by the boundPosition handler.
-	
 	        var _getBoundPosition = (0, _positionFns.getBoundPosition)(_this, newState.x, newState.y);
 	
 	        var _getBoundPosition2 = _slicedToArray(_getBoundPosition, 2);
@@ -223,9 +221,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // revert back to the old position. We expect a handler on `onDragStop`, at the least.
 	      var controlled = Boolean(_this.props.position);
 	      if (controlled) {
-	        var _this$props$position = _this.props.position;
-	        var _x2 = _this$props$position.x;
-	        var _y2 = _this$props$position.y;
+	        var _this$props$position = _this.props.position,
+	            _x2 = _this$props$position.x,
+	            _y2 = _this$props$position.y;
 	
 	        newState.x = _x2;
 	        newState.y = _y2;
@@ -285,7 +283,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'render',
-	    value: function render() {
+	    value: function render() /*: React.Element<any>*/ {
 	      var _classNames;
 	
 	      var style = {},
@@ -315,10 +313,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        style = (0, _domFns.createCSSTransform)(transformOpts);
 	      }
 	
-	      var _props = this.props;
-	      var defaultClassName = _props.defaultClassName;
-	      var defaultClassNameDragging = _props.defaultClassNameDragging;
-	      var defaultClassNameDragged = _props.defaultClassNameDragged;
+	      var _props = this.props,
+	          defaultClassName = _props.defaultClassName,
+	          defaultClassNameDragging = _props.defaultClassNameDragging,
+	          defaultClassNameDragged = _props.defaultClassNameDragged;
 	
 	      // Mark with class while dragging
 	
@@ -669,21 +667,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	function createCSSTransform(_ref) /*: Object*/ {
-	  var x = _ref.x;
-	  var y = _ref.y;
+	  var x = _ref.x,
+	      y = _ref.y;
 	
 	  // Replace unitless items with px
 	  return _defineProperty({}, (0, _getPrefix.browserPrefixToKey)('transform', _getPrefix2.default), 'translate(' + x + 'px,' + y + 'px)');
 	}
 	
 	function createSVGTransform(_ref3) /*: string*/ {
-	  var x = _ref3.x;
-	  var y = _ref3.y;
+	  var x = _ref3.x,
+	      y = _ref3.y;
 	
 	  return 'translate(' + x + ',' + y + ')';
 	}
 	
-	function getTouch(e /*: MouseEvent*/, identifier /*: number*/) /*: ?{clientX: number, clientY: number}*/ {
+	function getTouch(e /*: MouseTouchEvent*/, identifier /*: number*/) /*: ?{clientX: number, clientY: number}*/ {
 	  return e.targetTouches && (0, _shims.findInArray)(e.targetTouches, function (t) {
 	    return identifier === t.identifier;
 	  }) || e.changedTouches && (0, _shims.findInArray)(e.changedTouches, function (t) {
@@ -691,7 +689,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	}
 	
-	function getTouchIdentifier(e /*: MouseEvent*/) /*: ?number*/ {
+	function getTouchIdentifier(e /*: MouseTouchEvent*/) /*: ?number*/ {
 	  if (e.targetTouches && e.targetTouches[0]) return e.targetTouches[0].identifier;
 	  if (e.changedTouches && e.changedTouches[0]) return e.changedTouches[0].identifier;
 	}
@@ -702,6 +700,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var userSelectPrefix = (0, _getPrefix.getPrefix)('user-select');
 	var userSelect = (0, _getPrefix.browserPrefixToStyle)('user-select', userSelectPrefix);
 	var userSelectStyle = ';' + userSelect + ': none;';
+	var userSelectReplaceRegExp = new RegExp(';?' + userSelect + ': none;'); // leading ; not present on IE
 	
 	// Note we're passing `document` b/c we could be iframed
 	function addUserSelectStyles(body /*: HTMLElement*/) {
@@ -711,11 +710,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function removeUserSelectStyles(body /*: HTMLElement*/) {
 	  var style = body.getAttribute('style') || '';
-	  body.setAttribute('style', style.replace(userSelectStyle, ''));
+	  body.setAttribute('style', style.replace(userSelectReplaceRegExp, ''));
 	}
 	
 	function styleHacks() /*: Object*/ {
-	  var childStyle /*: Object*/ = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	  var childStyle /*: Object*/ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	
 	  // Workaround IE pointer events; see #51
 	  // https://github.com/mzabriskie/react-draggable/issues/51#issuecomment-103488278
@@ -740,7 +739,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.dontSetMe = dontSetMe;
 	
 	// @credits https://gist.github.com/rogozhnikoff/a43cfed27c41e4e68cdc
-	function findInArray(array /*: Array<any>*/, callback /*: Function*/) /*: any*/ {
+	function findInArray(array /*: Array<any> | TouchList*/, callback /*: Function*/) /*: any*/ {
 	  for (var i = 0, length = array.length; i < length; i++) {
 	    if (callback.apply(callback, [array[i], i, array])) return array[i];
 	  }
@@ -776,10 +775,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.getPrefix = getPrefix;
 	exports.browserPrefixToKey = browserPrefixToKey;
 	exports.browserPrefixToStyle = browserPrefixToStyle;
-	
 	var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
 	function getPrefix() /*: string*/ {
-	  var prop /*: string*/ = arguments.length <= 0 || arguments[0] === undefined ? 'transform' : arguments[0];
+	  var prop /*: string*/ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'transform';
 	
 	  // Checking specifically for 'window.document' is for pseudo-browser server-side
 	  // environments that define 'window' as the global context.
@@ -914,7 +912,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	// Get {x, y} positions from event.
-	function getControlPosition(e /*: MouseEvent*/, touchIdentifier /*: ?number*/, draggableCore /*: DraggableCore*/) /*: ?ControlPosition*/ {
+	function getControlPosition(e /*: MouseTouchEvent*/, touchIdentifier /*: ?number*/, draggableCore /*: DraggableCore*/) /*: ?ControlPosition*/ {
 	  var touchObj = typeof touchIdentifier === 'number' ? (0, _domFns.getTouch)(e, touchIdentifier) : null;
 	  if (typeof touchIdentifier === 'number' && !touchObj) return null; // not the right touch
 	  var node = _reactDom2.default.findDOMNode(draggableCore);
@@ -925,8 +923,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// Create an data object exposed by <DraggableCore>'s events
 	function createCoreData(draggable /*: DraggableCore*/, x /*: number*/, y /*: number*/) /*: DraggableData*/ {
-	  // State changes are often (but not always!) async. We want the latest value.
-	  var state = draggable._pendingState || draggable.state;
+	  var state = draggable.state;
 	  var isStart = !(0, _shims.isNum)(state.lastX);
 	
 	  if (isStart) {
@@ -1047,7 +1044,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _inherits(DraggableCore, _React$Component);
 	
 	  function DraggableCore() {
-	    var _Object$getPrototypeO;
+	    var _ref;
 	
 	    var _temp, _this, _ret;
 	
@@ -1057,7 +1054,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      args[_key] = arguments[_key];
 	    }
 	
-	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(DraggableCore)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DraggableCore.__proto__ || Object.getPrototypeOf(DraggableCore)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
 	      dragging: false,
 	      // Used while dragging to determine deltas.
 	      lastX: NaN, lastY: NaN,
@@ -1088,8 +1085,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Get the current drag point from the event. This is used as the offset.
 	      var position = (0, _positionFns.getControlPosition)(e, touchIdentifier, _this);
 	      if (position == null) return; // not possible but satisfies flow
-	      var x = position.x;
-	      var y = position.y;
+	      var x = position.x,
+	          y = position.y;
 	
 	      // Create an event object with all the data parents need to make a decision here.
 	
@@ -1123,11 +1120,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _domFns.addEvent)(ownerDocument, dragEventFor.stop, _this.handleDragStop);
 	    }, _this.handleDrag = function (e) {
 	
+	      // Prevent scrolling on mobile devices, like ipad/iphone.
+	      if (e.type === 'touchmove') e.preventDefault();
+	
 	      // Get the current drag point from the event. This is used as the offset.
 	      var position = (0, _positionFns.getControlPosition)(e, _this.state.touchIdentifier, _this);
 	      if (position == null) return;
-	      var x = position.x;
-	      var y = position.y;
+	      var x = position.x,
+	          y = position.y;
 	
 	      // Snap to grid if prop has been provided
 	
@@ -1156,10 +1156,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var shouldUpdate = _this.props.onDrag(e, coreEvent);
 	      if (shouldUpdate === false) {
 	        try {
+	          // $FlowIgnore
 	          _this.handleDragStop(new MouseEvent('mouseup'));
 	        } catch (err) {
 	          // Old browsers
-	          var event = ((document.createEvent('MouseEvents') /*: any*/) /*: MouseEvent*/);
+	          var event = ((document.createEvent('MouseEvents') /*: any*/) /*: MouseTouchEvent*/);
 	          // I see why this insanity was deprecated
 	          // $FlowIgnore
 	          event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
@@ -1177,16 +1178,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      var position = (0, _positionFns.getControlPosition)(e, _this.state.touchIdentifier, _this);
 	      if (position == null) return;
-	      var x = position.x;
-	      var y = position.y;
+	      var x = position.x,
+	          y = position.y;
 	
 	      var coreEvent = (0, _positionFns.createCoreData)(_this, x, y);
 	
-	      var _ReactDOM$findDOMNode = _reactDom2.default.findDOMNode(_this);
-	
-	      var ownerDocument = _ReactDOM$findDOMNode.ownerDocument;
+	      var _ReactDOM$findDOMNode = _reactDom2.default.findDOMNode(_this),
+	          ownerDocument = _ReactDOM$findDOMNode.ownerDocument;
 	
 	      // Remove user-select hack
+	
 	
 	      if (_this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)(ownerDocument.body);
 	
@@ -1232,10 +1233,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function componentWillUnmount() {
 	      // Remove any leftover event handlers. Remove both touch and mouse handlers in case
 	      // some browser quirk caused a touch event to fire during a mouse move, or vice versa.
-	
-	      var _ReactDOM$findDOMNode2 = _reactDom2.default.findDOMNode(this);
-	
-	      var ownerDocument = _ReactDOM$findDOMNode2.ownerDocument;
+	      var _ReactDOM$findDOMNode2 = _reactDom2.default.findDOMNode(this),
+	          ownerDocument = _ReactDOM$findDOMNode2.ownerDocument;
 	
 	      (0, _domFns.removeEvent)(ownerDocument, eventsFor.mouse.move, this.handleDrag);
 	      (0, _domFns.removeEvent)(ownerDocument, eventsFor.touch.move, this.handleDrag);
@@ -1248,7 +1247,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  }, {
 	    key: 'render',
-	    value: function render() {
+	    value: function render() /*: React.Element<any>*/ {
 	      // Reuse the child provided
 	      // This makes it flexible to use whatever element is wanted (div, ul, etc)
 	      return _react2.default.cloneElement(_react2.default.Children.only(this.props.children), {
@@ -1402,7 +1401,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	// shim for using process in browser
-	
 	var process = module.exports = {};
 	
 	// cached from whatever global is present so that test runners that stub it
@@ -1413,22 +1411,84 @@ return /******/ (function(modules) { // webpackBootstrap
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 	
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
 	(function () {
-	  try {
-	    cachedSetTimeout = setTimeout;
-	  } catch (e) {
-	    cachedSetTimeout = function () {
-	      throw new Error('setTimeout is not defined');
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
 	    }
-	  }
-	  try {
-	    cachedClearTimeout = clearTimeout;
-	  } catch (e) {
-	    cachedClearTimeout = function () {
-	      throw new Error('clearTimeout is not defined');
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
 	    }
-	  }
 	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+	
+	
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+	
+	
+	
+	}
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -1453,7 +1513,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = cachedSetTimeout(cleanUpNextTick);
+	    var timeout = runTimeout(cleanUpNextTick);
 	    draining = true;
 	
 	    var len = queue.length;
@@ -1470,7 +1530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    cachedClearTimeout(timeout);
+	    runClearTimeout(timeout);
 	}
 	
 	process.nextTick = function (fun) {
@@ -1482,7 +1542,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        cachedSetTimeout(drainQueue, 0);
+	        runTimeout(drainQueue);
 	    }
 	};
 	

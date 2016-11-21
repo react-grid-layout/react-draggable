@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.2.3 (Nov 21, 2016)
+
+- Bugfix: Fix an issue with the entire window scrolling on a drag on iDevices. Thanks @JaneCoder. See #183
+
 ### 2.2.2 (Sep 14, 2016)
 
 - Bugfix: Fix references to global when grabbing `SVGElement`, see [#162](https://github.com/mzabriskie/react-draggable/issues/162)
