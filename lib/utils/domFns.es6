@@ -135,7 +135,7 @@ const userSelectReplaceRegExp = new RegExp(`;?${userSelect}: none;`); // leading
 // Note we're passing `document` b/c we could be iframed
 export function addUserSelectStyles(body: HTMLElement) {
   const style = body.getAttribute('style') || '';
-  if (style.indexOf(userSelectStyle) !== -1) return; // don't add twice
+  if (userSelectReplaceRegExp.test(style)) return; // don't add twice
   body.setAttribute('style', style + userSelectStyle);
 }
 
