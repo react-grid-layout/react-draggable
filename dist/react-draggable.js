@@ -189,8 +189,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        newState.slackY = _this.state.slackY + (_y - newState.y);
 	
 	        // Update the event we fire to reflect what really happened after bounds took effect.
-	        uiData.x = _x;
-	        uiData.y = _y;
+	        uiData.x = newState.x;
+	        uiData.y = newState.y;
 	        uiData.deltaX = newState.x - _this.state.x;
 	        uiData.deltaY = newState.y - _this.state.y;
 	      }
@@ -705,6 +705,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// Note we're passing `document` b/c we could be iframed
 	function addUserSelectStyles(body /*: HTMLElement*/) {
 	  var style = body.getAttribute('style') || '';
+	  if (userSelectReplaceRegExp.test(style)) return; // don't add twice
 	  body.setAttribute('style', style + userSelectStyle);
 	}
 	
