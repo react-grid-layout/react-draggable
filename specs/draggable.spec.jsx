@@ -618,7 +618,7 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
 
-    it('should call back on drag with values within the defined bounds', function(){
+    it('should call back on drag, with values within the defined bounds', function(){
       function onDrag(event, data) {
         assert(data.x === 90);
         assert(data.y === 90);
