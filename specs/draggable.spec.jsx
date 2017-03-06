@@ -404,7 +404,7 @@ describe('react-draggable', function () {
       const userSelectStyleStr = `${userSelectStyle}: none;`;
 
       const dragElement = (
-        <Draggable onDrag={function() { dragged = true; }}>
+        <Draggable>
           <div />
         </Draggable>
       );

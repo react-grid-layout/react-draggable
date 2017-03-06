@@ -1,5 +1,6 @@
 {
   "parser": "babel-eslint",
+  "extends": "eslint:recommended",
   "plugins": [
     "react"
   ],
@@ -24,6 +25,8 @@
   globals: {
     // For Flow
     "ReactElement",
-    "ReactClass"
+    "ReactClass",
+    "$Shape",
+    "MouseTouchEvent",
   }
 }
