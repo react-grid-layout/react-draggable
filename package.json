@@ -12,6 +12,7 @@
     "build": "make clean build",
     "lint": "make lint"
   },
+  "typings": "./index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/mzabriskie/react-draggable.git"
