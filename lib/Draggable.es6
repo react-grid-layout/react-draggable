@@ -154,7 +154,8 @@ export default class Draggable extends React.Component {
     defaultClassNameDragging: 'react-draggable-dragging',
     defaultClassNameDragged: 'react-draggable-dragged',
     defaultPosition: {x: 0, y: 0},
-    position: null
+    position: null,
+    scale: 1
   };
 
   state: DraggableState;

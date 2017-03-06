@@ -455,7 +455,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  defaultClassNameDragging: 'react-draggable-dragging',
 	  defaultClassNameDragged: 'react-draggable-dragged',
 	  defaultPosition: { x: 0, y: 0 },
-	  position: null
+	  position: null,
+	  scale: 1
 	});
 	exports.default = Draggable;
 
@@ -947,12 +948,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// Create an data exposed by <Draggable>'s events
 	function createDraggableData(draggable /*: Draggable*/, coreData /*: DraggableData*/) /*: DraggableData*/ {
+	  var scale = draggable.props.scale;
 	  return {
 	    node: coreData.node,
-	    x: draggable.state.x + coreData.deltaX,
-	    y: draggable.state.y + coreData.deltaY,
-	    deltaX: coreData.deltaX,
-	    deltaY: coreData.deltaY,
+	    x: draggable.state.x + coreData.deltaX / scale,
+	    y: draggable.state.y + coreData.deltaY / scale,
+	    deltaX: coreData.deltaX / scale,
+	    deltaY: coreData.deltaY / scale,
 	    lastX: draggable.state.x,
 	    lastY: draggable.state.y
 	  };
@@ -1303,6 +1305,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * `grid` specifies the x and y that dragging should snap to.
 	   */
 	  grid: _react.PropTypes.arrayOf(_react.PropTypes.number),
+	
+	  /**
+	   * `scale` specifies the scale of the area you are dragging inside of. It allows
+	   * the drag deltas to scale correctly with how far zoomed in/out you are.
+	   */
+	  scale: _react.PropTypes.number,
 	
 	  /**
 	   * `handle` specifies a selector to be used as the handle that initiates drag.
