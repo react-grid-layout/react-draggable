@@ -71,10 +71,10 @@ var App = React.createClass({
           <div className="box">I can be dragged anywhere</div>
         </Draggable>
         <Draggable axis="x" {...dragHandlers}>
-          <div className="box cursor-x">I can only be dragged horizonally</div>
+          <div className="box cursor-x">I can only be dragged horizonally (x axis)</div>
         </Draggable>
         <Draggable axis="y" {...dragHandlers}>
-          <div className="box cursor-y">I can only be dragged vertically</div>
+          <div className="box cursor-y">I can only be dragged vertically (y axis)</div>
         </Draggable>
         <Draggable onStart={() => false}>
           <div className="box">I don't want to be dragged</div>
@@ -96,9 +96,6 @@ var App = React.createClass({
             <strong className="no-cursor">Can't drag here</strong>
             <div>Dragging here works</div>
           </div>
-        </Draggable>
-        <Draggable {...dragHandlers} axis="y">
-          <div className="box">I can only be dragged by the Y axis</div>
         </Draggable>
         <Draggable grid={[25, 25]} {...dragHandlers}>
           <div className="box">I snap to a 25 x 25 grid</div>
