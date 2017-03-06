@@ -3,26 +3,15 @@ node_js:
   - "4"
   - "6"
   - "7"
-before_install:
-  # Repo for newer Node.js versions
-  - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-  # Repo for Yarn
-  - sudo apt-key adv --keyserver pgp.mit.edu --recv D101F7899D41F3C3
-  - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  - sudo apt-get update -qq
-  - sudo apt-get install -y -qq yarn
-install:
-  - node --version
-  - yarn install
-  - npm run lint
-cache:
-  directories:
-  - $HOME/.yarn-cache
+cache: yarn
 before_script:
   - export CHROME_BIN=chromium-browser
   - export DISPLAY=:99.0
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x16"
   - sleep 3 # give xvfb some time to start
+script:
+  - npm run lint
+  - npm run test
 email:
   on_failure: change
   on_success: never
