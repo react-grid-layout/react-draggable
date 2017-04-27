@@ -1,5 +1,13 @@
 # Changelog
 
+### 2.2.4 (Apr 27, 2017)
+
+- Internal: Moved `PropTypes` access to `prop-types` package for React 15.5 (prep for 16)
+- Feature: Added TypeScript definitions (thanks @erfangc)
+- Bugfix: No longer can erroneously add user-select style multiple times
+- Bugfix: OffsetParent with padding problem, fixes [#218](https://github.com/mzabriskie/react-draggable/issues/218)
+- Refactor: Misc example updates.
+
 ### 2.2.3 (Nov 21, 2016)
 
 - Bugfix: Fix an issue with the entire window scrolling on a drag on iDevices. Thanks @JaneCoder. See #183
