@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.2.5 (Apr 28, 2017)
+
+- Bugfix: Typescript definition was incorrect. [#244](https://github.com/mzabriskie/react-draggable/issues/244)
+
 ### 2.2.4 (Apr 27, 2017)
 
 - Internal: Moved `PropTypes` access to `prop-types` package for React 15.5 (prep for 16)
