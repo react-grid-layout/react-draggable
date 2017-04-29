@@ -35,6 +35,7 @@ dist/%.js: $(BIN)
 
 test: $(BIN)
 	@$(BIN)/karma start --single-run
+	@$(BIN)/tsc -p typings
 
 dev: $(BIN)
 	script/build-watch
