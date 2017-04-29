@@ -1,5 +1,6 @@
 declare module 'react-draggable' {
   import * as React from 'react';
+
   export interface DraggableBounds {
     left: number
     right: number
@@ -42,7 +43,11 @@ declare module 'react-draggable' {
     onMouseDown: (e: MouseEvent) => void
   }
 
-  export class Draggable extends React.Component<Partial<DraggableProps>, {}> {}
+  export default class Draggable extends React.Component<Partial<DraggableProps>, {}> {
+    static defaultProps : DraggableProps;
+  }
 
-  export class DraggableCore extends React.Component<Partial<DraggableCoreProps>, {}> {}
+  export class DraggableCore extends React.Component<Partial<DraggableCoreProps>, {}> {
+    static defaultProps : DraggableCoreProps;
+  }
 }
