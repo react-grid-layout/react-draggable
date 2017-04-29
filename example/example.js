@@ -67,7 +67,7 @@ var App = React.createClass({
         <p>
           <a href="https://github.com/mzabriskie/react-draggable/blob/master/example/index.html">Demo Source</a>
         </p>
-        <Draggable zIndex={100} {...dragHandlers}>
+        <Draggable {...dragHandlers}>
           <div className="box">I can be dragged anywhere</div>
         </Draggable>
         <Draggable axis="x" {...dragHandlers}>
@@ -103,7 +103,7 @@ var App = React.createClass({
         <Draggable grid={[50, 50]} {...dragHandlers}>
           <div className="box">I snap to a 50 x 50 grid</div>
         </Draggable>
-        <Draggable bounds={{top: -100, left: -100, right: 100, bottom: 100}} zIndex={5} {...dragHandlers}>
+        <Draggable bounds={{top: -100, left: -100, right: 100, bottom: 100}} {...dragHandlers}>
           <div className="box">I can only be moved 100px in any direction.</div>
         </Draggable>
         <div className="box" style={{height: '500px', width: '500px', position: 'relative', overflow: 'auto', padding: '0'}}>
@@ -137,7 +137,7 @@ var App = React.createClass({
             {"I have a default position of {x: 25, y: 25}, so I'm slightly offset."}
           </div>
         </Draggable>
-        <Draggable zIndex={100} position={controlledPosition} {...dragHandlers} onDrag={this.onControlledDrag}>
+        <Draggable position={controlledPosition} {...dragHandlers} onDrag={this.onControlledDrag}>
           <div className="box">
             My position can be changed programmatically. <br />
             I have a drag handler to sync state.
@@ -149,7 +149,7 @@ var App = React.createClass({
             </p>
           </div>
         </Draggable>
-        <Draggable zIndex={100} position={controlledPosition} {...dragHandlers} onStop={this.onControlledDragStop}>
+        <Draggable position={controlledPosition} {...dragHandlers} onStop={this.onControlledDragStop}>
           <div className="box">
             My position can be changed programmatically. <br />
             I have a dragStop handler to sync state.

@@ -42,7 +42,6 @@ describe('react-draggable', function () {
       assert(drag.props.handle === null);
       assert(drag.props.cancel === null);
       assert(drag.props.bounds == false);
-      assert(isNaN(drag.props.zIndex) === true);
       assert(typeof drag.props.onStart === 'function');
       assert(typeof drag.props.onDrag === 'function');
       assert(typeof drag.props.onStop === 'function');
@@ -115,7 +114,6 @@ describe('react-draggable', function () {
           handle=".handle"
           cancel=".cancel"
           grid={[10, 10]}
-          zIndex={1000}
           onStart={handleStart}
           onDrag={handleDrag}
           onStop={handleStop}>
@@ -130,7 +128,6 @@ describe('react-draggable', function () {
       assert(drag.props.handle === '.handle');
       assert(drag.props.cancel === '.cancel');
       assert(_.isEqual(drag.props.grid, [10, 10]));
-      assert(drag.props.zIndex === 1000);
       assert(drag.props.onStart === handleStart);
       assert(drag.props.onDrag === handleDrag);
       assert(drag.props.onStop === handleStop);
@@ -626,8 +623,8 @@ describe('react-draggable', function () {
         assert(data.deltaY === 100);
       }
       drag = TestUtils.renderIntoDocument(
-        <Draggable onDrag={onDrag} style={{position: 'relative', top: '200px', left: '200px'}}>
-          <div />
+        <Draggable onDrag={onDrag} >
+          <div style={{position: 'relative', top: '200px', left: '200px'}} />
         </Draggable>
       );
 
