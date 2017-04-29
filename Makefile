@@ -15,6 +15,7 @@ clean:
 lint:
 	@$(BIN)/flow
 	@$(BIN)/eslint lib/* lib/utils/* specs/*
+	@$(BIN)/tsc -p typings
 
 build: $(LIB) $(MIN)
 
@@ -35,7 +36,6 @@ dist/%.js: $(BIN)
 
 test: $(BIN)
 	@$(BIN)/karma start --single-run
-	@$(BIN)/tsc -p typings
 
 dev: $(BIN)
 	script/build-watch
