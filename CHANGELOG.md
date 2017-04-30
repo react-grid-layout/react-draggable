@@ -1,5 +1,10 @@
 # Changelog
 
+### 2.2.6
+
+- Bugfix: Missing export default on TS definition (thanks @lostfictions)
+- Internal: TS test suite (thanks @lostfictions)
+
 ### 2.2.5 (Apr 28, 2017)
 
 - Bugfix: Typescript definition was incorrect. [#244](https://github.com/mzabriskie/react-draggable/issues/244)
