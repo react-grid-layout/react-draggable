@@ -1,5 +1,6 @@
 // @flow
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import {matchesSelectorAndParentsTo, addEvent, removeEvent, addUserSelectStyles, getTouchIdentifier,
         removeUserSelectStyles, styleHacks} from './utils/domFns';
@@ -262,8 +263,6 @@ export default class DraggableCore extends React.Component {
     let {x, y} = position;
 
     // Snap to grid if prop has been provided
-    if (x !== x) debugger;
-
     if (Array.isArray(this.props.grid)) {
       let deltaX = x - this.state.lastX, deltaY = y - this.state.lastY;
       [deltaX, deltaY] = snapToGrid(this.props.grid, deltaX, deltaY);

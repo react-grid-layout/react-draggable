@@ -1,5 +1,6 @@
 // @flow
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 // $FlowIgnore
 import classNames from 'classnames';
@@ -179,7 +180,7 @@ export default class Draggable extends React.Component {
       // Can only determine if SVG after mounting
       isElementSVG: false
     };
-  };
+  }
 
   componentWillMount() {
     if (this.props.position && !(this.props.onDrag || this.props.onStop)) {

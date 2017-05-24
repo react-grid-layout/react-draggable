@@ -1,4 +1,9 @@
-# React-Draggable [![Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable) ![https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true) [![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)]()
+# React-Draggable
+
+[![TravisCI Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable)
+[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/mzabriskie/react-draggable)
+[![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)](http://npmjs.com/package/react-draggable)
+[![gzip size](http://img.badgesize.io/https://npmcdn.com/react-draggable/dist/react-draggable.min.js?compression=gzip)]()
 
 A simple component for making elements draggable.
 
@@ -91,7 +96,6 @@ class App extends React.Element {
         defaultPosition={{x: 0, y: 0}}
         position={null}
         grid={[25, 25]}
-        zIndex={100}
         onStart={this.handleStart}
         onDrag={this.handleDrag}
         onStop={this.handleStop}>
