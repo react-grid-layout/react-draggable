@@ -188,7 +188,7 @@ export default class DraggableCore extends React.Component {
     removeEvent(ownerDocument, eventsFor.touch.move, this.handleDrag);
     removeEvent(ownerDocument, eventsFor.mouse.stop, this.handleDragStop);
     removeEvent(ownerDocument, eventsFor.touch.stop, this.handleDragStop);
-    if (this.props.enableUserSelectHack) removeUserSelectStyles(ownerDocument.body);
+    if (this.props.enableUserSelectHack) removeUserSelectStyles(ownerDocument);
   }
 
   handleDragStart: EventHandler<MouseTouchEvent> = (e) => {
@@ -233,7 +233,7 @@ export default class DraggableCore extends React.Component {
 
     // Add a style to the body to disable user-select. This prevents text from
     // being selected all over the page.
-    if (this.props.enableUserSelectHack) addUserSelectStyles(ownerDocument.body);
+    if (this.props.enableUserSelectHack) addUserSelectStyles(ownerDocument);
 
     // Initiate dragging. Set the current x and y as offsets
     // so we know how much we've moved during the drag. This allows us
@@ -307,7 +307,7 @@ export default class DraggableCore extends React.Component {
     const {ownerDocument} = ReactDOM.findDOMNode(this);
 
     // Remove user-select hack
-    if (this.props.enableUserSelectHack) removeUserSelectStyles(ownerDocument.body);
+    if (this.props.enableUserSelectHack) removeUserSelectStyles(ownerDocument);
 
     log('DraggableCore: handleDragStop: %j', coreEvent);
 
