@@ -6,10 +6,6 @@ import Draggable, {DraggableCore} from '../index';
 import FrameComponent from 'react-frame-component';
 import assert from 'power-assert';
 import _ from 'lodash';
-import {getPrefix, browserPrefixToKey, browserPrefixToStyle} from '../lib/utils/getPrefix';
-const transformStyle = browserPrefixToStyle('transform', getPrefix('transform'));
-const transformKey = browserPrefixToKey('transform', getPrefix('transform'));
-const userSelectStyle = browserPrefixToStyle('user-select', getPrefix('user-select'));
 
 describe('react-draggable', function () {
   var drag;
@@ -47,18 +43,6 @@ describe('react-draggable', function () {
       assert(typeof drag.props.onStop === 'function');
     });
 
-    it('should pass style and className properly from child', function () {
-      drag = (<Draggable><div className="foo" style={{color: 'black'}}/></Draggable>);
-
-      const node = renderToNode(drag);
-      if ('touchAction' in document.body.style) {
-        assert(node.getAttribute('style').indexOf('touch-action: none') >= 0);
-      }
-      assert(node.getAttribute('style').indexOf('color: black') >= 0);
-      assert(node.getAttribute('style').indexOf(transformStyle + ': translate(0px, 0px)') >= 0);
-      assert(node.getAttribute('class') === 'foo react-draggable');
-    });
-
     it('should set the appropriate custom className when dragging or dragged', function () {
       drag = TestUtils.renderIntoDocument(
         <Draggable
@@ -89,7 +73,7 @@ describe('react-draggable', function () {
           <div
             className="react-draggable"
             style={{
-              [transformKey]: 'translate(0px, 0px)'
+              'transform': 'translate(0px, 0px)'
             }}
             transform={null} />
         </DraggableCore>
@@ -321,8 +305,6 @@ describe('react-draggable', function () {
     });
 
       it('should add and remove transparent selection class', function () {
-         const userSelectStyleStr = `${userSelectStyle}: none;`;
-
          drag = TestUtils.renderIntoDocument(
            <Draggable>
              <div />
@@ -398,8 +380,6 @@ describe('react-draggable', function () {
     });
 
       it('should add and remove transparent selection class to iframe’s body when in an iframe', function (done) {
-        const userSelectStyleStr = `${userSelectStyle}: none;`;
-
         const dragElement = (
           <Draggable>
             <div />
@@ -411,16 +391,15 @@ describe('react-draggable', function () {
         setTimeout(() => {
           const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
           const node = iframeDoc.querySelector('.react-draggable');
-          iframeDoc.body.setAttribute('style', '');
 
-          assert(!iframeDoc.body.getAttribute('style'));
-          assert(!document.body.getAttribute('style'));
+	  assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+          assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
           TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-          assert(iframeDoc.body.getAttribute('style').indexOf(userSelectStyleStr) !== -1);
-          assert(!document.body.getAttribute('style'));
+	  assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+          assert(iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
           TestUtils.Simulate.mouseUp(node);
-          assert(!iframeDoc.body.getAttribute('style'));
-          assert(!document.body.getAttribute('style'));
+	  assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+          assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
 
           renderRoot.parentNode.removeChild(renderRoot);
           done();
