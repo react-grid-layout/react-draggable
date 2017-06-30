@@ -392,13 +392,13 @@ describe('react-draggable', function () {
           const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
           const node = iframeDoc.querySelector('.react-draggable');
 
-	  assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+          assert(!document.body.classList.contains('react-draggable-transparent-selection'));
           assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
           TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-	  assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+          assert(!document.body.classList.contains('react-draggable-transparent-selection'));
           assert(iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
           TestUtils.Simulate.mouseUp(node);
-	  assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+          assert(!document.body.classList.contains('react-draggable-transparent-selection'));
           assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
 
           renderRoot.parentNode.removeChild(renderRoot);
