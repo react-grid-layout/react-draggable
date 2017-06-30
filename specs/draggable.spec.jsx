@@ -320,58 +320,58 @@ describe('react-draggable', function () {
       assert(transform.indexOf('translate(100,100)') >= 0);
     });
 
-    it('should add and remove user-select styles', function () {
-      const userSelectStyleStr = `${userSelectStyle}: none;`;
+      it('should add and remove transparent selection class', function () {
+         const userSelectStyleStr = `${userSelectStyle}: none;`;
 
-      drag = TestUtils.renderIntoDocument(
-        <Draggable>
-          <div />
-        </Draggable>
-      );
+         drag = TestUtils.renderIntoDocument(
+           <Draggable>
+             <div />
+           </Draggable>
+         );
 
-      const node = ReactDOM.findDOMNode(drag);
+         const node = ReactDOM.findDOMNode(drag);
 
-      assert(!document.body.getAttribute('style'));
-      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      assert(document.body.getAttribute('style').indexOf(userSelectStyleStr) !== -1);
-      TestUtils.Simulate.mouseUp(node);
-      assert(!document.body.getAttribute('style'));
-    });
+         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+         assert(document.body.classList.contains('react-draggable-transparent-selection'));
+         TestUtils.Simulate.mouseUp(node);
+         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+       });
 
-    it('should not add and remove user-select styles when disabled', function () {
+       it('should not add and remove transparent selection class when disabled', function () {
 
-      drag = TestUtils.renderIntoDocument(
-        <Draggable enableUserSelectHack={false}>
-          <div />
-        </Draggable>
-      );
+         drag = TestUtils.renderIntoDocument(
+           <Draggable enableUserSelectHack={false}>
+             <div />
+           </Draggable>
+         );
 
-      const node = ReactDOM.findDOMNode(drag);
+         const node = ReactDOM.findDOMNode(drag);
 
-      assert(!document.body.getAttribute('style'));
-      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      assert(!document.body.getAttribute('style'));
-      TestUtils.Simulate.mouseUp(node);
-      assert(!document.body.getAttribute('style'));
-    });
+         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+         TestUtils.Simulate.mouseUp(node);
+         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+       });
 
-    it('should not add and remove user-select styles when onStart returns false', function () {
-      function onStart() { return false; }
+       it('should not add and remove transparent selection class when onStart returns false', function () {
+         function onStart() { return false; }
 
-      drag = TestUtils.renderIntoDocument(
-        <Draggable onStart={onStart}>
-          <div />
-        </Draggable>
-      );
+         drag = TestUtils.renderIntoDocument(
+           <Draggable onStart={onStart}>
+             <div />
+           </Draggable>
+         );
 
-      const node = ReactDOM.findDOMNode(drag);
+         const node = ReactDOM.findDOMNode(drag);
 
-      assert(!document.body.getAttribute('style'));
-      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-      assert(!document.body.getAttribute('style'));
-      TestUtils.Simulate.mouseUp(node);
-      assert(!document.body.getAttribute('style'));
-    });
+         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+         TestUtils.Simulate.mouseUp(node);
+         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+       });
 
     it('should be draggable when in an iframe', function (done) {
       let dragged = false;
@@ -397,35 +397,35 @@ describe('react-draggable', function () {
       }, 50);
     });
 
-    it('should add and remove user-select styles to iframe’s body when in an iframe', function (done) {
-      const userSelectStyleStr = `${userSelectStyle}: none;`;
+      it('should add and remove transparent selection class to iframe’s body when in an iframe', function (done) {
+        const userSelectStyleStr = `${userSelectStyle}: none;`;
 
-      const dragElement = (
-        <Draggable>
-          <div />
-        </Draggable>
-      );
-      const renderRoot = document.body.appendChild(document.createElement('div'));
-      const frame = ReactDOM.render(<FrameComponent>{ dragElement }</FrameComponent>, renderRoot);
+        const dragElement = (
+          <Draggable>
+            <div />
+          </Draggable>
+        );
+        const renderRoot = document.body.appendChild(document.createElement('div'));
+        const frame = ReactDOM.render(<FrameComponent>{ dragElement }</FrameComponent>, renderRoot);
 
-      setTimeout(() => {
-        const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
-        const node = iframeDoc.querySelector('.react-draggable');
-        iframeDoc.body.setAttribute('style', '');
+        setTimeout(() => {
+          const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
+          const node = iframeDoc.querySelector('.react-draggable');
+          iframeDoc.body.setAttribute('style', '');
 
-        assert(!iframeDoc.body.getAttribute('style'));
-        assert(!document.body.getAttribute('style'));
-        TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-        assert(iframeDoc.body.getAttribute('style').indexOf(userSelectStyleStr) !== -1);
-        assert(!document.body.getAttribute('style'));
-        TestUtils.Simulate.mouseUp(node);
-        assert(!iframeDoc.body.getAttribute('style'));
-        assert(!document.body.getAttribute('style'));
+          assert(!iframeDoc.body.getAttribute('style'));
+          assert(!document.body.getAttribute('style'));
+          TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+          assert(iframeDoc.body.getAttribute('style').indexOf(userSelectStyleStr) !== -1);
+          assert(!document.body.getAttribute('style'));
+          TestUtils.Simulate.mouseUp(node);
+          assert(!iframeDoc.body.getAttribute('style'));
+          assert(!document.body.getAttribute('style'));
 
-        renderRoot.parentNode.removeChild(renderRoot);
-        done();
-      }, 50);
-    });
+          renderRoot.parentNode.removeChild(renderRoot);
+          done();
+        }, 50);
+      });
   });
 
   describe('interaction', function () {
