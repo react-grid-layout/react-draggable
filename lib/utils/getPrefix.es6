@@ -21,6 +21,10 @@ export function browserPrefixToKey(prop: string, prefix: string): string {
   return prefix ? `${prefix}${kebabToTitleCase(prop)}` : prop;
 }
 
+export function browserPrefixToStyle(prop: string, prefix: string): string {
+  return prefix ? `-${prefix.toLowerCase()}-${prop}` : prop;
+}
+
 function kebabToTitleCase(str: string): string {
   let out = '';
   let shouldCapitalize = true;
