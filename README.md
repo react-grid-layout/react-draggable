@@ -84,7 +84,7 @@ import Draggable from 'react-draggable';
 class App extends React.Element {
 
   eventLogger = (e: MouseEvent, data: Object) => {
-    console.log('Event: ', event);
+    console.log('Event: ', e);
     console.log('Data: ', data);
   };
 
