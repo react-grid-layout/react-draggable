@@ -105,9 +105,12 @@ export function offsetXYFromParent(evt: {clientX: number, clientY: number}, offs
   return {x, y};
 }
 
-export function createCSSTransform({x, y}: {x: number, y: number}): Object {
+export function createCSSTransform({x, y}: {x: number, y: number}, defaultPosition ?: {x: number | string, y: number | string }): Object {
+  const translation = defaultPosition
+  ? `translate(calc(${defaultPosition.x} + ${x}px), calc(${defaultPosition.y} + ${y}px))`
+  : 'translate(' + x + 'px,' + y + 'px)';
   // Replace unitless items with px
-  return {[browserPrefixToKey('transform', browserPrefix)]: 'translate(' + x + 'px,' + y + 'px)'};
+  return {[browserPrefixToKey('transform', browserPrefix)]: translation };
 }
 
 export function createSVGTransform({x, y}: {x: number, y: number}): string {
