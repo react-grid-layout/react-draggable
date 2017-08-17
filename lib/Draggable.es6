@@ -110,8 +110,8 @@ export default class Draggable extends React.Component {
      * ```
      */
     defaultPosition: PropTypes.shape({
-      x: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
-      y: PropTypes.oneOf([PropTypes.number, PropTypes.string])
+      x: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      y: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     }),
 
     /**
