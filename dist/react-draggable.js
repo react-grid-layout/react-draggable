@@ -133,7 +133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	/*:: type ConstructorProps = {
 	  position: { x: number, y: number },
-	  defaultPosition: { x: number, y: number }
+	  defaultPosition: { x: number | string, y: number | string },
 	};*/
 	
 	var Draggable = function (_React$Component) {
@@ -244,8 +244,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      dragged: false,
 	
 	      // Current transform x and y.
-	      x: props.position ? props.position.x : props.defaultPosition.x,
-	      y: props.position ? props.position.y : props.defaultPosition.y,
+	      x: props.position ? props.position.x : 0,
+	      y: props.position ? props.position.y : 0,
 	
 	      // Used for compensating for out-of-bounds drags
 	      slackX: 0, slackY: 0,
@@ -297,7 +297,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var controlled = Boolean(this.props.position);
 	      var draggable = !controlled || this.state.dragging;
 	
-	      var position = this.props.position || this.props.defaultPosition;
+	      var position = this.props.position || { x: 0, y: 0 };
 	      var transformOpts = {
 	        // Set left if horizontal drag is enabled
 	        x: (0, _positionFns.canDragX)(this) && draggable ? this.state.x : position.x,
@@ -308,13 +308,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // If this element was SVG, we use the `transform` attribute.
 	      if (this.state.isElementSVG) {
-	        svgTransform = (0, _domFns.createSVGTransform)(transformOpts);
+	        svgTransform = (0, _domFns.createSVGTransform)(transformOpts, this.props.defaultPosition);
 	      } else {
 	        // Add a CSS transform to move the element around. This allows us to move the element around
 	        // without worrying about whether or not it is relatively or absolutely positioned.
 	        // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
 	        // has a clean slate.
-	        style = (0, _domFns.createCSSTransform)(transformOpts);
+	        style = (0, _domFns.createCSSTransform)(transformOpts, this.props.defaultPosition);
 	      }
 	
 	      var _props = this.props,
@@ -416,8 +416,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * ```
 	   */
 	  defaultPosition: _propTypes2.default.shape({
-	    x: _propTypes2.default.number,
-	    y: _propTypes2.default.number
+	    x: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+	    y: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string])
 	  }),
 	
 	  /**
@@ -1511,19 +1511,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return { x: x, y: y };
 	}
 	
-	function createCSSTransform(_ref) /*: Object*/ {
+	function createCSSTransform(_ref, defaultPosition /*: {x: number | string, y: number | string }*/) /*: Object*/ {
 	  var x = _ref.x,
 	      y = _ref.y;
 	
+	  var defaultX = typeof defaultPosition.x === 'string' ? defaultPosition.x : defaultPosition.x + 'px';
+	  var defaultY = typeof defaultPosition.y === 'string' ? defaultPosition.y : defaultPosition.y + 'px';
+	  var translation = defaultPosition ? 'translate(calc(' + defaultX + ' + ' + x + 'px), calc(' + defaultY + ' + ' + y + 'px))' : 'translate(' + x + 'px,' + y + 'px)';
 	  // Replace unitless items with px
-	  return _defineProperty({}, (0, _getPrefix.browserPrefixToKey)('transform', _getPrefix2.default), 'translate(' + x + 'px,' + y + 'px)');
+	  return _defineProperty({}, (0, _getPrefix.browserPrefixToKey)('transform', _getPrefix2.default), translation);
 	}
 	
-	function createSVGTransform(_ref3) /*: string*/ {
+	function createSVGTransform(_ref3, defaultPosition /*: {x: number, y: number}*/) /*: string*/ {
 	  var x = _ref3.x,
 	      y = _ref3.y;
 	
-	  return 'translate(' + x + ',' + y + ')';
+	  return 'translate(' + (x + defaultPosition) + ',' + (y + defaultPosition) + ')';
 	}
 	
 	function getTouch(e /*: MouseTouchEvent*/, identifier /*: number*/) /*: ?{clientX: number, clientY: number}*/ {

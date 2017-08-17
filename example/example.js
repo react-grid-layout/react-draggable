@@ -134,7 +134,12 @@ var App = React.createClass({
         </Draggable>
         <Draggable defaultPosition={{x: 25, y: 25}} {...dragHandlers}>
           <div className="box">
-            {"I have a default position of {x: 25, y: 25}, so I'm slightly offset."}
+            {'I have a default position of {x: 25, y: 25}, so I\'m slightly offset.'}
+          </div>
+        </Draggable>
+        <Draggable defaultPosition={{x: '-10%', y: '-10%'}} {...dragHandlers}>
+          <div className="box">
+            {'I have a default position of {x: \'-10%\', y: \'-10%\'}, so I\'m slightly offset.'}
           </div>
         </Draggable>
         <Draggable position={controlledPosition} {...dragHandlers} onDrag={this.onControlledDrag}>

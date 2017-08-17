@@ -21,7 +21,7 @@ type DraggableState = {
 
 type ConstructorProps = {
   position: { x: number, y: number },
-  defaultPosition: { x: number, y: number }
+  defaultPosition: { x: number | string, y: number | string },
 };
 
 //
@@ -110,8 +110,8 @@ export default class Draggable extends React.Component {
      * ```
      */
     defaultPosition: PropTypes.shape({
-      x: PropTypes.number,
-      y: PropTypes.number
+      x: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      y: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     }),
 
     /**
@@ -171,8 +171,8 @@ export default class Draggable extends React.Component {
       dragged: false,
 
       // Current transform x and y.
-      x: props.position ? props.position.x : props.defaultPosition.x,
-      y: props.position ? props.position.y : props.defaultPosition.y,
+      x: props.position ? props.position.x : 0,
+      y: props.position ? props.position.y : 0,
 
       // Used for compensating for out-of-bounds drags
       slackX: 0, slackY: 0,
@@ -303,7 +303,7 @@ export default class Draggable extends React.Component {
     const controlled = Boolean(this.props.position);
     const draggable = !controlled || this.state.dragging;
 
-    const position = this.props.position || this.props.defaultPosition;
+    const position = this.props.position || {x:0, y:0};
     const transformOpts = {
       // Set left if horizontal drag is enabled
       x: canDragX(this) && draggable ?
@@ -318,13 +318,13 @@ export default class Draggable extends React.Component {
 
     // If this element was SVG, we use the `transform` attribute.
     if (this.state.isElementSVG) {
-      svgTransform = createSVGTransform(transformOpts);
+      svgTransform = createSVGTransform(transformOpts, this.props.defaultPosition);
     } else {
       // Add a CSS transform to move the element around. This allows us to move the element around
       // without worrying about whether or not it is relatively or absolutely positioned.
       // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
       // has a clean slate.
-      style = createCSSTransform(transformOpts);
+      style = createCSSTransform(transformOpts, this.props.defaultPosition);
     }
 
     const {
