@@ -106,15 +106,17 @@ export function offsetXYFromParent(evt: {clientX: number, clientY: number}, offs
 }
 
 export function createCSSTransform({x, y}: {x: number, y: number}, defaultPosition ?: {x: number | string, y: number | string }): Object {
+  const defaultX = (typeof defaultPosition.x === 'string') ? defaultPosition.x : defaultPosition.x + 'px';
+  const defaultY = (typeof defaultPosition.y === 'string') ? defaultPosition.y : defaultPosition.y + 'px';
   const translation = defaultPosition
-  ? `translate(calc(${defaultPosition.x} + ${x}px), calc(${defaultPosition.y} + ${y}px))`
+  ? `translate(calc(${defaultX} + ${x}px), calc(${defaultY} + ${y}px))`
   : 'translate(' + x + 'px,' + y + 'px)';
   // Replace unitless items with px
   return {[browserPrefixToKey('transform', browserPrefix)]: translation };
 }
 
-export function createSVGTransform({x, y}: {x: number, y: number}): string {
-  return 'translate(' + x + ',' + y + ')';
+export function createSVGTransform({x, y}: {x: number, y: number}, defaultPosition ?: {x: number, y: number}): string {
+  return 'translate(' + (x + defaultPosition) + ',' + (y + defaultPosition) + ')';
 }
 
 export function getTouch(e: MouseTouchEvent, identifier: number): ?{clientX: number, clientY: number} {

@@ -314,7 +314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // without worrying about whether or not it is relatively or absolutely positioned.
 	        // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
 	        // has a clean slate.
-	        style = (0, _domFns.createCSSTransform)(transformOpts);
+	        style = (0, _domFns.createCSSTransform)(transformOpts, this.props.defaultPosition);
 	      }
 	
 	      var _props = this.props,
@@ -1515,16 +1515,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var x = _ref.x,
 	      y = _ref.y;
 	
-	  var translation = defaultPosition ? 'translate(calc(' + defaultPosition.x + ' + ' + x + 'px), calc(' + defaultPosition.y + ' + ' + y + 'px))' : 'translate(' + x + 'px,' + y + 'px)';
+	  var defaultX = typeof defaultPosition.x === 'string' ? defaultPosition.x : defaultPosition.x + 'px';
+	  var defaultY = typeof defaultPosition.y === 'string' ? defaultPosition.y : defaultPosition.y + 'px';
+	  var translation = defaultPosition ? 'translate(calc(' + defaultX + ' + ' + x + 'px), calc(' + defaultY + ' + ' + y + 'px))' : 'translate(' + x + 'px,' + y + 'px)';
 	  // Replace unitless items with px
 	  return _defineProperty({}, (0, _getPrefix.browserPrefixToKey)('transform', _getPrefix2.default), translation);
 	}
 	
-	function createSVGTransform(_ref3) /*: string*/ {
+	function createSVGTransform(_ref3, defaultPosition /*: {x: number, y: number}*/) /*: string*/ {
 	  var x = _ref3.x,
 	      y = _ref3.y;
 	
-	  return 'translate(' + x + ',' + y + ')';
+	  return 'translate(' + (x + defaultPosition) + ',' + (y + defaultPosition) + ')';
 	}
 	
 	function getTouch(e /*: MouseTouchEvent*/, identifier /*: number*/) /*: ?{clientX: number, clientY: number}*/ {

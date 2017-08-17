@@ -324,7 +324,7 @@ export default class Draggable extends React.Component {
       // without worrying about whether or not it is relatively or absolutely positioned.
       // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
       // has a clean slate.
-      style = createCSSTransform(transformOpts);
+      style = createCSSTransform(transformOpts, this.props.defaultPosition);
     }
 
     const {
