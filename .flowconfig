@@ -1,12 +1,8 @@
 [ignore]
-.*/node_modules/.*
 
 [include]
 lib/
 index.js
-
-[libs]
-interfaces/
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\s*\\$FlowFixMe.*

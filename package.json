@@ -59,7 +59,6 @@
     "phantomjs-prebuilt": "^2.1.15",
     "power-assert": "^1.4.4",
     "pre-commit": "^1.2.2",
-    "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-frame-component": "^1.1.1",
@@ -75,6 +74,7 @@
     "test"
   ],
   "dependencies": {
-    "classnames": "^2.2.5"
+    "classnames": "^2.2.5",
+    "prop-types": "^15.5.10"
   }
 }
