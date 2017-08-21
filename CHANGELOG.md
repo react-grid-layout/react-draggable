@@ -1,5 +1,10 @@
 # Changelog
 
+### 3.0.1 (Aug 21, 2017)
+
+- Bugfix: Flow-type should no longer throw errors for consumers.
+  - It appears Flow can't resolve a sub-package's interfaces.
+
 ### 3.0.0 (Aug 21, 2017)
 
 > Due to an export change, this is semver-major.
