@@ -65,12 +65,18 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['PhantomJS_custom', 'Firefox', process.env.TRAVIS ? 'Chrome_travis_ci' : 'Chrome'],
+    browsers: ['PhantomJS_custom', 'Firefox', 'HeadlessChrome'],
 
     customLaunchers: {
-      Chrome_travis_ci: {
+      HeadlessChrome: {
         base: 'Chrome',
-        flags: ['--no-sandbox']
+        flags: [
+          '--no-sandbox',
+          '--headless',
+          '--disable-gpu',
+          // Without a remote debugging port, Google Chrome exits immediately.
+          '--remote-debugging-port=9222',
+        ]
       },
       PhantomJS_custom: {
         base: 'PhantomJS',
