@@ -615,6 +615,24 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
 
+    it('should call back on drag, with values within the defined bounds', function(){
+      function onDrag(event, data) {
+        assert(data.x === 90);
+        assert(data.y === 90);
+        assert(data.deltaX === 90);
+        assert(data.deltaY === 90);
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag} bounds={{left: 0, right: 90, top: 0, bottom: 90}}>
+          <div />
+        </Draggable>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+
+    });
+
     it('should call back with offset left/top, not client', function () {
       function onDrag(event, data) {
         assert(data.x === 100);
