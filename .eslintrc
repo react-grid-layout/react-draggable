@@ -27,6 +27,7 @@
     "ReactElement",
     "ReactClass",
     "$Shape",
+    "$Exact",
     "MouseTouchEvent",
   }
 }

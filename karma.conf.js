@@ -23,8 +23,8 @@ module.exports = function(config) {
       module: {
         loaders: [
           {
-            test: /\.(?:jsx?|es6)$/,
-            loader: 'babel',
+            test: /\.(?:jsx?)$/,
+            loader: 'babel-loader',
             query: {
               cacheDirectory: true,
             },
@@ -32,7 +32,7 @@ module.exports = function(config) {
           },
           {
             test: /\.json$/,
-            loader: 'json'
+            loader: 'json-loader'
           }
         ],
       },
@@ -44,7 +44,7 @@ module.exports = function(config) {
         })
       ],
       resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.es6']
+        extensions: ['.js']
       }
     },
 

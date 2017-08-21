@@ -16,7 +16,3 @@ suppress_comment=\\(.\\|\n\\)*\\s*\\$FlowNewLine.*
 suppress_comment=\\(.\\|\n\\)*\\s*\\$FlowIssue
 esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
-module.file_ext=.js
-module.file_ext=.jsx
-module.file_ext=.es5
-module.file_ext=.es6

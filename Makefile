@@ -24,12 +24,10 @@ install link:
 	@npm $@
 
 dist/%.min.js: $(LIB) $(BIN)
-	@$(BIN)/uglifyjs $< \
+	$(BIN)/uglifyjs $< \
 	  --output $@ \
-	  --source-map $@.map \
-	  --source-map-url $(basename $@.map) \
-	  --in-source-map $<.map \
-	  --compress warnings=false
+	  --source-map "filename=$@.map,root=$(basename $<.map),content=$<.map" \
+	  --compress
 
 dist/%.js: $(BIN)
 	@$(BIN)/webpack --devtool source-map
