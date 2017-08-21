@@ -4,6 +4,7 @@
 [![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/mzabriskie/react-draggable)
 [![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)](http://npmjs.com/package/react-draggable)
 [![gzip size](http://img.badgesize.io/https://npmcdn.com/react-draggable/dist/react-draggable.min.js?compression=gzip)]()
+[![version](https://img.shields.io/npm/v/react-draggable.svg)]()
 
 A simple component for making elements draggable.
 
