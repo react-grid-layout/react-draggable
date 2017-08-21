@@ -1,6 +1,17 @@
 # Changelog
 
-### 2.2.6
+### 3.0.0 (Aug 21, 2017)
+
+> Due to an export change, this is semver-major.
+
+- Breaking: For TypeScript users, `<Draggable>` is now exported as `module.exports` and `module.exports.default`.
+- Potentially Breaking: We no longer set `user-select: none` on all elements while dragging. Instead,
+  the [`::selection` psuedo element](https://developer.mozilla.org/en-US/docs/Web/CSS/::selection) is used.
+  - Depending on your application, this could cause issues, so be sure to test.
+- Bugfix: Pass bounded `x`/`y` to callbacks. See [#226](https://github.com/mzabriskie/react-draggable/pull/226).
+- Internal: Upgraded dependencies.
+
+### 2.2.6 (Apr 30, 2017)
 
 - Bugfix: Missing export default on TS definition (thanks @lostfictions)
 - Internal: TS test suite (thanks @lostfictions)

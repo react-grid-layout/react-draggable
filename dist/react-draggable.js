@@ -275,6 +275,8 @@ exports.getTouchIdentifier = getTouchIdentifier;
 exports.addUserSelectStyles = addUserSelectStyles;
 exports.removeUserSelectStyles = removeUserSelectStyles;
 exports.styleHacks = styleHacks;
+exports.addClassName = addClassName;
+exports.removeClassName = removeClassName;
 
 var _shims = __webpack_require__(0);
 
@@ -419,23 +421,24 @@ function getTouchIdentifier(e /*: MouseTouchEvent*/) /*: ?number*/ {
 // User-select Hacks:
 //
 // Useful for preventing blue highlights all over everything when dragging.
-var userSelectPrefix = (0, _getPrefix.getPrefix)('user-select');
-var userSelect = (0, _getPrefix.browserPrefixToStyle)('user-select', userSelectPrefix);
-var userSelectStyle = ';' + userSelect + ': none;';
-var userSelectReplaceRegExp = new RegExp(';?' + userSelect + ': none;'); // leading ; not present on IE
 
 // Note we're passing `document` b/c we could be iframed
-function addUserSelectStyles(body /*: ?HTMLElement*/) {
-  if (!body) return;
-  var style = body.getAttribute('style') || '';
-  if (userSelectReplaceRegExp.test(style)) return; // don't add twice
-  body.setAttribute('style', style + userSelectStyle);
+function addUserSelectStyles(doc /*: Document*/) {
+  var styleEl = doc.getElementById('react-draggable-style-el');
+  if (!styleEl) {
+    styleEl = doc.createElement('style');
+    styleEl.type = 'text/css';
+    styleEl.id = 'react-draggable-style-el';
+    styleEl.innerHTML = '.react-draggable-transparent-selection *::-moz-selection {background: transparent;}\n';
+    styleEl.innerHTML += '.react-draggable-transparent-selection *::selection {background: transparent;}\n';
+    doc.getElementsByTagName('head')[0].appendChild(styleEl);
+  }
+  if (doc.body) addClassName(doc.body, 'react-draggable-transparent-selection');
 }
 
-function removeUserSelectStyles(body /*: ?HTMLElement*/) {
-  if (!body) return;
-  var style = body.getAttribute('style') || '';
-  body.setAttribute('style', style.replace(userSelectReplaceRegExp, ''));
+function removeUserSelectStyles(doc /*: Document*/) {
+  if (doc.body) removeClassName(doc.body, 'react-draggable-transparent-selection');
+  window.getSelection().removeAllRanges(); // remove selection caused by scroll
 }
 
 function styleHacks() /*: Object*/ {
@@ -446,6 +449,24 @@ function styleHacks() /*: Object*/ {
   return _extends({
     touchAction: 'none'
   }, childStyle);
+}
+
+function addClassName(el /*: HTMLElement*/, className /*: string*/) {
+  if (el.classList) {
+    el.classList.add(className);
+  } else {
+    if (!el.className.match(new RegExp('(?:^|\\s)' + className + '(?!\\S)'))) {
+      el.className += ' ' + className;
+    }
+  }
+}
+
+function removeClassName(el /*: HTMLElement*/, className /*: string*/) {
+  if (el.classList) {
+    el.classList.remove(className);
+  } else {
+    el.className = el.className.replace(new RegExp('(?:^|\\s)' + className + '(?!\\S)', 'g'), '');
+  }
 }
 
 /***/ }),
@@ -892,7 +913,7 @@ var DraggableCore = function (_React$Component) {
 
       // Add a style to the body to disable user-select. This prevents text from
       // being selected all over the page.
-      if (_this.props.enableUserSelectHack) (0, _domFns.addUserSelectStyles)(ownerDocument.body);
+      if (_this.props.enableUserSelectHack) (0, _domFns.addUserSelectStyles)(ownerDocument);
 
       // Initiate dragging. Set the current x and y as offsets
       // so we know how much we've moved during the drag. This allows us
@@ -971,10 +992,11 @@ var DraggableCore = function (_React$Component) {
           y = position.y;
 
       var coreEvent = (0, _positionFns.createCoreData)(_this, x, y);
+
       var thisNode = _reactDom2.default.findDOMNode(_this);
       if (thisNode) {
         // Remove user-select hack
-        if (_this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)(thisNode.ownerDocument.body);
+        if (_this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)(thisNode.ownerDocument);
       }
 
       (0, _log2.default)('DraggableCore: handleDragStop: %j', coreEvent);
@@ -1029,7 +1051,7 @@ var DraggableCore = function (_React$Component) {
         (0, _domFns.removeEvent)(ownerDocument, eventsFor.touch.move, this.handleDrag);
         (0, _domFns.removeEvent)(ownerDocument, eventsFor.mouse.stop, this.handleDragStop);
         (0, _domFns.removeEvent)(ownerDocument, eventsFor.touch.stop, this.handleDragStop);
-        if (this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)(ownerDocument.body);
+        if (this.props.enableUserSelectHack) (0, _domFns.removeUserSelectStyles)(ownerDocument);
       }
     }
 
@@ -1212,7 +1234,14 @@ function log() {
 "use strict";
 
 
-module.exports = __webpack_require__(13).default;
+var Draggable = __webpack_require__(13).default;
+
+// Previous versions of this lib exported <Draggable> as the root export. As to not break
+// them, or TypeScript, we export *both* as the root and as 'default'.
+// See https://github.com/mzabriskie/react-draggable/pull/254
+// and https://github.com/mzabriskie/react-draggable/issues/266
+module.exports = Draggable;
+module.exports.default = Draggable;
 module.exports.DraggableCore = __webpack_require__(10).default;
 
 /***/ }),
@@ -1359,8 +1388,8 @@ var Draggable = function (_React$Component) {
         newState.slackY = _this.state.slackY + (_y - newState.y);
 
         // Update the event we fire to reflect what really happened after bounds took effect.
-        uiData.x = _x;
-        uiData.y = _y;
+        uiData.x = newState.x;
+        uiData.y = newState.y;
         uiData.deltaX = newState.x - _this.state.x;
         uiData.deltaY = newState.y - _this.state.y;
       }
