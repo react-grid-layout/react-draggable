@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/mzabriskie/react-draggable",
   "devDependencies": {
-    "@types/react": "^15.5.3",
+    "@types/react": "^16.0.0",
     "@types/react-dom": "^15.5.3",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
