@@ -10,7 +10,8 @@
     "test-ie": "karma start --browsers=IE",
     "dev": "make dev",
     "build": "make clean build",
-    "lint": "make lint"
+    "lint": "make lint",
+    "flow": "flow"
   },
   "typings": "./typings/index.d.ts",
   "repository": {
