@@ -755,7 +755,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(6);
 
-var React = _interopRequireWildcard(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _propTypes = __webpack_require__(7);
 
@@ -777,16 +777,17 @@ var _log2 = _interopRequireDefault(_log);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// Simple abstraction for dragging events names.
 /*:: import type {EventHandler, MouseTouchEvent} from './utils/types';*/
+
+
+// Simple abstraction for dragging events names.
+/*:: import type {Element as ReactElement} from 'react';*/
 var eventsFor = {
   touch: {
     start: 'touchstart',
@@ -835,7 +836,7 @@ var dragEventFor = eventsFor.mouse;
 /*:: export type DraggableCoreProps = {
   allowAnyClick: boolean,
   cancel: string,
-  children: React.Element<any>,
+  children: ReactElement<any>,
   disabled: boolean,
   enableUserSelectHack: boolean,
   offsetParent: HTMLElement,
@@ -1060,7 +1061,7 @@ var DraggableCore = function (_React$Component) {
     value: function render() {
       // Reuse the child provided
       // This makes it flexible to use whatever element is wanted (div, ul, etc)
-      return React.cloneElement(React.Children.only(this.props.children), {
+      return _react2.default.cloneElement(_react2.default.Children.only(this.props.children), {
         style: (0, _domFns.styleHacks)(this.props.children.props.style),
 
         // Note: mouseMove handler is attached to document so it will still function
@@ -1074,7 +1075,7 @@ var DraggableCore = function (_React$Component) {
   }]);
 
   return DraggableCore;
-}(React.Component);
+}(_react2.default.Component);
 
 DraggableCore.displayName = 'DraggableCore';
 DraggableCore.propTypes = {
@@ -1261,7 +1262,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(6);
 
-var React = _interopRequireWildcard(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _propTypes = __webpack_require__(7);
 
@@ -1291,8 +1292,6 @@ var _log2 = _interopRequireDefault(_log);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1303,6 +1302,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /*:: import type {ControlPosition, DraggableBounds, DraggableCoreProps} from './DraggableCore';*/
 /*:: import type {DraggableEventHandler} from './utils/types';*/
+/*:: import type {Element as ReactElement} from 'react';*/
 /*:: type DraggableState = {
   dragging: boolean,
   dragged: boolean,
@@ -1478,7 +1478,7 @@ var Draggable = function (_React$Component) {
     }
   }, {
     key: 'render',
-    value: function render() /*: React.Element<any>*/ {
+    value: function render() /*: ReactElement<any>*/ {
       var _classNames;
 
       var style = {},
@@ -1519,10 +1519,10 @@ var Draggable = function (_React$Component) {
 
       // Reuse the child provided
       // This makes it flexible to use whatever element is wanted (div, ul, etc)
-      return React.createElement(
+      return _react2.default.createElement(
         _DraggableCore2.default,
         _extends({}, this.props, { onStart: this.onDragStart, onDrag: this.onDrag, onStop: this.onDragStop }),
-        React.cloneElement(React.Children.only(this.props.children), {
+        _react2.default.cloneElement(_react2.default.Children.only(this.props.children), {
           className: className,
           style: _extends({}, this.props.children.props.style, style),
           transform: svgTransform
@@ -1532,7 +1532,7 @@ var Draggable = function (_React$Component) {
   }]);
 
   return Draggable;
-}(React.Component);
+}(_react2.default.Component);
 
 Draggable.displayName = 'Draggable';
 Draggable.propTypes = _extends({}, _DraggableCore2.default.propTypes, {

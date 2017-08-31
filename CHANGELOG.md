@@ -1,5 +1,10 @@
 # Changelog
 
+### 3.0.3 (Aug 31, 2017)
+
+- Bugfix: Fix deprecation warnings caused by `import * as React` (Flow best practice).
+  - See https://github.com/facebook/react/issues/10583
+
 ### 3.0.2 (Aug 22, 2017)
 
 > 3.0.0 and 3.0.1 have been unpublished due to a large logfile making it into the package.
