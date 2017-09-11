@@ -70,6 +70,10 @@
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1"
   },
+  "peerDependencies": {
+    "react": "15.x",
+    "react-dom": "15.x"
+  },
   "precommit": [
     "lint",
     "test"
