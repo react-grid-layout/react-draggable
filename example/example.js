@@ -161,7 +161,11 @@ var App = React.createClass({
             </p>
           </div>
         </Draggable>
-
+        <div style={{ transform: 'scale(1.25)' }}>
+          <Draggable scale={1.25} {...dragHandlers}>
+            <div className="box">My parent div is scaled to 1.25 and I still drag correctly.</div>
+          </Draggable>
+        </div>
       </div>
     );
   }

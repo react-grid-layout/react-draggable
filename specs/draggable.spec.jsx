@@ -40,6 +40,7 @@ describe('react-draggable', function () {
 
       assert(drag.props.axis === 'both');
       assert(drag.props.handle === null);
+      assert(drag.props.scale === 1);
       assert(drag.props.cancel === null);
       assert(drag.props.bounds == false);
       assert(typeof drag.props.onStart === 'function');
