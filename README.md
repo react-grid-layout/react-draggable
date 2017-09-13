@@ -217,13 +217,15 @@ onStop: DraggableEventHandler,
 // becomes 'controlled' and is not responsive to user input. Use `position`
 // if you need to have direct control of the element.
 position: {x: number, y: number},
-}
 
 // Specifies the scale of the canvas you are dragging this element on. This allows
 // you to, for example, get the correct drag deltas while you are zoomed in or out via
 // a transform or matrix in the parent of this element. Also, useful for correct drag 
 // deltas if the parent element is scaled through css transform 
 scale: number
+
+}
+
 ```
 
 
