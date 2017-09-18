@@ -30,10 +30,10 @@ declare module 'react-draggable' {
   export type ControlPosition = {x: number, y: number};
 
   export interface DraggableCoreProps {
-    allowAnyClick: boolean,
+    allowAnyClick,
     cancel: string,
-    disabled: boolean,
-    enableUserSelectHack: boolean,
+    disabled,
+    enableUserSelectHack,
     offsetParent: HTMLElement,
     grid: [number, number],
     handle: string,
