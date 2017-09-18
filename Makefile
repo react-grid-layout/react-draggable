@@ -13,8 +13,6 @@ clean:
 	rm -rf dist
 
 lint:
-	@$(BIN)/flow
-	@$(BIN)/eslint lib/* lib/utils/* specs/*
 	@$(BIN)/tsc -p typings
 
 build: $(LIB) $(MIN)
@@ -24,10 +22,12 @@ install link:
 	@npm $@
 
 dist/%.min.js: $(LIB) $(BIN)
-	$(BIN)/uglifyjs $< \
+	@$(BIN)/uglifyjs $< \
 	  --output $@ \
-	  --source-map "filename=$@.map,root=$(basename $<.map),content=$<.map" \
-	  --compress
+	  --source-map $@.map \
+	  --source-map-url $(basename $@.map) \
+	  --in-source-map $<.map \
+	  --compress warnings=false
 
 dist/%.js: $(BIN)
 	@$(BIN)/webpack --devtool source-map
@@ -50,7 +50,7 @@ define release
 			var s = JSON.stringify(j, null, 2);\
 			require('fs').writeFileSync(fileName, s);\
 		});" && \
-	git add package.json bower.json CHANGELOG.md && \
+	git add package.json CHANGELOG.md && \
 	git add -f dist/ && \
 	git commit -m "release v$$NEXT_VERSION" && \
 	git tag "v$$NEXT_VERSION" -m "release v$$NEXT_VERSION"

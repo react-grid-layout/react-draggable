@@ -4,9 +4,7 @@
     "stage-1",
     "react"
   ],
-  "plugins": [
-    "transform-flow-comments",
-  ],
+  "plugins": [],
   "env": {
     "test": {
       "plugins": [

@@ -23,8 +23,8 @@ module.exports = function(config) {
       module: {
         loaders: [
           {
-            test: /\.(?:jsx?)$/,
-            loader: 'babel-loader',
+            test: /\.(?:jsx?|js)$/,
+            loader: 'babel',
             query: {
               cacheDirectory: true,
             },
@@ -32,7 +32,7 @@ module.exports = function(config) {
           },
           {
             test: /\.json$/,
-            loader: 'json-loader'
+            loader: 'json'
           }
         ],
       },
@@ -44,7 +44,7 @@ module.exports = function(config) {
         })
       ],
       resolve: {
-        extensions: ['.js']
+        extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
       }
     },
 
@@ -65,18 +65,12 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['PhantomJS_custom', 'Firefox', 'HeadlessChrome'],
+    browsers: ['PhantomJS_custom', 'Firefox', process.env.TRAVIS ? 'Chrome_travis_ci' : 'Chrome'],
 
     customLaunchers: {
-      HeadlessChrome: {
+      Chrome_travis_ci: {
         base: 'Chrome',
-        flags: [
-          '--no-sandbox',
-          '--headless',
-          '--disable-gpu',
-          // Without a remote debugging port, Google Chrome exits immediately.
-          '--remote-debugging-port=9222',
-        ]
+        flags: ['--no-sandbox']
       },
       PhantomJS_custom: {
         base: 'PhantomJS',
