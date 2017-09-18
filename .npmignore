@@ -4,3 +4,6 @@ script
 specs
 karma.conf.js
 Makefile
+yarn.lock
+appveyor.yml
+*.txt
