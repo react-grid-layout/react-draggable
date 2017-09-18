@@ -7,7 +7,7 @@
 		exports["ReactDraggable"] = factory(require("react-dom"), require("react"));
 	else
 		root["ReactDraggable"] = factory(root["ReactDOM"], root["React"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_5__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -207,12 +207,209 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+exports.matchesSelector = matchesSelector;
+exports.matchesSelectorAndParentsTo = matchesSelectorAndParentsTo;
+exports.addEvent = addEvent;
+exports.removeEvent = removeEvent;
+exports.outerHeight = outerHeight;
+exports.outerWidth = outerWidth;
+exports.innerHeight = innerHeight;
+exports.innerWidth = innerWidth;
+exports.offsetXYFromParent = offsetXYFromParent;
+exports.createCSSTransform = createCSSTransform;
+exports.createSVGTransform = createSVGTransform;
+exports.getTouch = getTouch;
+exports.getTouchIdentifier = getTouchIdentifier;
+exports.addUserSelectStyles = addUserSelectStyles;
+exports.removeUserSelectStyles = removeUserSelectStyles;
+exports.styleHacks = styleHacks;
+
+var _shims = __webpack_require__(8);
+
+var _getPrefix = __webpack_require__(17);
+
+var matchesSelectorFunc = '';
+function matchesSelector(el, selector) {
+  if (!matchesSelectorFunc) {
+    matchesSelectorFunc = (0, _shims.findInArray)(['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'], function (method) {
+      return (0, _shims.isFunction)(el[method]);
+    });
+  }
+
+  return el[matchesSelectorFunc].call(el, selector);
+}
+
+// Works up the tree to the draggable itself attempting to match selector.
+function matchesSelectorAndParentsTo(el, selector, baseNode) {
+  var node = el;
+  do {
+    if (matchesSelector(node, selector)) {
+      return true;
+    }
+    if (node === baseNode) {
+      return false;
+    }
+    node = node.parentNode;
+  } while (node);
+
+  return false;
+}
+
+function addEvent(el, event, handler) {
+  if (!el) {
+    return;
+  }
+  if (el.attachEvent) {
+    el.attachEvent('on' + event, handler);
+  } else if (el.addEventListener) {
+    el.addEventListener(event, handler, true);
+  } else {
+    el['on' + event] = handler;
+  }
+}
+
+function removeEvent(el, event, handler) {
+  if (!el) {
+    return;
+  }
+  if (el.detachEvent) {
+    el.detachEvent('on' + event, handler);
+  } else if (el.removeEventListener) {
+    el.removeEventListener(event, handler, true);
+  } else {
+    el['on' + event] = null;
+  }
+}
+
+function outerHeight(node) {
+  // This is deliberately excluding margin for our calculations, since we are using
+  // offsetTop which is including margin. See getBoundPosition
+  var height = node.clientHeight;
+  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
+  height += (0, _shims.int)(computedStyle.borderTopWidth);
+  height += (0, _shims.int)(computedStyle.borderBottomWidth);
+  return height;
+}
+
+function outerWidth(node) {
+  // This is deliberately excluding margin for our calculations, since we are using
+  // offsetLeft which is including margin. See getBoundPosition
+  var width = node.clientWidth;
+  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
+  width += (0, _shims.int)(computedStyle.borderLeftWidth);
+  width += (0, _shims.int)(computedStyle.borderRightWidth);
+  return width;
+}
+function innerHeight(node) {
+  var height = node.clientHeight;
+  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
+  height -= (0, _shims.int)(computedStyle.paddingTop);
+  height -= (0, _shims.int)(computedStyle.paddingBottom);
+  return height;
+}
+
+function innerWidth(node) {
+  var width = node.clientWidth;
+  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
+  width -= (0, _shims.int)(computedStyle.paddingLeft);
+  width -= (0, _shims.int)(computedStyle.paddingRight);
+  return width;
+}
+
+// Get from offsetParent
+function offsetXYFromParent(evt, offsetParent) {
+  var isBody = offsetParent === offsetParent.ownerDocument.body;
+  var offsetParentRect = isBody ? { left: 0, top: 0 } : offsetParent.getBoundingClientRect();
+
+  var x = evt.clientX + offsetParent.scrollLeft - offsetParentRect.left;
+  var y = evt.clientY + offsetParent.scrollTop - offsetParentRect.top;
+
+  return { x: x, y: y };
+}
+
+function createCSSTransform(_ref) {
+  var x = _ref.x,
+      y = _ref.y;
+
+  // Replace unitless items with px
+  return { left: x, top: y };
+}
+
+function createSVGTransform(_ref2) {
+  var x = _ref2.x,
+      y = _ref2.y;
+
+  return 'translate(' + x + ',' + y + ')';
+}
+
+function getTouch(e, identifier) {
+  return e.targetTouches && (0, _shims.findInArray)(e.targetTouches, function (t) {
+    return identifier === t.identifier;
+  }) || e.changedTouches && (0, _shims.findInArray)(e.changedTouches, function (t) {
+    return identifier === t.identifier;
+  });
+}
+
+function getTouchIdentifier(e) {
+  if (e.targetTouches && e.targetTouches[0]) {
+    return e.targetTouches[0].identifier;
+  }
+  if (e.changedTouches && e.changedTouches[0]) {
+    return e.changedTouches[0].identifier;
+  }
+}
+
+// User-select Hacks:
+//
+// Useful for preventing blue highlights all over everything when dragging.
+var userSelectPrefix = (0, _getPrefix.getPrefix)('user-select');
+var userSelect = (0, _getPrefix.browserPrefixToStyle)('user-select', userSelectPrefix);
+var userSelectStyle = ';' + userSelect + ': none;';
+var userSelectReplaceRegExp = new RegExp(';?' + userSelect + ': none;'); // leading ; not present on IE
+
+// Note we're passing `document` b/c we could be iframed
+function addUserSelectStyles(body) {
+  var style = body.getAttribute('style') || '';
+  if (userSelectReplaceRegExp.test(style)) {
+    return;
+  } // don't add twice
+  body.setAttribute('style', style + userSelectStyle);
+}
+
+function removeUserSelectStyles(body) {
+  var style = body.getAttribute('style') || '';
+  body.setAttribute('style', style.replace(userSelectReplaceRegExp, ''));
+}
+
+function styleHacks() {
+  var childStyle = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  // Workaround IE pointer events; see #51
+  // https://github.com/mzabriskie/react-draggable/issues/51#issuecomment-103488278
+  return _extends({
+    touchAction: 'none'
+  }, childStyle);
+}
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -239,16 +436,16 @@ if (Object({"DRAGGABLE_DEBUG":undefined}).NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(11)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(13)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(13)();
+  module.exports = __webpack_require__(15)();
 }
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -318,7 +515,42 @@ if (Object({"DRAGGABLE_DEBUG":undefined}).NODE_ENV !== 'production') {
 module.exports = warning;
 
 /***/ }),
-/* 7 */
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.findInArray = findInArray;
+exports.isFunction = isFunction;
+exports.isNum = isNum;
+exports.int = int;
+// @credits https://gist.github.com/rogozhnikoff/a43cfed27c41e4e68cdc
+function findInArray(array, callback) {
+  for (var i = 0, length = array.length; i < length; i++) {
+    if (callback.apply(callback, [array[i], i, array])) {
+      return array[i];
+    }
+  }
+}
+
+function isFunction(func) {
+  return typeof func === 'function' || Object.prototype.toString.call(func) === '[object Function]';
+}
+
+function isNum(num) {
+  return typeof num === 'number' && !isNaN(num);
+}
+
+function int(a) {
+  return parseInt(a, 10);
+}
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -338,13 +570,13 @@ exports.canDragY = canDragY;
 exports.getControlPosition = getControlPosition;
 exports.createCoreData = createCoreData;
 
-var _shims = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./shims\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _shims = __webpack_require__(8);
 
 var _reactDom = __webpack_require__(3);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _domFns = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./domFns\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _domFns = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -563,7 +795,7 @@ function cloneBounds(bounds) {
 }
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -575,11 +807,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(4);
+var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(5);
+var _propTypes = __webpack_require__(6);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -587,9 +819,9 @@ var _reactDom = __webpack_require__(3);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _domFns = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./utils/domFns\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _domFns = __webpack_require__(4);
 
-var _position = __webpack_require__(7);
+var _position = __webpack_require__(9);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -978,20 +1210,20 @@ DraggableCore.defaultProps = {
     onMouseDown: function onMouseDown() {}
 };
 exports.default = DraggableCore;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(10).default;
-module.exports.DraggableCore = __webpack_require__(8).default;
+module.exports = __webpack_require__(12).default;
+module.exports.DraggableCore = __webpack_require__(10).default;
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1005,11 +1237,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(4);
+var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(5);
+var _propTypes = __webpack_require__(6);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -1017,15 +1249,15 @@ var _reactDom = __webpack_require__(3);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _classnames = __webpack_require__(14);
+var _classnames = __webpack_require__(16);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _domFns = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./utils/domFns\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _domFns = __webpack_require__(4);
 
-var _position = __webpack_require__(7);
+var _position = __webpack_require__(9);
 
-var _DraggableCore = __webpack_require__(8);
+var _DraggableCore = __webpack_require__(10);
 
 var _DraggableCore2 = _interopRequireDefault(_DraggableCore);
 
@@ -1366,7 +1598,7 @@ Draggable.defaultProps = _extends({}, _DraggableCore2.default.defaultProps, {
 exports.default = Draggable;
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1383,10 +1615,10 @@ exports.default = Draggable;
 
 var emptyFunction = __webpack_require__(0);
 var invariant = __webpack_require__(1);
-var warning = __webpack_require__(6);
+var warning = __webpack_require__(7);
 
 var ReactPropTypesSecret = __webpack_require__(2);
-var checkPropTypes = __webpack_require__(12);
+var checkPropTypes = __webpack_require__(14);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -1885,7 +2117,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1902,7 +2134,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 if (Object({"DRAGGABLE_DEBUG":undefined}).NODE_ENV !== 'production') {
   var invariant = __webpack_require__(1);
-  var warning = __webpack_require__(6);
+  var warning = __webpack_require__(7);
   var ReactPropTypesSecret = __webpack_require__(2);
   var loggedTypeFailures = {};
 }
@@ -1953,7 +2185,7 @@ module.exports = checkPropTypes;
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2019,7 +2251,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -2074,7 +2306,75 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 15 */
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getPrefix = getPrefix;
+exports.browserPrefixToKey = browserPrefixToKey;
+exports.browserPrefixToStyle = browserPrefixToStyle;
+var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
+function getPrefix() {
+  var prop = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'transform';
+
+  // Checking specifically for 'window.document' is for pseudo-browser server-side
+  // environments that define 'window' as the global context.
+  // E.g. React-rails (see https://github.com/reactjs/react-rails/pull/84)
+  if (typeof window === 'undefined' || typeof window.document === 'undefined') {
+    return '';
+  }
+
+  var style = window.document.documentElement.style;
+
+  if (prop in style) {
+    return '';
+  }
+
+  for (var i = 0; i < prefixes.length; i++) {
+    if (browserPrefixToKey(prop, prefixes[i]) in style) {
+      return prefixes[i];
+    }
+  }
+
+  return '';
+}
+
+function browserPrefixToKey(prop, prefix) {
+  return prefix ? '' + prefix + kebabToTitleCase(prop) : prop;
+}
+
+function browserPrefixToStyle(prop, prefix) {
+  return prefix ? '-' + prefix.toLowerCase() + '-' + prop : prop;
+}
+
+function kebabToTitleCase(str) {
+  var out = '';
+  var shouldCapitalize = true;
+  for (var i = 0; i < str.length; i++) {
+    if (shouldCapitalize) {
+      out += str[i].toUpperCase();
+      shouldCapitalize = false;
+    } else if (str[i] === '-') {
+      shouldCapitalize = true;
+    } else {
+      out += str[i];
+    }
+  }
+  return out;
+}
+
+// Default export is the prefix itself, like 'Moz', 'Webkit', etc
+// Note that you may have to re-test for certain things for instance, Chrome 50
+// can handle unprefixed `transform`, but not unprefixed `user-select`
+exports.default = getPrefix();
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
