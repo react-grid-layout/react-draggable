@@ -1,33 +1,6 @@
 # Changelog
 
-### 3.0.3 (Aug 31, 2017)
-
-- Bugfix: Fix deprecation warnings caused by `import * as React` (Flow best practice).
-  - See https://github.com/facebook/react/issues/10583
-
-### 3.0.2 (Aug 22, 2017)
-
-> 3.0.0 and 3.0.1 have been unpublished due to a large logfile making it into the package.
-
-- Bugfix: Tweaked `.npmignore`.
-
-### 3.0.1 (Aug 21, 2017)
-
-- Bugfix: Flow-type should no longer throw errors for consumers.
-  - It appears Flow can't resolve a sub-package's interfaces.
-
-### 3.0.0 (Aug 21, 2017)
-
-> Due to an export change, this is semver-major.
-
-- Breaking: For TypeScript users, `<Draggable>` is now exported as `module.exports` and `module.exports.default`.
-- Potentially Breaking: We no longer set `user-select: none` on all elements while dragging. Instead,
-  the [`::selection` psuedo element](https://developer.mozilla.org/en-US/docs/Web/CSS/::selection) is used.
-  - Depending on your application, this could cause issues, so be sure to test.
-- Bugfix: Pass bounded `x`/`y` to callbacks. See [#226](https://github.com/mzabriskie/react-draggable/pull/226).
-- Internal: Upgraded dependencies.
-
-### 2.2.6 (Apr 30, 2017)
+### 2.2.6
 
 - Bugfix: Missing export default on TS definition (thanks @lostfictions)
 - Internal: TS test suite (thanks @lostfictions)
