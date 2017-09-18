@@ -419,7 +419,7 @@ describe('react-draggable', function () {
 
           renderRoot.parentNode.removeChild(renderRoot);
           done();
-        }, 100);
+        }, 50);
       });
   });
 
