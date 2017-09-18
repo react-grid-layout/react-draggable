@@ -1,5 +1,10 @@
 # Changelog
 
+### 2.2.7 (Sep 18, 2017)
+- Support 'px' and '% as positon. Numbers are not tested.
+- Use top/left to calculate position instead of transform. It's slower but allows to use % and other values
+- Remove flow and change eslint config to aviarcs code convention (in progress)
+
 ### 2.2.6
 
 - Bugfix: Missing export default on TS definition (thanks @lostfictions)
