@@ -8,6 +8,8 @@
 
 A simple component for making elements draggable.
 
+![Live Demo](https://media.giphy.com/media/xUNd9L5rRJM5h2o0Hm/giphy.gif)
+
 ```js
 <Draggable>
   <div>I can now be moved around!</div>
