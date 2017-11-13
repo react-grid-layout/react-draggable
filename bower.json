@@ -15,6 +15,7 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
+    "dist-module",
     "example",
     "lib",
     "node_modules",

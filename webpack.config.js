@@ -1,14 +1,14 @@
 var webpack = require('webpack');
 
 module.exports = {
-	entry: './index.js',
-	output: {
+  entry: './index.js',
+  output: {
     filename: './dist/react-draggable.js',
     sourceMapFilename: './dist/react-draggable.js.map',
     devtoolModuleFilenameTemplate: '../[resource-path]',
     library: 'ReactDraggable',
     libraryTarget: 'umd'
-	},
+  },
   externals: {
     'react': {
       'commonjs': 'react',
@@ -22,17 +22,29 @@ module.exports = {
       'commonjs2': 'react-dom',
       'amd': 'react-dom',
       'root': 'ReactDOM'
+    },
+    'classnames': {
+      'commonjs': 'classnames',
+      'commonjs2': 'classnames',
+      'amd': 'classnames',
+      'root': 'classNames'
+    },
+    'prop-types': {
+      'commonjs': 'prop-types',
+      'commonjs2': 'prop-types',
+      'amd': 'prop-types',
+      'root': 'PropTypes'
     }
   },
-	module: {
-		rules: [
-			{
+  module: {
+    rules: [
+      {
         test: /\.(?:js|es).?$/,
         loader: 'babel-loader?cacheDirectory',
         exclude: /(node_modules)/
       }
-		]
-	},
+    ]
+  },
   resolve: {
     extensions: ['.js']
   },

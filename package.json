@@ -3,6 +3,7 @@
   "version": "3.0.3",
   "description": "React draggable component",
   "main": "dist/react-draggable.js",
+  "module": "index.module.js",
   "browser": "dist/react-draggable.js",
   "scripts": {
     "test": "make test",

@@ -17,7 +17,7 @@ lint:
 	@$(BIN)/eslint lib/* lib/utils/* specs/*
 	@$(BIN)/tsc -p typings
 
-build: $(LIB) $(MIN)
+build: $(LIB) $(MIN) dist-module
 
 # Allows usage of `make install`, `make link`
 install link:
@@ -31,6 +31,9 @@ dist/%.min.js: $(LIB) $(BIN)
 
 dist/%.js: $(BIN)
 	@$(BIN)/webpack --devtool source-map
+
+dist-module: $(BIN)
+	$(BIN)/babel lib --out-dir dist/lib
 
 test: $(BIN)
 	@$(BIN)/karma start --single-run
