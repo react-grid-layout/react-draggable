@@ -382,9 +382,12 @@ describe('react-draggable', function () {
       const renderRoot = document.body.appendChild(document.createElement('div'));
       const frame = ReactDOM.render(<FrameComponent>{ dragElement }</FrameComponent>, renderRoot);
 
-      setTimeout(() => {
-        const body = ReactDOM.findDOMNode(frame).contentDocument.body;
+      setTimeout(function checkIframe() {
+        const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
+        if (!iframeDoc) return setTimeout(checkIframe, 50);
+        const body = iframeDoc.body;
         const node = body.querySelector('.react-draggable');
+        if (!node) return setTimeout(checkIframe, 50);
         simulateMovementFromTo(node, 0, 0, 100, 100);
 
         const style = node.getAttribute('style');
@@ -393,7 +396,7 @@ describe('react-draggable', function () {
 
         renderRoot.parentNode.removeChild(renderRoot);
         done();
-      }, 50);
+      }, 0);
     });
 
       it('should add and remove transparent selection class to iframe’s body when in an iframe', function (done) {
@@ -405,9 +408,11 @@ describe('react-draggable', function () {
         const renderRoot = document.body.appendChild(document.createElement('div'));
         const frame = ReactDOM.render(<FrameComponent>{ dragElement }</FrameComponent>, renderRoot);
 
-        setTimeout(() => {
+        setTimeout(function checkIframe() {
           const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
+          if (!iframeDoc) return setTimeout(checkIframe, 50);
           const node = iframeDoc.querySelector('.react-draggable');
+          if (!node) return setTimeout(checkIframe, 50);
 
           assert(!document.body.classList.contains('react-draggable-transparent-selection'));
           assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
@@ -420,7 +425,7 @@ describe('react-draggable', function () {
 
           renderRoot.parentNode.removeChild(renderRoot);
           done();
-        }, 50);
+        }, 0);
       });
   });
 
