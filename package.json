@@ -61,6 +61,7 @@
     "phantomjs-prebuilt": "^2.1.16",
     "power-assert": "^1.4.4",
     "pre-commit": "^1.2.2",
+    "puppeteer": "^0.13.0",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "react-frame-component": "^2.0.0",
