@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
+import ShallowRenderer from 'react-test-renderer/shallow';
 import Draggable, {DraggableCore} from '../index';
 import FrameComponent from 'react-frame-component';
 import assert from 'power-assert';
@@ -80,7 +81,7 @@ describe('react-draggable', function () {
     // NOTE: this runs a shallow renderer, which DOES NOT actually render <DraggableCore>
     it('should pass handle on to <DraggableCore>', function () {
       drag = <Draggable handle=".foo"><div /></Draggable>;
-      const renderer = TestUtils.createRenderer();
+      const renderer = new ShallowRenderer();
       renderer.render(drag);
       const output = renderer.getRenderOutput();
 
@@ -668,29 +669,15 @@ describe('react-draggable', function () {
 
   describe('validation', function () {
     it('should result with invariant when there isn\'t a child', function () {
-      drag = (<Draggable/>);
+      const renderer = new ShallowRenderer();
 
-      let error = false;
-      try {
-        TestUtils.renderIntoDocument(drag);
-      } catch (e) {
-        error = true;
-      }
-
-      assert(error === true);
+      assert.throws(() => renderer.render(<Draggable />));
     });
 
     it('should result with invariant if there\'s more than a single child', function () {
-      drag = (<Draggable><div/><div/></Draggable>);
+      const renderer = new ShallowRenderer();
 
-      let error = false;
-      try {
-        TestUtils.renderIntoDocument(drag);
-      } catch (e) {
-        error = true;
-      }
-
-      assert(error === true);
+      assert.throws(() => renderer.render(<Draggable><div/><div/></Draggable>));
     });
   });
 });

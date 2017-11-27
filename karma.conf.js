@@ -21,6 +21,8 @@ module.exports = function(config) {
 
     webpack: {
       module: {
+        // Suppress power-assert warning
+        exprContextCritical: false,
         loaders: [
           {
             test: /\.(?:jsx?)$/,
