@@ -1,5 +1,10 @@
 # Changelog
 
+### 3.0.4 (Nov 27, 2017)
+
+- Bugfix: Fix "Cannot call property 'call' of undefined" (matchesSelector)
+  = Fixes [#300](https://github.com/mzabriskie/react-draggable/issues/300)
+
 ### 3.0.3 (Aug 31, 2017)
 
 - Bugfix: Fix deprecation warnings caused by `import * as React` (Flow best practice).
