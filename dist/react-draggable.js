@@ -1015,6 +1015,7 @@ var DraggableCore = function (_React$Component) {
         (0, _domFns.removeEvent)(thisNode.ownerDocument, dragEventFor.stop, _this.handleDragStop);
       }
     }, _this.onMouseDown = function (e) {
+      e.preventDefault();
       dragEventFor = eventsFor.mouse; // on touchscreen laptops we could switch back to mouse
 
       return _this.handleDragStart(e);
