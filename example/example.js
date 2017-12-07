@@ -127,8 +127,8 @@ var App = React.createClass({
             I can only be moved within the confines of the body element.
           </div>
         </Draggable>
-        <Draggable>
-          <div className="box" style={{position: 'absolute', bottom: '100px', right: '100px'}} {...dragHandlers}>
+        <Draggable {...dragHandlers}>
+          <div className="box" style={{position: 'absolute', bottom: '100px', right: '100px'}}>
             I already have an absolute position.
           </div>
         </Draggable>
