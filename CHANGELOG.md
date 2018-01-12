@@ -1,5 +1,9 @@
 # Changelog
 
+### 3.0.5 (Jan 11, 2017)
+
+- Bugfix: Fix crash in test environments during removeUserSelectStyles().
+
 ### 3.0.4 (Nov 27, 2017)
 
 - Bugfix: Fix "Cannot call property 'call' of undefined" (matchesSelector)

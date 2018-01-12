@@ -421,7 +421,8 @@ function getTouchIdentifier(e /*: MouseTouchEvent*/) /*: ?number*/ {
 // Useful for preventing blue highlights all over everything when dragging.
 
 // Note we're passing `document` b/c we could be iframed
-function addUserSelectStyles(doc /*: Document*/) {
+function addUserSelectStyles(doc /*: ?Document*/) {
+  if (!doc) return;
   var styleEl = doc.getElementById('react-draggable-style-el');
   if (!styleEl) {
     styleEl = doc.createElement('style');
@@ -434,9 +435,9 @@ function addUserSelectStyles(doc /*: Document*/) {
   if (doc.body) addClassName(doc.body, 'react-draggable-transparent-selection');
 }
 
-function removeUserSelectStyles(doc /*: Document*/) {
-  if (doc.body) removeClassName(doc.body, 'react-draggable-transparent-selection');
+function removeUserSelectStyles(doc /*: ?Document*/) {
   try {
+    if (doc && doc.body) removeClassName(doc.body, 'react-draggable-transparent-selection');
     window.getSelection().removeAllRanges(); // remove selection caused by scroll
   } catch (e) {
     // probably IE
