@@ -25,7 +25,10 @@ export default [
       nodeResolve(),
       commonjs({ include: "node_modules/**" }),
       babel({ exclude: "node_modules/**", plugins: ["external-helpers"] }),
-      replace({ "process.env.NODE_ENV": JSON.stringify("development") }),
+      replace({
+        "process.env.DRAGGABLE_DEBUG": "false",
+        "process.env.NODE_ENV": JSON.stringify("development")
+      }),
       sizeSnapshot()
     ]
   },
@@ -47,7 +50,10 @@ export default [
       nodeResolve(),
       commonjs({ include: "node_modules/**" }),
       babel({ exclude: "node_modules/**", plugins: ["external-helpers"] }),
-      replace({ "process.env.NODE_ENV": JSON.stringify("production") }),
+      replace({
+        "process.env.DRAGGABLE_DEBUG": "false",
+        "process.env.NODE_ENV": JSON.stringify("production")
+      }),
       uglify()
     ]
   }
