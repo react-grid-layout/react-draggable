@@ -2,7 +2,6 @@
 # Thanks @andreypopp
 
 export BIN := $(shell npm bin)
-export NODE_ENV = test
 DIST = dist
 LIB = $(DIST)/react-draggable.js
 MIN = $(DIST)/react-draggable.min.js
@@ -23,17 +22,11 @@ build: $(LIB) $(MIN)
 install link:
 	@npm $@
 
-dist/%.min.js: $(LIB) $(BIN)
-	$(BIN)/uglifyjs $< \
-	  --output $@ \
-	  --source-map "filename=$@.map,root=$(basename $<.map),content=$<.map" \
-	  --compress
-
 dist/%.js: $(BIN)
-	@$(BIN)/webpack --devtool source-map
+	@$(BIN)/rollup -c
 
 test: $(BIN)
-	@$(BIN)/karma start --single-run
+	@NODE_ENV=test $(BIN)/karma start --single-run
 
 dev: $(BIN)
 	script/build-watch
