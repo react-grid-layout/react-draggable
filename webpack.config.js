@@ -37,10 +37,10 @@ module.exports = {
     extensions: ['.js']
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        DRAGGABLE_DEBUG: process.env.DRAGGABLE_DEBUG
-      }
+    new webpack.EnvironmentPlugin({
+      // Default values
+      DRAGGABLE_DEBUG: false,
+      NODE_ENV: 'production'
     }),
     // Scope hoisting
     new webpack.optimize.ModuleConcatenationPlugin(),
