@@ -9,7 +9,7 @@ declare module 'react-draggable' {
   }
 
   export interface DraggableProps extends DraggableCoreProps {
-    axis: 'both' | 'x' | 'y' | 'none',
+    axis: 'both' | 'x' | 'y' | 'none' | 'exclude',
     bounds: DraggableBounds | string | false ,
     defaultClassName: string,
     defaultClassNameDragging: string,
