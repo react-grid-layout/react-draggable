@@ -54,6 +54,7 @@ export default [
         "process.env.DRAGGABLE_DEBUG": "false",
         "process.env.NODE_ENV": JSON.stringify("production")
       }),
+      sizeSnapshot(),
       uglify()
     ]
   }
