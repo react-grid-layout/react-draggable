@@ -1,12 +1,21 @@
 {
   "dist/react-draggable.js": {
-    "bundled": 75213,
-    "minified": 22764,
-    "gzipped": 7663
+    "bundled": 75110,
+    "minified": 22846,
+    "gzipped": 7710
   },
   "dist/react-draggable.min.js": {
-    "bundled": 51398,
-    "minified": 15750,
-    "gzipped": 5594
+    "bundled": 51295,
+    "minified": 15832,
+    "gzipped": 5631
+  },
+  "dist/react-draggable.esm.js": {
+    "bundled": 42426,
+    "minified": 15800,
+    "gzipped": 4977,
+    "treeshaked": {
+      "rollup": 13352,
+      "webpack": 14158
+    }
   }
 }

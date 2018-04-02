@@ -4,8 +4,16 @@ import babel from 'rollup-plugin-babel';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 import { sizeSnapshot } from 'rollup-plugin-size-snapshot';
+import pkg from './package.json';
 
-const input = './lib/umd.js';
+const input = './lib/index.js';
+
+const getBabelOptions = () => ({
+  exclude: 'node_modules/**',
+  plugins: ['external-helpers'] 
+})
+
+const isExternal = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/')
 
 export default [
   {
@@ -24,7 +32,7 @@ export default [
     plugins: [
       nodeResolve(),
       commonjs({ include: 'node_modules/**' }),
-      babel({ exclude: 'node_modules/**', plugins: ['external-helpers'] }),
+      babel(getBabelOptions()),
       replace({
         'process.env.DRAGGABLE_DEBUG': 'false',
         'process.env.NODE_ENV': JSON.stringify('development')
@@ -49,13 +57,40 @@ export default [
     plugins: [
       nodeResolve(),
       commonjs({ include: 'node_modules/**' }),
-      babel({ exclude: 'node_modules/**', plugins: ['external-helpers'] }),
+      babel(getBabelOptions()),
       replace({
         'process.env.DRAGGABLE_DEBUG': 'false',
         'process.env.NODE_ENV': JSON.stringify('production')
       }),
       sizeSnapshot(),
       uglify()
+    ]
+  },
+
+  {
+    input,
+    output: {
+      file: pkg.main,
+      format: 'cjs'
+    },
+    external: isExternal,
+    plugins: [
+      babel(getBabelOptions()),
+      replace({ 'process.env.DRAGGABLE_DEBUG': 'false' })
+    ]
+  },
+
+  {
+    input,
+    output: {
+      file: pkg.module,
+      format: 'es'
+    },
+    external: isExternal,
+    plugins: [
+      babel(getBabelOptions()),
+      replace({ 'process.env.DRAGGABLE_DEBUG': 'false' }),
+      sizeSnapshot()
     ]
   }
 ];
