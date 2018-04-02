@@ -43,7 +43,7 @@ declare module 'react-draggable' {
     onMouseDown: (e: MouseEvent) => void
   }
 
-  export default class Draggable extends React.Component<Partial<DraggableProps>, {}> {
+  export class Draggable extends React.Component<Partial<DraggableProps>, {}> {
     static defaultProps : DraggableProps;
   }
 
