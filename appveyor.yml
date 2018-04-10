@@ -2,7 +2,7 @@
 
 environment:
   matrix:
-    # - node_version: "7"
+    - node_version: "8"
     - node_version: "6"
     - node_version: "4"
   IE_BIN: "%PROGRAMFILES%\\Internet Explorer\\iexplore.exe"
@@ -10,12 +10,6 @@ environment:
 cache:
   - node_modules
   - "%LOCALAPPDATA%/Yarn"
-
-install:
-  - ps: Install-Product node $env:node_version
-  - choco install -i yarn
-  - refreshenv
-  - yarn install
 
 test_script:
   - npm run test-ie
