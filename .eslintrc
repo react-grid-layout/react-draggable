@@ -28,6 +28,7 @@
     "ReactClass",
     "$Shape",
     "$Exact",
+    "$Keys",
     "MouseTouchEvent",
   }
 }

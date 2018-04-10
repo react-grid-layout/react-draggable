@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
+import ShallowRenderer from 'react-test-renderer/shallow';
 import Draggable, {DraggableCore} from '../index';
 import FrameComponent from 'react-frame-component';
 import assert from 'power-assert';
@@ -80,7 +81,7 @@ describe('react-draggable', function () {
     // NOTE: this runs a shallow renderer, which DOES NOT actually render <DraggableCore>
     it('should pass handle on to <DraggableCore>', function () {
       drag = <Draggable handle=".foo"><div /></Draggable>;
-      const renderer = TestUtils.createRenderer();
+      const renderer = new ShallowRenderer();
       renderer.render(drag);
       const output = renderer.getRenderOutput();
 
@@ -381,9 +382,12 @@ describe('react-draggable', function () {
       const renderRoot = document.body.appendChild(document.createElement('div'));
       const frame = ReactDOM.render(<FrameComponent>{ dragElement }</FrameComponent>, renderRoot);
 
-      setTimeout(() => {
-        const body = ReactDOM.findDOMNode(frame).contentDocument.body;
+      setTimeout(function checkIframe() {
+        const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
+        if (!iframeDoc) return setTimeout(checkIframe, 50);
+        const body = iframeDoc.body;
         const node = body.querySelector('.react-draggable');
+        if (!node) return setTimeout(checkIframe, 50);
         simulateMovementFromTo(node, 0, 0, 100, 100);
 
         const style = node.getAttribute('style');
@@ -392,7 +396,7 @@ describe('react-draggable', function () {
 
         renderRoot.parentNode.removeChild(renderRoot);
         done();
-      }, 50);
+      }, 0);
     });
 
       it('should add and remove transparent selection class to iframe’s body when in an iframe', function (done) {
@@ -404,9 +408,11 @@ describe('react-draggable', function () {
         const renderRoot = document.body.appendChild(document.createElement('div'));
         const frame = ReactDOM.render(<FrameComponent>{ dragElement }</FrameComponent>, renderRoot);
 
-        setTimeout(() => {
+        setTimeout(function checkIframe() {
           const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
+          if (!iframeDoc) return setTimeout(checkIframe, 50);
           const node = iframeDoc.querySelector('.react-draggable');
+          if (!node) return setTimeout(checkIframe, 50);
 
           assert(!document.body.classList.contains('react-draggable-transparent-selection'));
           assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
@@ -419,7 +425,7 @@ describe('react-draggable', function () {
 
           renderRoot.parentNode.removeChild(renderRoot);
           done();
-        }, 50);
+        }, 0);
       });
   });
 
@@ -668,29 +674,15 @@ describe('react-draggable', function () {
 
   describe('validation', function () {
     it('should result with invariant when there isn\'t a child', function () {
-      drag = (<Draggable/>);
+      const renderer = new ShallowRenderer();
 
-      let error = false;
-      try {
-        TestUtils.renderIntoDocument(drag);
-      } catch (e) {
-        error = true;
-      }
-
-      assert(error === true);
+      assert.throws(() => renderer.render(<Draggable />));
     });
 
     it('should result with invariant if there\'s more than a single child', function () {
-      drag = (<Draggable><div/><div/></Draggable>);
+      const renderer = new ShallowRenderer();
 
-      let error = false;
-      try {
-        TestUtils.renderIntoDocument(drag);
-      } catch (e) {
-        error = true;
-      }
-
-      assert(error === true);
+      assert.throws(() => renderer.render(<Draggable><div/><div/></Draggable>));
     });
   });
 });

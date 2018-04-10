@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 process.env.NODE_ENV = 'test';
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function(config) {
   config.set({
@@ -21,6 +22,8 @@ module.exports = function(config) {
 
     webpack: {
       module: {
+        // Suppress power-assert warning
+        exprContextCritical: false,
         loaders: [
           {
             test: /\.(?:jsx?)$/,
@@ -65,19 +68,9 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['PhantomJS_custom', 'Firefox', 'HeadlessChrome'],
+    browsers: ['PhantomJS_custom', 'Firefox', 'ChromeHeadless'],
 
     customLaunchers: {
-      HeadlessChrome: {
-        base: 'Chrome',
-        flags: [
-          '--no-sandbox',
-          '--headless',
-          '--disable-gpu',
-          // Without a remote debugging port, Google Chrome exits immediately.
-          '--remote-debugging-port=9222',
-        ]
-      },
       PhantomJS_custom: {
         base: 'PhantomJS',
         options: {
