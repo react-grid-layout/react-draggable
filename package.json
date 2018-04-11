@@ -11,7 +11,8 @@
     "dev": "make dev",
     "build": "make clean build",
     "lint": "make lint",
-    "flow": "flow"
+    "flow": "flow",
+    "prepublish": "yarn build"
   },
   "typings": "./typings/index.d.ts",
   "repository": {
