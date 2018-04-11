@@ -11,7 +11,8 @@ cache:
   - node_modules
   - "%LOCALAPPDATA%/Yarn"
 
-test_script:
-  - npm run test-ie
+build_script:
+  - cmd: yarn install
 
-build: off
+test_script:
+  - cmd: yarn run test-ie
