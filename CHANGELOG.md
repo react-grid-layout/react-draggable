@@ -1,6 +1,6 @@
 # Changelog
 
-### 3.0.5 (Jan 11, 2017)
+### 3.0.5 (Jan 11, 2018)
 
 - Bugfix: Fix crash in test environments during removeUserSelectStyles().
 
