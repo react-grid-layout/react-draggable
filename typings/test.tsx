@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Draggable, {DraggableCore} from 'react-draggable';
+import {Draggable, DraggableCore} from 'react-draggable';
 
 const root = document.getElementById('root')
 
