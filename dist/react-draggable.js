@@ -1381,8 +1381,8 @@
 	function createDraggableData(draggable /*: Draggable*/, coreData /*: DraggableData*/) /*: DraggableData*/ {
 	  return {
 	    node: coreData.node,
-	    x: draggable.state.x + coreData.deltaX,
-	    y: draggable.state.y + coreData.deltaY,
+	    x: draggable.state.x + coreData.deltaX * (draggable.props.speed.x || draggable.constructor.defaultProps.speed.y),
+	    y: draggable.state.y + coreData.deltaY * (draggable.props.speed.y || draggable.constructor.defaultProps.speed.y),
 	    deltaX: coreData.deltaX,
 	    deltaY: coreData.deltaY,
 	    lastX: draggable.state.x,
@@ -1851,6 +1851,7 @@
 	  defaultClassNameDragged: string,
 	  defaultPosition: ControlPosition,
 	  position: ControlPosition,
+	  speed: ControlPosition,
 	};*/
 
 	var Draggable = function (_React$Component) {
@@ -2172,6 +2173,15 @@
 	  }),
 
 	  /**
+	   * Defines a custom drag speed on each direction: 1px drag = speed px move
+	   */
+
+	  speed: propTypes.shape({
+	    x: propTypes.number,
+	    y: propTypes.number
+	  }),
+
+	  /**
 	   * These properties should be defined on the child, not here.
 	   */
 	  className: dontSetMe,
@@ -2185,7 +2195,8 @@
 	  defaultClassNameDragging: 'react-draggable-dragging',
 	  defaultClassNameDragged: 'react-draggable-dragged',
 	  defaultPosition: { x: 0, y: 0 },
-	  position: null
+	  position: null,
+	  speed: { x: 1, y: 1 }
 	});
 
 	// Previous versions of this lib exported <Draggable> as the root export. As to not break
