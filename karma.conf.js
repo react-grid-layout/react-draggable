@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 process.env.NODE_ENV = 'test';
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function(config) {
   config.set({
@@ -21,10 +22,12 @@ module.exports = function(config) {
 
     webpack: {
       module: {
+        // Suppress power-assert warning
+        exprContextCritical: false,
         loaders: [
           {
-            test: /\.(?:jsx?|es6)$/,
-            loader: 'babel',
+            test: /\.(?:jsx?)$/,
+            loader: 'babel-loader',
             query: {
               cacheDirectory: true,
             },
@@ -32,7 +35,7 @@ module.exports = function(config) {
           },
           {
             test: /\.json$/,
-            loader: 'json'
+            loader: 'json-loader'
           }
         ],
       },
@@ -44,7 +47,7 @@ module.exports = function(config) {
         })
       ],
       resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.es6']
+        extensions: ['.js']
       }
     },
 
@@ -65,13 +68,9 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['PhantomJS_custom', 'Firefox', process.env.TRAVIS ? 'Chrome_travis_ci' : 'Chrome'],
+    browsers: ['PhantomJS_custom', 'Firefox', 'ChromeHeadless'],
 
     customLaunchers: {
-      Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
-      },
       PhantomJS_custom: {
         base: 'PhantomJS',
         options: {

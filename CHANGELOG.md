@@ -1,5 +1,58 @@
 # Changelog
 
+### 3.0.5 (Jan 11, 2018)
+
+- Bugfix: Fix crash in test environments during removeUserSelectStyles().
+
+### 3.0.4 (Nov 27, 2017)
+
+- Bugfix: Fix "Cannot call property 'call' of undefined" (matchesSelector)
+  = Fixes [#300](https://github.com/mzabriskie/react-draggable/issues/300)
+
+### 3.0.3 (Aug 31, 2017)
+
+- Bugfix: Fix deprecation warnings caused by `import * as React` (Flow best practice).
+  - See https://github.com/facebook/react/issues/10583
+
+### 3.0.2 (Aug 22, 2017)
+
+> 3.0.0 and 3.0.1 have been unpublished due to a large logfile making it into the package.
+
+- Bugfix: Tweaked `.npmignore`.
+
+### 3.0.1 (Aug 21, 2017)
+
+- Bugfix: Flow-type should no longer throw errors for consumers.
+  - It appears Flow can't resolve a sub-package's interfaces.
+
+### 3.0.0 (Aug 21, 2017)
+
+> Due to an export change, this is semver-major.
+
+- Breaking: For TypeScript users, `<Draggable>` is now exported as `module.exports` and `module.exports.default`.
+- Potentially Breaking: We no longer set `user-select: none` on all elements while dragging. Instead,
+  the [`::selection` psuedo element](https://developer.mozilla.org/en-US/docs/Web/CSS/::selection) is used.
+  - Depending on your application, this could cause issues, so be sure to test.
+- Bugfix: Pass bounded `x`/`y` to callbacks. See [#226](https://github.com/mzabriskie/react-draggable/pull/226).
+- Internal: Upgraded dependencies.
+
+### 2.2.6 (Apr 30, 2017)
+
+- Bugfix: Missing export default on TS definition (thanks @lostfictions)
+- Internal: TS test suite (thanks @lostfictions)
+
+### 2.2.5 (Apr 28, 2017)
+
+- Bugfix: Typescript definition was incorrect. [#244](https://github.com/mzabriskie/react-draggable/issues/244)
+
+### 2.2.4 (Apr 27, 2017)
+
+- Internal: Moved `PropTypes` access to `prop-types` package for React 15.5 (prep for 16)
+- Feature: Added TypeScript definitions (thanks @erfangc)
+- Bugfix: No longer can erroneously add user-select style multiple times
+- Bugfix: OffsetParent with padding problem, fixes [#218](https://github.com/mzabriskie/react-draggable/issues/218)
+- Refactor: Misc example updates.
+
 ### 2.2.3 (Nov 21, 2016)
 
 - Bugfix: Fix an issue with the entire window scrolling on a drag on iDevices. Thanks @JaneCoder. See #183
