@@ -252,7 +252,7 @@ describe('react-draggable', function () {
 
       const style = node.getAttribute('style');
       assert(dragged === true);
-      assert(style.indexOf('translate(calc(10% + 100px), calc(10% + 100px));') >= 0);
+      assert(style.indexOf('translate(10%, 10%) translate(100px, 100px);') >= 0);
     });
 
     it('should honor "x" axis', function () {
