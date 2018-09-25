@@ -82,7 +82,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 
-class App extends React.Element {
+class App extends React.Component {
 
   eventLogger = (e: MouseEvent, data: Object) => {
     console.log('Event: ', e);
