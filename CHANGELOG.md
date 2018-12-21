@@ -1,5 +1,9 @@
 # Changelog
 
+### 3.1.1 (Dec 21, 2018)
+
+- Bugfix: Minor type change on DraggableEventHandler TypeScript export ([#374](https://github.com/mzabriskie/react-draggable/pull/374))
+
 ### 3.1.0 (Dec 21, 2018)
 
 - Feature: Added `scale` prop ([#352](https://github.com/mzabriskie/react-draggable/pull/352))
