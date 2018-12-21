@@ -1,5 +1,14 @@
 # Changelog
 
+### 3.1.0 (Dec 21, 2018)
+
+- Feature: Added `scale` prop ([#352](https://github.com/mzabriskie/react-draggable/pull/352))
+  - Thanks, @wootencl
+- Bugfix: Remove process.browser which is missing in browser ([#329]((https://github.com/mzabriskie/react-draggable/pull/329))
+- Bugfix: Fix selection api on IE ([#292](https://github.com/mzabriskie/react-draggable/pull/292))
+- Bugfix: Fixes some issues in the type definitions for TypeScript ([#331]((https://github.com/mzabriskie/react-draggable/pull/331))
+- Bugfix: Fix compare where portal elements are different instance to main window ([#359]((https://github.com/mzabriskie/react-draggable/pull/359))
+
 ### 3.0.5 (Jan 11, 2018)
 
 - Bugfix: Fix crash in test environments during removeUserSelectStyles().
@@ -7,7 +16,7 @@
 ### 3.0.4 (Nov 27, 2017)
 
 - Bugfix: Fix "Cannot call property 'call' of undefined" (matchesSelector)
-  = Fixes [#300](https://github.com/mzabriskie/react-draggable/issues/300)
+  - Fixes [#300](https://github.com/mzabriskie/react-draggable/issues/300)
 
 ### 3.0.3 (Aug 31, 2017)
 
