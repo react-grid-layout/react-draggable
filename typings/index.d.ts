@@ -18,11 +18,13 @@ declare module 'react-draggable' {
     position: ControlPosition
   }
 
+  export type DraggableEvent = React.MouseEvent<HTMLElement | SVGElement>
+    | React.TouchEvent<HTMLElement | SVGElement>
+    | MouseEvent
+    | TouchEvent
+
   export type DraggableEventHandler = (
-    e: React.MouseEvent<HTMLElement | SVGElement>
-     | React.TouchEvent<HTMLElement | SVGElement>
-     | MouseEvent
-     | TouchEvent,
+    e: DraggableEvent,
     data: DraggableData
   ) => void | false;
 
@@ -46,7 +48,8 @@ declare module 'react-draggable' {
     onStart: DraggableEventHandler,
     onDrag: DraggableEventHandler,
     onStop: DraggableEventHandler,
-    onMouseDown: (e: MouseEvent) => void
+    onMouseDown: (e: MouseEvent) => void,
+    scale: number
   }
 
   export default class Draggable extends React.Component<Partial<DraggableProps>, {}> {
