@@ -134,6 +134,24 @@ describe('react-draggable', function () {
       assert(drag.props.onStop === handleStop);
     });
 
+    it('should adjust draggable data output when `scale` prop supplied', function () {
+      function onDrag(event, data) {
+        assert(data.x === 200);
+        assert(data.y === 200);
+        assert(data.deltaX === 200);
+        assert(data.deltaY === 200);
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable 
+          scale={0.5}
+          onDrag={onDrag}>
+          <div />
+        </Draggable>
+      );
+
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
+
     it('should throw when setting className', function () {
       drag = (<Draggable className="foo"><span /></Draggable>);
 
