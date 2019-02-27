@@ -1,5 +1,10 @@
 # Changelog
 
+### 3.2.0 (Feb 27, 2019)
+
+- Feature: `defaultPosition` now allows string offsets (like {x: '10%', y: '10%'}) then calculates deltas from there. See the examples and the PR [#361](https://github.com/mzabriskie/react-draggable/pull/361/). Thanks to @tnrich and @eric-burel.
+- Bugfix: Export `DraggableEvent` type for Flow consumers. Thanks @elie222.
+
 ### 3.1.1 (Dec 21, 2018)
 
 - Bugfix: Minor type change on DraggableEventHandler TypeScript export ([#374](https://github.com/mzabriskie/react-draggable/pull/374))

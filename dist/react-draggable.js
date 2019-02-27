@@ -1088,7 +1088,7 @@
 	  };
 	}();
 
-	/*:: import type {ControlPosition, MouseTouchEvent} from './types';*/
+	/*:: import type {ControlPosition, DefaultControlPosition, MouseTouchEvent} from './types';*/
 
 
 	var matchesSelectorFunc = '';
@@ -1194,19 +1194,34 @@
 	  return { x: x, y: y };
 	}
 
-	function createCSSTransform(_ref) /*: Object*/ {
+	function createCSSTransform(_ref, defaultPosition /*: DefaultControlPosition*/) /*: Object*/ {
 	  var x = _ref.x,
 	      y = _ref.y;
 
-	  // Replace unitless items with px
-	  return defineProperty({}, browserPrefixToKey('transform', browserPrefix), 'translate(' + x + 'px,' + y + 'px)');
+	  var translation = void 0;
+	  if (defaultPosition && (defaultPosition.x !== 0 || defaultPosition.y !== 0)) {
+	    var defaultX = '' + (typeof defaultPosition.x === 'string' ? defaultPosition.x : defaultPosition.x + 'px');
+	    var defaultY = '' + (typeof defaultPosition.y === 'string' ? defaultPosition.y : defaultPosition.y + 'px');
+	    translation = 'translate(' + defaultX + ', ' + defaultY + ') translate(' + x + 'px,' + y + 'px)';
+	  } else {
+	    translation = 'translate(' + x + 'px,' + y + 'px)';
+	  }
+	  return defineProperty({}, browserPrefixToKey('transform', browserPrefix), translation);
 	}
 
-	function createSVGTransform(_ref3) /*: string*/ {
+	function createSVGTransform(_ref3, defaultPosition /*: DefaultControlPosition*/) /*: string*/ {
 	  var x = _ref3.x,
 	      y = _ref3.y;
 
-	  return 'translate(' + x + ',' + y + ')';
+	  var translation = void 0;
+	  if (defaultPosition && (defaultPosition.x !== 0 || defaultPosition.y !== 0)) {
+	    var defaultX = typeof defaultPosition.x === 'string' ? defaultPosition.x : defaultPosition.x;
+	    var defaultY = typeof defaultPosition.y === 'string' ? defaultPosition.y : defaultPosition.y;
+	    translation = 'translate(' + defaultX + ', ' + defaultY + ') translate(' + x + ',' + y + ')';
+	  } else {
+	    translation = 'translate(' + x + ',' + y + ')';
+	  }
+	  return translation;
 	}
 
 	function getTouch(e /*: MouseTouchEvent*/, identifier /*: number*/) /*: ?{clientX: number, clientY: number}*/ {
@@ -1461,6 +1476,7 @@
 	};*/
 	/*:: export type DraggableEventHandler = (e: MouseEvent, data: DraggableData) => void;*/
 	/*:: export type ControlPosition = {x: number, y: number};*/
+	/*:: export type DefaultControlPosition = {x: number|string, y: number|string};*/
 
 
 	//
@@ -1861,7 +1877,7 @@
 	  defaultClassName: string,
 	  defaultClassNameDragging: string,
 	  defaultClassNameDragged: string,
-	  defaultPosition: ControlPosition,
+	  defaultPosition: DefaultControlPosition,
 	  position: ControlPosition,
 	  scale: number
 	};*/
@@ -1971,8 +1987,8 @@
 	      dragged: false,
 
 	      // Current transform x and y.
-	      x: props.position ? props.position.x : props.defaultPosition.x,
-	      y: props.position ? props.position.y : props.defaultPosition.y,
+	      x: props.position ? props.position.x : 0,
+	      y: props.position ? props.position.y : 0,
 
 	      // Used for compensating for out-of-bounds drags
 	      slackX: 0, slackY: 0,
@@ -2024,7 +2040,7 @@
 	      var controlled = Boolean(this.props.position);
 	      var draggable = !controlled || this.state.dragging;
 
-	      var position = this.props.position || this.props.defaultPosition;
+	      var position = this.props.position || { x: 0, y: 0 };
 	      var transformOpts = {
 	        // Set left if horizontal drag is enabled
 	        x: canDragX(this) && draggable ? this.state.x : position.x,
@@ -2035,13 +2051,13 @@
 
 	      // If this element was SVG, we use the `transform` attribute.
 	      if (this.state.isElementSVG) {
-	        svgTransform = createSVGTransform(transformOpts);
+	        svgTransform = createSVGTransform(transformOpts, this.props.defaultPosition);
 	      } else {
 	        // Add a CSS transform to move the element around. This allows us to move the element around
 	        // without worrying about whether or not it is relatively or absolutely positioned.
 	        // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
 	        // has a clean slate.
-	        style = createCSSTransform(transformOpts);
+	        style = createCSSTransform(transformOpts, this.props.defaultPosition);
 	      }
 
 	      var _props = this.props,
@@ -2144,8 +2160,8 @@
 	   * ```
 	   */
 	  defaultPosition: propTypes.shape({
-	    x: propTypes.number,
-	    y: propTypes.number
+	    x: propTypes.oneOfType([propTypes.number, propTypes.string]),
+	    y: propTypes.oneOfType([propTypes.number, propTypes.string])
 	  }),
 
 	  /**
