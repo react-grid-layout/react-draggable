@@ -257,22 +257,6 @@ describe('react-draggable', function () {
       assert(style.indexOf('transform: translate(100px, 100px);') >= 0);
     });
 
-    it('should render with defaultPosition set as string transform and handle subsequent translate() for DOM nodes', function () {
-      let dragged = false;
-      drag = TestUtils.renderIntoDocument(
-        <Draggable defaultPosition={{x: '10%', y: '10%'}} onDrag={function() { dragged = true; }}>
-          <div />
-        </Draggable>
-      );
-
-      const node = ReactDOM.findDOMNode(drag);
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
-
-      const style = node.getAttribute('style');
-      assert(dragged === true);
-      assert(style.indexOf('translate(10%, 10%) translate(100px, 100px);') >= 0);
-    });
-
     it('should honor "x" axis', function () {
       let dragged = false;
       drag = TestUtils.renderIntoDocument(
