@@ -137,7 +137,7 @@ var App = React.createClass({
             {"I have a default position of {x: 25, y: 25}, so I'm slightly offset."}
           </div>
         </Draggable>
-        <Draggable initialPosition={{x: '-10%', y: '-10%'}} {...dragHandlers}>
+        <Draggable positionOffset={{x: '-10%', y: '-10%'}} {...dragHandlers}>
           <div className="box">
             {'I have a default position based on percents {x: \'-10%\', y: \'-10%\'}, so I\'m slightly offset.'}
           </div>
