@@ -257,10 +257,10 @@ describe('react-draggable', function () {
       assert(style.indexOf('transform: translate(100px, 100px);') >= 0);
     });
 
-    it('should render with initialPosition set as string transform and handle subsequent translate() for DOM nodes', function () {
+    it('should render with positionOffset set as string transform and handle subsequent translate() for DOM nodes', function () {
       let dragged = false;
       drag = TestUtils.renderIntoDocument(
-        <Draggable initialPosition={{x: '10%', y: '10%'}} onDrag={function() { dragged = true; }}>
+        <Draggable positionOffset={{x: '10%', y: '10%'}} onDrag={function() { dragged = true; }}>
           <div />
         </Draggable>
       );
