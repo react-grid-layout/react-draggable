@@ -169,6 +169,11 @@ axis: string,
 //   can be moved.
 bounds: {left: number, top: number, right: number, bottom: number} | string,
 
+// Observable value that in the case of change, will recalculate the position
+// of the Draggable element, (useful for keeping the element in bounds after
+// resizing) 
+triggerBounds: any,
+
 // Specifies a selector to be used to prevent drag initialization.
 // Example: '.body'
 cancel: string,
@@ -222,7 +227,9 @@ position: {x: number, y: number}
 // Specifies the scale of the canvas your are dragging this element on. This allows
 // you to, for example, get the correct drag deltas while you are zoomed in or out via
 // a transform or matrix in the parent of this element.
-scale: number
+scale: number,
+
+
 }
 ```
 
