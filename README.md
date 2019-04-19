@@ -219,6 +219,12 @@ onStop: DraggableEventHandler,
 // if you need to have direct control of the element.
 position: {x: number, y: number}
 
+// A position offset to start with. Useful for giving an initial position
+// to the element. Differs from `defaultPosition` in that it does not
+// affect the postiion returned in draggable callbacks, and in that it
+// accepts strings, like `{x: '10%', y: '10%'}`.
+positionOffset: {x: number | string, y: number | string},
+
 // Specifies the scale of the canvas your are dragging this element on. This allows
 // you to, for example, get the correct drag deltas while you are zoomed in or out via
 // a transform or matrix in the parent of this element.
