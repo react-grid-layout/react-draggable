@@ -1,5 +1,9 @@
 # Changelog
 
+### 3.3.0 (Apr 18, 2019)
+
+- Addition of `positionOffset` prop, which can be Numbers (px) or string percentages (like `"10%"`). See the README for more.
+
 ### 3.2.1 (Mar 1, 2019)
 
 - Reverted https://github.com/mzabriskie/react-draggable/pull/361.
