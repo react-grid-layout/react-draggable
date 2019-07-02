@@ -15,6 +15,7 @@ declare module 'react-draggable' {
     defaultClassNameDragging: string,
     defaultClassNameDragged: string,
     defaultPosition: ControlPosition,
+    positionOffset: PositionOffsetControlPosition,
     position: ControlPosition
   }
 
@@ -36,6 +37,8 @@ declare module 'react-draggable' {
   }
 
   export type ControlPosition = {x: number, y: number};
+
+  export type PositionOffsetControlPosition = {x: number|string, y: number|string};
 
   export interface DraggableCoreProps {
     allowAnyClick: boolean,

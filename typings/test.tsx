@@ -28,6 +28,7 @@ ReactDOM.render(
     defaultClassNameDragging={'dragging'}
     defaultClassNameDragged={'dragged'}
     defaultPosition={{x: 0, y: 0}}
+    positionOffset={{x: 0, y: 0}}
     position={{x: 50, y: 50}}>
     <div className="foo bar">
       <div className="handle"/>
