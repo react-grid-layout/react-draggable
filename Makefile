@@ -1,7 +1,7 @@
 # Mostly lifted from https://andreypopp.com/posts/2013-05-16-makefile-recipes-for-node-js.html
 # Thanks @andreypopp
 
-export BIN := $(shell npm bin)
+export BIN := $(shell yarn bin)
 DIST = dist
 LIB = $(DIST)/react-draggable.js
 MIN = $(DIST)/react-draggable.min.js
@@ -20,7 +20,7 @@ build: $(LIB) $(MIN)
 
 # Allows usage of `make install`, `make link`
 install link:
-	@npm $@
+	@yarn $@
 
 dist/%.js: $(BIN)
 	@$(BIN)/rollup -c
@@ -60,4 +60,4 @@ release-major: test clean build
 
 publish: clean build
 	git push --tags origin HEAD:master
-	npm publish
+	yarn publish
