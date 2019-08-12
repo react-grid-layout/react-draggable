@@ -56,7 +56,7 @@ describe('react-draggable', function () {
         assert(node.getAttribute('style').indexOf('touch-action: none') >= 0);
       }
       assert(node.getAttribute('style').indexOf('color: black') >= 0);
-      assert(node.getAttribute('style').indexOf(transformStyle + ': translate(0px, 0px)') >= 0);
+      assert(new RegExp(transformStyle + ': translate\\(0px(?:, 0px)?\\)').test(node.getAttribute('style')));
       assert(node.getAttribute('class') === 'foo react-draggable');
     });
 
@@ -286,7 +286,7 @@ describe('react-draggable', function () {
 
       const style = node.getAttribute('style');
       assert(dragged === true);
-      assert(style.indexOf('transform: translate(100px, 0px);') >= 0);
+      assert(/transform: translate\(100px(?:, 0px)?\);/.test(style));
     });
 
     it('should honor "y" axis', function () {
@@ -318,7 +318,7 @@ describe('react-draggable', function () {
 
       const style = node.getAttribute('style');
       assert(dragged === true);
-      assert(style.indexOf('transform: translate(0px, 0px);') >= 0);
+      assert(/transform: translate\(0px(?:, 0px)?\);/.test(style));
     });
 
     it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
