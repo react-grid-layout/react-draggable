@@ -75,7 +75,7 @@ an intermediate wrapper (`<Draggable><span>...</span></Draggable>`) in this case
 ### Draggable Usage
 
 View the [Demo](http://mzabriskie.github.io/react-draggable/example/) and its
-[source](/example/index.html) for more.
+[source](/example/example.js) for more.
 
 ```js
 import React from 'react';
