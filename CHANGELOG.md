@@ -1,5 +1,9 @@
 # Changelog
 
+### 3.3.1 (Aug 12, 2019)
+
+- Fix React 16.9 `componentWillMount` deprecation.
+
 ### 3.3.0 (Apr 18, 2019)
 
 - Addition of `positionOffset` prop, which can be Numbers (px) or string percentages (like `"10%"`). See the README for more.

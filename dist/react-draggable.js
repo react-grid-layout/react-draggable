@@ -1989,18 +1989,15 @@
 	      // Can only determine if SVG after mounting
 	      isElementSVG: false
 	    };
+
+	    if (props.position && !(props.onDrag || props.onStop)) {
+	      // eslint-disable-next-line no-console
+	      console.warn('A `position` was applied to this <Draggable>, without drag handlers. This will make this ' + 'component effectively undraggable. Please attach `onDrag` or `onStop` handlers so you can adjust the ' + '`position` of this element.');
+	    }
 	    return _this;
 	  }
 
 	  createClass(Draggable, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      if (this.props.position && !(this.props.onDrag || this.props.onStop)) {
-	        // eslint-disable-next-line
-	        console.warn('A `position` was applied to this <Draggable>, without drag handlers. This will make this ' + 'component effectively undraggable. Please attach `onDrag` or `onStop` handlers so you can adjust the ' + '`position` of this element.');
-	      }
-	    }
-	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      // Check to see if the element passed is an instanceof SVGElement
