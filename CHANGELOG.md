@@ -1,5 +1,10 @@
 # Changelog
 
+### 3.3.2 (Aug 16, 2019)
+
+- Use `all: inherit` instead of `background: transparent;` to fix selection styles.
+  - Fixes https://github.com/mzabriskie/react-draggable/issues/315
+
 ### 3.3.1 (Aug 12, 2019)
 
 - Fix React 16.9 `componentWillMount` deprecation.
