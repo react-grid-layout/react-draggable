@@ -33,13 +33,13 @@ define release
 	VERSION=`node -pe "require('./package.json').version"` && \
 	NEXT_VERSION=`node -pe "require('semver').inc(\"$$VERSION\", '$(1)')"` && \
 	node -e "\
-		['./package.json', './bower.json'].forEach(function(fileName) {\
+		['./package.json'].forEach(function(fileName) {\
 			var j = require(fileName);\
 			j.version = \"$$NEXT_VERSION\";\
 			var s = JSON.stringify(j, null, 2);\
 			require('fs').writeFileSync(fileName, s);\
 		});" && \
-	git add package.json bower.json CHANGELOG.md && \
+	git add package.json CHANGELOG.md && \
 	git add -f dist/ && \
 	git commit -m "release v$$NEXT_VERSION" && \
 	git tag "v$$NEXT_VERSION" -m "release v$$NEXT_VERSION"
