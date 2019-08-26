@@ -1,4 +1,4 @@
-var Draggable = require('./lib/Draggable').default;
+var Draggable = require('./build/Draggable').default;
 
 // Previous versions of this lib exported <Draggable> as the root export. As to not break
 // them, or TypeScript, we export *both* as the root and as 'default'.
@@ -6,4 +6,4 @@ var Draggable = require('./lib/Draggable').default;
 // and https://github.com/mzabriskie/react-draggable/issues/266
 module.exports = Draggable;
 module.exports.default = Draggable;
-module.exports.DraggableCore = require('./lib/DraggableCore').default;
+module.exports.DraggableCore = require('./build/DraggableCore').default;

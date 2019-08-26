@@ -1,16 +1,21 @@
 {
   "presets": [
-    ["env", { "modules": false }],
-    "stage-2",
-    "react"
+    [
+      "@babel/preset-env",
+      {
+        "modules": false
+      }
+    ],
+    "@babel/react",
+    "@babel/preset-flow"
   ],
   "plugins": [
-    "transform-flow-comments",
+    "@babel/transform-flow-comments",
+    "@babel/plugin-proposal-class-properties",
   ],
   "env": {
     "test": {
       "plugins": [
-        // Makes power-assert work
         "espower"
       ]
     }

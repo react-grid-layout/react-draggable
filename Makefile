@@ -2,11 +2,8 @@
 # Thanks @andreypopp
 
 export BIN := $(shell yarn bin)
-DIST = dist
-LIB = $(DIST)/react-draggable.js
-MIN = $(DIST)/react-draggable.min.js
-
-.PHONY: test dev lint build clean
+.PHONY: test dev lint build clean install link
+.DEFAULT_GOAL := build
 
 clean:
 	rm -rf dist
@@ -16,20 +13,19 @@ lint:
 	@$(BIN)/eslint lib/* lib/utils/* specs/*
 	@$(BIN)/tsc -p typings
 
-build: $(LIB) $(MIN)
+build: clean
+	$(BIN)/babel --out-dir ./build ./lib
+	$(BIN)/webpack --mode=production --display-modules
 
 # Allows usage of `make install`, `make link`
 install link:
 	@yarn $@
 
-dist/%.js: $(BIN)
-	@$(BIN)/rollup -c
-
 test: $(BIN)
 	@NODE_ENV=test $(BIN)/karma start --single-run
 
-dev: $(BIN)
-	script/build-watch
+dev: $(BIN) clean
+	DRAGGABLE_DEBUG=true $(BIN)/webpack-dev-server
 
 node_modules/.bin: install
 

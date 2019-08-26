@@ -17,6 +17,15 @@ A simple component for making elements draggable.
 - [Demo](http://mzabriskie.github.io/react-draggable/example/)
 - [Changelog](CHANGELOG.md)
 
+
+|Version     | Compatibility|
+|------------|--------------|
+|4.x         | React 16.3+  |
+|3.x         | React 15-16  |
+|2.x         | React 0.14 - 15   |
+|1.x         | React 0.13 - 0.14 |
+|0.x         | React 0.10 - 0.13 |
+
 ------
 
 #### Technical Documentation
