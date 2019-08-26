@@ -1,5 +1,16 @@
 # Changelog
 
+### 4.0.0 (Aug 26, 2019)
+
+> This is a major release due to a React compatibility change. If you are already on React >= 16.3, this upgrade is non-breaking.
+
+- *Requires React 16.3+ due to use of `getDerivedStateFromProps`.
+  - See https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html for why this was done.
+- Upgraded build environment to Babel 7.
+- Switched build from rollup to webpack@4 to simplify.
+- Added CJS build that does not bundle `classNames` & `prop-types` into the build. This should result in marginally smaller bundle sizes for applications that use bundlers.
+- Removed Bower build.
+
 ### 3.3.2 (Aug 16, 2019)
 
 - Use `all: inherit` instead of `background: transparent;` to fix selection styles.
