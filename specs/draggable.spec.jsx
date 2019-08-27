@@ -86,7 +86,7 @@ describe('react-draggable', function () {
       const output = renderer.getRenderOutput();
 
       const expected = (
-        <DraggableCore {...Draggable.defaultProps} handle=".foo">
+        <DraggableCore handle=".foo">
           <div
             className="react-draggable"
             style={{
@@ -98,9 +98,9 @@ describe('react-draggable', function () {
 
       // Not easy to actually test equality here. The functions are bound as static props so we can't test those easily.
       const toOmit = ['onStart', 'onStop', 'onDrag', 'onMouseDown', 'children'];
-      assert(_.isEqual(
+      assert.deepEqual(
         _.omit(output.props, toOmit),
-        _.omit(expected.props, toOmit))
+        _.omit(expected.props, toOmit)
       );
     });
 
