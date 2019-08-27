@@ -2,9 +2,9 @@
 
 environment:
   matrix:
+    - node_version: "12"
+    - node_version: "10"
     - node_version: "8"
-    - node_version: "6"
-    - node_version: "4"
   IE_BIN: "%PROGRAMFILES%\\Internet Explorer\\iexplore.exe"
 
 cache:
