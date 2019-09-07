@@ -721,6 +721,38 @@ describe('react-draggable', function () {
       // (element, fromX, fromY, toX, toY)
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
+
+    it('should not throw an error if unmounted during a callback', function () {
+      function App(props) {
+        const [firstVisible, setFirstVisible] = React.useState(true);
+        // Callback with ref to draggable
+        const dragRef = React.useRef(null);
+        props.draggableRefCb(dragRef);
+        return (
+          <div className="App">
+            <button onClick={() => setFirstVisible(true)}>Show draggables</button>
+
+            {firstVisible && (
+              <Draggable onStop={() => setFirstVisible(false)} ref={dragRef}>
+                <h2>1. Drag me!</h2>
+              </Draggable>
+            )}
+          </div>
+        );
+      }
+      let dragRef;
+      const appContainer = TestUtils.renderIntoDocument(
+        <App draggableRefCb={(_ref) => {dragRef = _ref;}}/>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(dragRef.current, 0, 0, 100, 100);
+
+      // ok, was a setstate warning thrown?
+      // Assert unmounted
+      assert(dragRef.current === null);
+    });
+
   });
 
   describe('DraggableCore callbacks', function () {

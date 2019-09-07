@@ -28,6 +28,7 @@ module.exports = function(config) {
         mode: 'production',
         // Remove source maps: *speeeeeed*
         devtool: 'none',
+        cache: true,
         module: {
           // Suppress power-assert warning
           exprContextCritical: false,
