@@ -13,6 +13,9 @@
     "lint": "make lint",
     "flow": "flow"
   },
+  "files": [
+    "/lib"
+  ],
   "typings": "./typings/index.d.ts",
   "types": "./typings/index.d.ts",
   "repository": {
