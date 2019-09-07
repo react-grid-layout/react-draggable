@@ -6,7 +6,7 @@ export BIN := $(shell yarn bin)
 .DEFAULT_GOAL := build
 
 clean:
-	rm -rf dist
+	rm -rf build
 
 lint:
 	@$(BIN)/flow
@@ -40,20 +40,19 @@ define release
 			require('fs').writeFileSync(fileName, s);\
 		});" && \
 	git add package.json CHANGELOG.md && \
-	git add -f dist/ && \
 	git commit -m "release v$$NEXT_VERSION" && \
 	git tag "v$$NEXT_VERSION" -m "release v$$NEXT_VERSION"
 endef
 
-release-patch: test clean build
+release-patch: test build
 	@$(call release,patch)
 
-release-minor: test clean build
+release-minor: test build
 	@$(call release,minor)
 
-release-major: test clean build
+release-major: test build
 	@$(call release,major)
 
-publish: clean build
+publish: build
 	git push --tags origin HEAD:master
 	yarn publish
