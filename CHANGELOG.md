@@ -1,5 +1,9 @@
 # Changelog
 
+### 4.0.1 (Sep 7, 2019)
+
+- Republish of 4.0.0 to fix a mistake where webpack working files were erroneously included in the package. Use this release instead as it is much smaller.
+
 ### 4.0.0 (Aug 26, 2019)
 
 > This is a major release due to a React compatibility change. If you are already on React >= 16.3, this upgrade is non-breaking.
