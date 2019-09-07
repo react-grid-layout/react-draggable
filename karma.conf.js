@@ -21,23 +21,17 @@ module.exports = function(config) {
     },
 
     webpack: {
+      mode: 'production',
       module: {
         // Suppress power-assert warning
         exprContextCritical: false,
-        loaders: [
+        rules: [
           {
-            test: /\.(?:jsx?)$/,
-            loader: 'babel-loader',
-            query: {
-              cacheDirectory: true,
-            },
-            exclude: /node_modules/
-          },
-          {
-            test: /\.json$/,
-            loader: 'json-loader'
+            test: /\.(?:js|es).?$/,
+            loader: 'babel-loader?cacheDirectory',
+            exclude: /(node_modules)/
           }
-        ],
+        ]
       },
       plugins: [
         new webpack.DefinePlugin({
@@ -46,9 +40,9 @@ module.exports = function(config) {
           }
         })
       ],
-      resolve: {
-        extensions: ['.js']
-      }
+      performance: {
+        hints: false
+      } 
     },
 
     webpackServer: {
@@ -80,15 +74,5 @@ module.exports = function(config) {
     },
 
     singleRun: true,
-
-    plugins: [
-      'karma-jasmine',
-      'karma-phantomjs-launcher',
-      'karma-firefox-launcher',
-      'karma-chrome-launcher',
-      'karma-ie-launcher',
-      'karma-webpack',
-      'karma-phantomjs-shim',
-    ]
   });
 };

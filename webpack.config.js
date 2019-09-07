@@ -1,14 +1,28 @@
-var webpack = require('webpack');
+const path = require('path');
+const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-	entry: './index.js',
+	entry: {
+    "react-draggable": "./index.js",
+    "react-draggable.min": "./index.js",
+  },
 	output: {
-    filename: './dist/react-draggable.js',
-    sourceMapFilename: './dist/react-draggable.js.map',
+    filename: '[name].js',
+    sourceMapFilename: '[name].js.map',
     devtoolModuleFilenameTemplate: '../[resource-path]',
     library: 'ReactDraggable',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    path: path.resolve(__dirname, 'web'),
 	},
+  devServer: {
+    contentBase: '.',
+    hot: true,
+    open: true,
+    openPage: '/example/index.html',
+    writeToDisk: true,
+  },
+  devtool: 'source-map',
   externals: {
     'react': {
       'commonjs': 'react',
@@ -33,9 +47,6 @@ module.exports = {
       }
 		]
 	},
-  resolve: {
-    extensions: ['.js']
-  },
   plugins: [
     new webpack.EnvironmentPlugin({
       // Default values
@@ -44,5 +55,13 @@ module.exports = {
     }),
     // Scope hoisting
     new webpack.optimize.ModuleConcatenationPlugin(),
-  ]
+  ],
+  optimization: {
+    minimizer: [new TerserPlugin({
+      include: /\.min\.js$/,
+      sourceMap: true,
+      terserOptions: {
+      }
+    })],
+  }
 };
