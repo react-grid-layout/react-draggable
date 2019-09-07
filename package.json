@@ -14,7 +14,7 @@
     "flow": "flow"
   },
   "files": [
-    "/lib"
+    "build"
   ],
   "typings": "./typings/index.d.ts",
   "types": "./typings/index.d.ts",
