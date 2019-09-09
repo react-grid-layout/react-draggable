@@ -27,6 +27,10 @@ module.exports = function(config) {
       require('./webpack.config.js')({}, {}),
       {
         mode: 'production',
+        // Remove minified build & separate compile of index-src
+        entry: '',
+        // Remove source maps: *speeeeeed*
+        devtool: 'none',
         module: {
           // Suppress power-assert warning
           exprContextCritical: false,
