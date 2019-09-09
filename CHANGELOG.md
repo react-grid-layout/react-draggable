@@ -1,5 +1,9 @@
 # Changelog
 
+### 4.0.2 (Sep 9, 2019)
+
+- Republish to fix packaging errors. Fixes #426
+
 ### 4.0.1 (Sep 7, 2019)
 
 - Republish of 4.0.0 to fix a mistake where webpack working files were erroneously included in the package. Use this release instead as it is much smaller.
