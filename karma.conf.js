@@ -1,4 +1,7 @@
-var webpack = require('webpack');
+'use strict';
+
+const webpack = require('webpack');
+const _ = require('lodash');
 process.env.NODE_ENV = 'test';
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
@@ -20,30 +23,21 @@ module.exports = function(config) {
       'specs/main.js': ['webpack']
     },
 
-    webpack: {
-      mode: 'production',
-      module: {
-        // Suppress power-assert warning
-        exprContextCritical: false,
-        rules: [
-          {
-            test: /\.(?:js|es).?$/,
-            loader: 'babel-loader?cacheDirectory',
-            exclude: /(node_modules)/
-          }
-        ]
-      },
-      plugins: [
-        new webpack.DefinePlugin({
-          'process.env': {
-            NODE_ENV: '"test"'
-          }
-        })
-      ],
-      performance: {
-        hints: false
-      } 
-    },
+    webpack: _.merge(
+      require('./webpack.config.js')({}, {}),
+      {
+        mode: 'production',
+        module: {
+          // Suppress power-assert warning
+          exprContextCritical: false,
+        },
+        performance: {
+          hints: false,
+        },
+        // zero out externals; we want to bundle React
+        externals: '',
+      }
+    ),
 
     webpackServer: {
       stats: {

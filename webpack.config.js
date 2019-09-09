@@ -2,10 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = {
+// Grabbed in .babelrc.js to switch on preset-env target.
+// If we're in webpack, we compile for browsers, otherwise we compile for modern Node.
+process.env.IS_WEBPACK = "1";
+
+module.exports = (env, argv) => ({
 	entry: {
-    "react-draggable": "./index.js",
-    "react-draggable.min": "./index.js",
+    "react-draggable": "./index-src.js",
+    "react-draggable.min": "./index-src.js",
   },
 	output: {
     filename: '[name].js',
@@ -42,7 +46,10 @@ module.exports = {
 		rules: [
 			{
         test: /\.(?:js|es).?$/,
-        loader: 'babel-loader?cacheDirectory',
+        loader: 'babel-loader',
+        options: {
+          cacheDirectory: true,
+        },
         exclude: /(node_modules)/
       }
 		]
@@ -50,8 +57,10 @@ module.exports = {
   plugins: [
     new webpack.EnvironmentPlugin({
       // Default values
-      DRAGGABLE_DEBUG: false,
-      NODE_ENV: 'production'
+      DRAGGABLE_DEBUG: argv.mode === 'development',
+      NODE_ENV: ['development', 'production'].includes(argv.mode) ? 
+        argv.mode : 
+        (process.env.NODE_ENV || 'production'),
     }),
     // Scope hoisting
     new webpack.optimize.ModuleConcatenationPlugin(),
@@ -60,8 +69,7 @@ module.exports = {
     minimizer: [new TerserPlugin({
       include: /\.min\.js$/,
       sourceMap: true,
-      terserOptions: {
-      }
+      terserOptions: {}
     })],
   }
-};
+});

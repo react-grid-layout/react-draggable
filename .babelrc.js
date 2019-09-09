@@ -1,9 +1,15 @@
-{
+'use strict';
+
+const targets = process.env.IS_WEBPACK === "1" ? 
+  "> 0.25%, not dead" :
+  "maintained node versions"
+
+module.exports = {
   "presets": [
     [
       "@babel/preset-env",
       {
-        "modules": false
+        targets
       }
     ],
     "@babel/react",

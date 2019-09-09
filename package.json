@@ -3,7 +3,7 @@
   "version": "4.0.1",
   "description": "React draggable component",
   "main": "index.js",
-  "browser": "web/react-draggable.js",
+  "browser": "web/react-draggable.min.js",
   "scripts": {
     "test": "make test",
     "test-debug": "karma start --browsers=Chrome",
@@ -14,7 +14,8 @@
     "flow": "flow"
   },
   "files": [
-    "/lib"
+    "/build",
+    "/web/react-draggable.min.js"
   ],
   "typings": "./typings/index.d.ts",
   "types": "./typings/index.d.ts",
