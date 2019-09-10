@@ -1,5 +1,10 @@
 # Changelog
 
+### 4.0.3 (Sep 10, 2019)
+
+- Add typings and sourcemap to published npm package.
+  - This compresses well so it does not bloat the package by much. Would be nice if npm had another delivery mechanism for optional modes, like web/TS.
+
 ### 4.0.2 (Sep 9, 2019)
 
 - Republish to fix packaging errors. Fixes #426
