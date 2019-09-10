@@ -15,7 +15,9 @@
   },
   "files": [
     "/build",
-    "/web/react-draggable.min.js"
+    "/typings",
+    "/web/react-draggable.min.js",
+    "/web/react-draggable.min.js.map"
   ],
   "typings": "./typings/index.d.ts",
   "types": "./typings/index.d.ts",
