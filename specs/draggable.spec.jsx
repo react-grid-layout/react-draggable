@@ -1,7 +1,7 @@
 /*eslint no-unused-vars:0, no-console:0*/
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import TestUtils, { act } from 'react-dom/test-utils';
 import ShallowRenderer from 'react-test-renderer/shallow';
 import Draggable, {DraggableCore} from '../index-src';
 import FrameComponent from 'react-frame-component';
@@ -13,7 +13,7 @@ const transformKey = browserPrefixToKey('transform', getPrefix('transform'));
 const userSelectStyle = browserPrefixToStyle('user-select', getPrefix('user-select'));
 
 describe('react-draggable', function () {
-  var drag;
+  var drag, container;
 
   // Remove body margin so offsetParent calculations work properly
   beforeAll(function() {
@@ -666,6 +666,33 @@ describe('react-draggable', function () {
       // (element, fromX, fromY, toX, toY)
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
+    });
+
+    it('should call back on drag, with values within the defined bounds (selector)', function(cb){
+      function onDrag(event, data) {
+        assert(data.x === 15);
+        assert(data.y === 20);
+        assert(data.deltaX === 15);
+        assert(data.deltaY === 20);
+        document.body.removeChild(container);
+        container = null;
+        cb();
+      }
+
+      container = document.createElement('div');
+      document.body.appendChild(container);
+
+      act(() => {
+        ReactDOM.render(<>
+          <div id="container" style={{position: 'absolute', top: 20, left: 15, height: 100, width: 100}}></div>
+           <Draggable onDrag={onDrag} bounds='#container'>
+             <div />
+           </Draggable>
+         </>, container);
+      });
+
+      drag = container.querySelector('.react-draggable');
+      simulateMovementFromTo(drag, 0, 0, -100, -100);
     });
 
     it('should call back with offset left/top, not client', function () {
