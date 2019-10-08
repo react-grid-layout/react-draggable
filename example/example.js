@@ -85,7 +85,7 @@ class App extends React.Component {
         </Draggable>
         <Draggable handle="strong" {...dragHandlers}>
           <div className="box no-cursor">
-            <strong className="cursor"><div>Drag here</div></strong>
+            <strong className="cursor" style={{ touchAction: 'none' }}><div>Drag here</div></strong>
             <div>You must click my handle to drag me</div>
           </div>
         </Draggable>
