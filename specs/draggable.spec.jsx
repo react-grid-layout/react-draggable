@@ -683,6 +683,44 @@ describe('react-draggable', function () {
 
       simulateMovementFromTo(drag, 200, 200, 300, 300);
     });
+
+    it('should call back with correct position when parent element is 2x scaled', function() {
+      function onDrag(event, data) {
+        // visually it will look like 100, because parent is 2x scaled
+        assert(data.x === 50);
+        assert(data.y === 50);
+        assert(data.deltaX === 50);
+        assert(data.deltaY === 50);
+        assert(data.node === ReactDOM.findDOMNode(drag));
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag} scale={2}>
+          <div />
+        </Draggable>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
+
+    it('should call back with correct position when parent element is 0.5x scaled', function() {
+      function onDrag(event, data) {
+        // visually it will look like 100, because parent is 0.5x scaled
+        assert(data.x === 200);
+        assert(data.y === 200);
+        assert(data.deltaX === 200);
+        assert(data.deltaY === 200);
+        assert(data.node === ReactDOM.findDOMNode(drag));
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag} scale={0.5}>
+          <div />
+        </Draggable>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
   });
 
   describe('DraggableCore callbacks', function () {
@@ -696,6 +734,44 @@ describe('react-draggable', function () {
       }
       drag = TestUtils.renderIntoDocument(
         <DraggableCore onDrag={onDrag}>
+          <div />
+        </DraggableCore>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
+
+    it('should call back with correct position when parent element is 2x scaled', function() {
+      function onDrag(event, data) {
+        // visually it will look like 100, because parent is 2x scaled
+        assert(data.x === 50);
+        assert(data.y === 50);
+        assert(data.deltaX === 50);
+        assert(data.deltaY === 50);
+        assert(data.node === ReactDOM.findDOMNode(drag));
+      }
+      drag = TestUtils.renderIntoDocument(
+        <DraggableCore onDrag={onDrag} scale={2}>
+          <div />
+        </DraggableCore>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
+
+    it('should call back with correct position when parent element is 0.5x scaled', function() {
+      function onDrag(event, data) {
+        // visually it will look like 100, because parent is  0.5x scaled
+        assert(data.x === 200);
+        assert(data.y === 200);
+        assert(data.deltaX === 200);
+        assert(data.deltaY === 200);
+        assert(data.node === ReactDOM.findDOMNode(drag));
+      }
+      drag = TestUtils.renderIntoDocument(
+        <DraggableCore onDrag={onDrag} scale={0.5}>
           <div />
         </DraggableCore>
       );
