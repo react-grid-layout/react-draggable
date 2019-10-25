@@ -6,6 +6,7 @@
   "browser": "web/react-draggable.min.js",
   "scripts": {
     "test": "make test",
+    "test-phantom": "make test-phantom",
     "test-debug": "karma start --browsers=Chrome",
     "test-ie": "karma start --browsers=IE",
     "dev": "make dev",
