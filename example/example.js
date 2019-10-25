@@ -1,4 +1,4 @@
-var Draggable = window.ReactDraggable;
+const {ReactDraggable: Draggable, React, ReactDOM} = window;
 
 class App extends React.Component {
   state = {

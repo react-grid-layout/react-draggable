@@ -8,7 +8,7 @@ process.env.BABEL_ENV = process.env.BABEL_ENV || 'module';
 
 module.exports = (env, argv) => ({
 	entry: {
-    'react-draggable.min': './index-src.js',
+    'react-draggable.min': './lib/cjs.js',
   },
 	output: {
     filename: '[name].js',
@@ -22,7 +22,7 @@ module.exports = (env, argv) => ({
     contentBase: '.',
     hot: true,
     open: true,
-    openPage: '/example/index.html',
+    openPage: 'example/index.html',
     writeToDisk: true,
   },
   devtool: 'source-map',
