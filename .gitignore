@@ -2,4 +2,3 @@
 *.iml
 node_modules/
 build/
-web/

@@ -1,22 +1,25 @@
 'use strict';
 
-const targets = process.env.IS_WEBPACK === "1" ? 
-  "> 0.25%, not dead" :
-  "maintained node versions"
+// If set, we put Babel in "esmMode", i.e. leave import/export intact.
+// Good for webpack and for an esm build.
+const esmMode = process.env.BABEL_ENV === "module";
 
 module.exports = {
   "presets": [
     [
       "@babel/preset-env",
       {
-        targets
-      }
+        // Don't transpile import/export in esmMode.
+        modules: esmMode ? false : "auto",
+        // Also assume modern targets in esmMode.
+        targets: esmMode ? "maintained node versions" : undefined
+      },
     ],
     "@babel/react",
     "@babel/preset-flow"
   ],
   "plugins": [
-    "@babel/transform-flow-comments",
+    "@babel/plugin-transform-flow-comments",
     "@babel/plugin-proposal-class-properties",
   ],
   "env": {
