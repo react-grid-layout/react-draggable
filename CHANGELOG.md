@@ -1,5 +1,22 @@
 # Changelog
 
+### 4.1.0 (Oct 25, 2019)
+
+- Add `"module"` to `package.json`. There are now three builds:
+  * **`"main"`**: ES5-compatible CJS build, suitable for most use cases with maximum compatibility.
+    - For legacy reasons, this has exports of the following shape, which ensures no surprises in CJS or ESM polyfilled environments:
+      ```js
+      module.exports = Draggable;
+      module.exports.default = Draggable;
+      module.exports.DraggableCore = DraggableCore;
+      ```
+  * **`"web"`**: Minified UMD bundle exporting to `window.ReactDraggable` with the same ES compatibility as the "main" build.
+  * **`"module"`**: ES6-compatible build using import/export.
+
+  This should fix issues like https://github.com/STRML/react-resizable/issues/113 while allowing modern bundlers to consume esm modules in the future.
+  
+  No compatibility changes are expected.
+
 ### 4.0.3 (Sep 10, 2019)
 
 - Add typings and sourcemap to published npm package.
