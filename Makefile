@@ -1,20 +1,30 @@
 # Mostly lifted from https://andreypopp.com/posts/2013-05-16-makefile-recipes-for-node-js.html
 # Thanks @andreypopp
 
+# Make it parallel
+MAKEFLAGS += j4
 export BIN := $(shell yarn bin)
-.PHONY: test dev lint build clean install link
+.PHONY: test dev lint build build-cjs build-esm build-web clean install link publish
 .DEFAULT_GOAL := build
 
 clean:
 	rm -rf build
+	mkdir -p build
 
 lint:
 	@$(BIN)/flow
 	@$(BIN)/eslint lib/* lib/utils/* specs/*
 	@$(BIN)/tsc -p typings
 
-build: clean
-	$(BIN)/babel --out-dir ./build ./lib
+build: build-cjs build-esm build-web
+
+build-cjs: $(BIN)
+	$(BIN)/babel --out-dir ./build/cjs ./lib
+
+build-esm: $(BIN)
+	env BABEL_MODULE_TYPE="module" BABEL_ES_COMPAT="6" $(BIN)/babel --out-dir ./build/module ./lib
+
+build-web: $(BIN)
 	$(BIN)/webpack --mode=production --display-modules
 
 # Allows usage of `make install`, `make link`
@@ -22,7 +32,10 @@ install link:
 	@yarn $@
 
 test: $(BIN)
-	@NODE_ENV=test $(BIN)/karma start --single-run
+	@NODE_ENV=test $(BIN)/karma start
+
+test-phantom: $(BIN)
+	@NODE_ENV=test $(BIN)/karma start karma-phantomjs.conf.js
 
 dev: $(BIN) clean
 	DRAGGABLE_DEBUG=true $(BIN)/webpack-dev-server

@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 import ShallowRenderer from 'react-test-renderer/shallow';
-import Draggable, {DraggableCore} from '../index-src';
+import Draggable, {DraggableCore} from '../lib/Draggable';
 import FrameComponent from 'react-frame-component';
 import assert from 'power-assert';
 import _ from 'lodash';

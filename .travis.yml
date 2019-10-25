@@ -9,8 +9,9 @@ env:
 addons:
   firefox: latest
 script:
-  - npm run lint
-  - npm run test
+  - make lint
+  - make test
+  - make test-phantom
 email:
   on_failure: change
   on_success: never

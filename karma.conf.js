@@ -1,6 +1,5 @@
 'use strict';
 
-const webpack = require('webpack');
 const _ = require('lodash');
 process.env.NODE_ENV = 'test';
 process.env.CHROME_BIN = require('puppeteer').executablePath();
@@ -10,25 +9,23 @@ module.exports = function(config) {
 
     basePath: '',
 
-    frameworks: ['phantomjs-shim', 'jasmine'],
+    frameworks: [ 'jasmine'],
 
     files: [
-      'specs/main.js'
+      'specs/draggable.spec.jsx'
     ],
 
     exclude: [
     ],
 
     preprocessors: {
-      'specs/main.js': ['webpack']
+      'specs/draggable.spec.jsx': ['webpack']
     },
 
     webpack: _.merge(
       require('./webpack.config.js')({}, {}),
       {
         mode: 'production',
-        // Remove minified build & separate compile of index-src
-        entry: '',
         // Remove source maps: *speeeeeed*
         devtool: 'none',
         module: {
@@ -60,16 +57,7 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['PhantomJS_custom', 'Firefox', 'ChromeHeadless'],
-
-    customLaunchers: {
-      PhantomJS_custom: {
-        base: 'PhantomJS',
-        options: {
-          viewportSize: {width: 1024, height: 768}
-        }
-      }
-    },
+    browsers: ['Firefox', 'ChromeHeadless'],
 
     singleRun: true,
   });

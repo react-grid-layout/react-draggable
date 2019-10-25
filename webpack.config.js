@@ -2,14 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 
-// Grabbed in .babelrc.js to switch on preset-env target.
-// If we're in webpack, we compile for browsers, otherwise we compile for modern Node.
-process.env.IS_WEBPACK = "1";
+// Grabbed in .babelrc.js to switch on transpiling modules.
+// We want webpack to handle modules if possible.
+// This can be overridden and webpack will handle babelified CJS.
+process.env.BABEL_MODULE_TYPE = process.env.BABEL_MODULE_TYPE || 'module';
 
 module.exports = (env, argv) => ({
 	entry: {
-    "react-draggable": "./index-src.js",
-    "react-draggable.min": "./index-src.js",
+    'react-draggable.min': './lib/cjs.js',
   },
 	output: {
     filename: '[name].js',
@@ -17,13 +17,13 @@ module.exports = (env, argv) => ({
     devtoolModuleFilenameTemplate: '../[resource-path]',
     library: 'ReactDraggable',
     libraryTarget: 'umd',
-    path: path.resolve(__dirname, 'web'),
+    path: path.resolve(__dirname, 'build', 'web'),
 	},
   devServer: {
     contentBase: '.',
     hot: true,
     open: true,
-    openPage: '/example/index.html',
+    openPage: 'example/index.html',
     writeToDisk: true,
   },
   devtool: 'source-map',
