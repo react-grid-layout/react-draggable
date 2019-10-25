@@ -3,8 +3,9 @@ const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 
 // Grabbed in .babelrc.js to switch on transpiling modules.
-// We want webpack to handle this.
-process.env.BABEL_ENV = process.env.BABEL_ENV || 'module';
+// We want webpack to handle modules if possible.
+// This can be overridden and webpack will handle babelified CJS.
+process.env.BABEL_MODULE_TYPE = process.env.BABEL_MODULE_TYPE || 'module';
 
 module.exports = (env, argv) => ({
 	entry: {

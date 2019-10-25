@@ -2,7 +2,8 @@
 
 // If set, we put Babel in "esmMode", i.e. leave import/export intact.
 // Good for webpack and for an esm build.
-const esmMode = process.env.BABEL_ENV === "module";
+const esmMode = process.env.BABEL_MODULE_TYPE === "module";
+const es6Compat = process.env.BABEL_ES_COMPAT === "6";
 
 module.exports = {
   "presets": [
@@ -11,8 +12,7 @@ module.exports = {
       {
         // Don't transpile import/export in esmMode.
         modules: esmMode ? false : "auto",
-        // Also assume modern targets in esmMode.
-        targets: esmMode ? "maintained node versions" : undefined
+        targets: es6Compat ? "maintained node versions" : undefined
       },
     ],
     "@babel/react",

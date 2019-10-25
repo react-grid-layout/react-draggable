@@ -22,7 +22,7 @@ build-cjs: $(BIN)
 	$(BIN)/babel --out-dir ./build/cjs ./lib
 
 build-esm: $(BIN)
-	env BABEL_ENV="module" $(BIN)/babel --out-dir ./build/module ./lib
+	env BABEL_MODULE_TYPE="module" BABEL_ES_COMPAT="6" $(BIN)/babel --out-dir ./build/module ./lib
 
 build-web: $(BIN)
 	$(BIN)/webpack --mode=production --display-modules
