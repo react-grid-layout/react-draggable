@@ -120,6 +120,17 @@ class App extends React.Component {
             </Draggable>
           </div>
         </div>
+        <div className="box" 
+          style={{height: '200px', width: '200px', position: 'relative', transform: 'scale(2)', transformOrigin: '0 0 0'}}>
+          <Draggable bounds="parent" {...dragHandlers} onStop={this.onControlledDragStop} scale={2}>
+            <div className="box" style={{height: '100px', width: '100px' }}>
+              <div style={{ width: '160px', transform: 'scale(0.5)', transformOrigin: '0 0 0'}}>
+                My position can be changed programmatically. <br />
+                My parent has a transform scaled to 2.
+              </div>
+            </div>
+          </Draggable>
+        </div>
         <Draggable bounds="body" {...dragHandlers}>
           <div className="box">
             I can only be moved within the confines of the body element.
@@ -164,7 +175,6 @@ class App extends React.Component {
             </p>
           </div>
         </Draggable>
-
       </div>
     );
   }

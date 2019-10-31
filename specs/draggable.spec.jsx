@@ -134,10 +134,32 @@ describe('react-draggable', function () {
       assert(drag.props.onStop === handleStop);
     });
 
+    it('should adjust draggablecore data output when `scale` prop supplied', function () {
+      function onDrag(event, data) {
+        assert(data.x === 100);
+        assert(data.y === 100);
+        assert(data.lastX === 0);
+        assert(data.lastY === 0);
+        assert(data.deltaX === 50);
+        assert(data.deltaY === 50);
+      }
+      drag = TestUtils.renderIntoDocument(
+        <DraggableCore 
+          scale={2}
+          onDrag={onDrag}>
+          <div />
+        </DraggableCore>
+      );
+
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
+
     it('should adjust draggable data output when `scale` prop supplied', function () {
       function onDrag(event, data) {
         assert(data.x === 200);
         assert(data.y === 200);
+        assert(data.lastX === 0);
+        assert(data.lastY === 0);
         assert(data.deltaX === 200);
         assert(data.deltaY === 200);
       }
