@@ -136,8 +136,8 @@ describe('react-draggable', function () {
 
     it('should adjust draggablecore data output when `scale` prop supplied', function () {
       function onDrag(event, data) {
-        assert(data.x === 100);
-        assert(data.y === 100);
+        assert(data.x === 50);
+        assert(data.y === 50);
         assert(data.lastX === 0);
         assert(data.lastY === 0);
         assert(data.deltaX === 50);
