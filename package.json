@@ -1,6 +1,6 @@
 {
   "name": "react-draggable",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "React draggable component",
   "main": "build/cjs/cjs.js",
   "browser": "build/web/react-draggable.min.js",

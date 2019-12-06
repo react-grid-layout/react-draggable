@@ -1,5 +1,10 @@
 # Changelog
 
+### 4.2.0 (Dec 2, 2019)
+
+- Fix: Apply `scale` parameter also while dragging an element. [#438](https://github.com/mzabriskie/react-draggable/pull/438)
+- Fix: Don't ship `process.env.DRAGGABLE_DEBUG` checks in cjs/esm. [#445](https://github.com/mzabriskie/react-draggable/pull/445)
+
 ### 4.1.0 (Oct 25, 2019)
 
 - Add `"module"` to `package.json`. There are now three builds:
