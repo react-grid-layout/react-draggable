@@ -178,7 +178,8 @@ axis: string,
 //   can be moved.
 bounds: {left: number, top: number, right: number, bottom: number} | string,
 
-// Specifies a selector to be used to prevent drag initialization.
+// Specifies a selector to be used to prevent drag initialization. The string is passed to
+// Element.matches, so it's possible to use multiple selectors like `.first, .second`.
 // Example: '.body'
 cancel: string,
 
