@@ -366,6 +366,8 @@ describe('react-draggable', function () {
 
          assert(!document.body.classList.contains('react-draggable-transparent-selection'));
          TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+         mouseMove(100, 100, node);
          assert(document.body.classList.contains('react-draggable-transparent-selection'));
          TestUtils.Simulate.mouseUp(node);
          assert(!document.body.classList.contains('react-draggable-transparent-selection'));
@@ -451,6 +453,9 @@ describe('react-draggable', function () {
           assert(!document.body.classList.contains('react-draggable-transparent-selection'));
           assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
           TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+          assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+          assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
+          mouseMove(100, 100, node);
           assert(!document.body.classList.contains('react-draggable-transparent-selection'));
           assert(iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
           TestUtils.Simulate.mouseUp(node);
