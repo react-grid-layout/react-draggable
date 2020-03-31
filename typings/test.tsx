@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import Draggable, {DraggableCore} from 'react-draggable';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import Draggable, { DraggableCore } from "react-draggable-rotatable";
 
-const root = document.getElementById('root')
+const root = document.getElementById("root");
 
 function handleStart() {}
 function handleDrag() {}
@@ -24,15 +24,16 @@ ReactDOM.render(
     disabled={true}
     enableUserSelectHack={false}
     bounds={false}
-    defaultClassName={'draggable'}
-    defaultClassNameDragging={'dragging'}
-    defaultClassNameDragged={'dragged'}
-    defaultPosition={{x: 0, y: 0}}
-    positionOffset={{x: 0, y: 0}}
-    position={{x: 50, y: 50}}>
+    defaultClassName={"draggable"}
+    defaultClassNameDragging={"dragging"}
+    defaultClassNameDragged={"dragged"}
+    defaultPosition={{ x: 0, y: 0, r: 0 }}
+    positionOffset={{ x: 0, y: 0 }}
+    position={{ x: 50, y: 50, r: 0 }}
+  >
     <div className="foo bar">
-      <div className="handle"/>
-      <div className="cancel"/>
+      <div className="handle" />
+      <div className="cancel" />
     </div>
   </Draggable>,
   root
@@ -50,16 +51,26 @@ ReactDOM.render(
     onDrag={handleDrag}
     onStop={handleStop}
     offsetParent={document.body}
-    enableUserSelectHack={false}>
+    enableUserSelectHack={false}
+  >
     <div className="foo bar">
-      <div className="handle"/>
-      <div className="cancel"/>
+      <div className="handle" />
+      <div className="cancel" />
     </div>
   </DraggableCore>,
   root
 );
 
+ReactDOM.render(
+  <Draggable>
+    <div />
+  </Draggable>,
+  root
+);
 
-ReactDOM.render(<Draggable><div/></Draggable>, root);
-
-ReactDOM.render(<DraggableCore><div/></DraggableCore>, root);
+ReactDOM.render(
+  <DraggableCore>
+    <div />
+  </DraggableCore>,
+  root
+);

@@ -1,5 +1,5 @@
 {
-  "name": "react-draggable",
+  "name": "react-draggable-rotatable",
   "version": "4.2.0",
   "description": "React draggable component",
   "main": "build/cjs/cjs.js",

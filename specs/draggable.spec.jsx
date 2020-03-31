@@ -253,8 +253,9 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
       const style = node.getAttribute('style');
+      console.info("TEST", style);
       assert(dragged === true);
-      assert(style.indexOf('transform: translate(100px, 100px);') >= 0);
+      assert(style.indexOf('transform: translate(100px, 100px) rotate(0deg);') >= 0);
     });
 
     it('should render with positionOffset set as string transform and handle subsequent translate() for DOM nodes', function () {
@@ -270,7 +271,7 @@ describe('react-draggable', function () {
 
       const style = node.getAttribute('style');
       assert(dragged === true);
-      assert(style.indexOf('translate(10%, 10%) translate(100px, 100px);') >= 0);
+      assert(style.indexOf('translate(10%, 10%) translate(100px, 100px) rotate(0deg);') >= 0);
     });
 
     it('should honor "x" axis', function () {
@@ -286,7 +287,7 @@ describe('react-draggable', function () {
 
       const style = node.getAttribute('style');
       assert(dragged === true);
-      assert(/transform: translate\(100px(?:, 0px)?\);/.test(style));
+      assert(/transform: translate\(100px(?:, 0px)?\) rotate\(0deg\);/.test(style));
     });
 
     it('should honor "y" axis', function () {
@@ -302,7 +303,7 @@ describe('react-draggable', function () {
 
       const style = node.getAttribute('style');
       assert(dragged === true);
-      assert(style.indexOf('transform: translate(0px, 100px);') >= 0);
+      assert(style.indexOf('transform: translate(0px, 100px) rotate(0deg);') >= 0);
     });
 
     it('should honor "none" axis', function () {
@@ -318,7 +319,7 @@ describe('react-draggable', function () {
 
       const style = node.getAttribute('style');
       assert(dragged === true);
-      assert(/transform: translate\(0px(?:, 0px)?\);/.test(style));
+      assert(/transform: translate\(0px(?:, 0px)?\) rotate\(0deg\);/.test(style));
     });
 
     it('should detect if an element is instanceof SVGElement and set state.isElementSVG to true', function() {
@@ -426,7 +427,7 @@ describe('react-draggable', function () {
 
         const style = node.getAttribute('style');
         assert(dragged === true);
-        assert(style.indexOf('transform: translate(100px, 100px);') >= 0);
+        assert(style.indexOf('transform: translate(100px, 100px) rotate(0deg);') >= 0);
 
         renderRoot.parentNode.removeChild(renderRoot);
         done();
