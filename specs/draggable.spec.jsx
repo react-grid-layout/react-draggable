@@ -253,7 +253,6 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
 
       const style = node.getAttribute('style');
-      console.info("TEST", style);
       assert(dragged === true);
       assert(style.indexOf('transform: translate(100px, 100px) rotate(0deg);') >= 0);
     });
