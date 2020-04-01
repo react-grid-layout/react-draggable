@@ -1,4 +1,4 @@
-declare module "react-draggable-rotatable" {
+declare module "react-draggable" {
   import * as React from "react";
 
   export interface DraggableBounds {
