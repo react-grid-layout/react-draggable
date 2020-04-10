@@ -355,56 +355,96 @@ describe('react-draggable', function () {
       assert(transform.indexOf('translate(100,100)') >= 0);
     });
 
-      it('should add and remove transparent selection class', function () {
-         drag = TestUtils.renderIntoDocument(
-           <Draggable>
-             <div />
-           </Draggable>
-         );
+    it('should add and remove transparent selection class', function () {
+       drag = TestUtils.renderIntoDocument(
+         <Draggable>
+           <div />
+         </Draggable>
+       );
 
-         const node = ReactDOM.findDOMNode(drag);
+       const node = ReactDOM.findDOMNode(drag);
 
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-         assert(document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseUp(node);
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-       });
+       assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+       assert(document.body.classList.contains('react-draggable-transparent-selection'));
+       TestUtils.Simulate.mouseUp(node);
+       assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+     });
 
-       it('should not add and remove transparent selection class when disabled', function () {
+    it('should not add and remove transparent selection class when disabled', function () {
 
-         drag = TestUtils.renderIntoDocument(
-           <Draggable enableUserSelectHack={false}>
-             <div />
-           </Draggable>
-         );
+      drag = TestUtils.renderIntoDocument(
+        <Draggable enableUserSelectHack={false}>
+          <div />
+        </Draggable>
+      );
 
-         const node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
 
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseUp(node);
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-       });
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseUp(node);
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+    });
 
-       it('should not add and remove transparent selection class when onStart returns false', function () {
-         function onStart() { return false; }
+    it('should not add and remove transparent selection class when onStart returns false', function () {
+      function onStart() { return false; }
 
-         drag = TestUtils.renderIntoDocument(
-           <Draggable onStart={onStart}>
-             <div />
-           </Draggable>
-         );
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onStart={onStart}>
+          <div />
+        </Draggable>
+      );
 
-         const node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
 
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseUp(node);
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-       });
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseUp(node);
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+    });
+
+    it('should not defocus inputs when unmounting', function () {
+      // Have only successfully gotten this to run on Chrome unfortunately, otherwise the initial
+      // select does not work.
+      // As of April 2020 we have verified this works in other browsers manually
+      if (!/Chrome/.test(window.navigator.userAgent)) {
+        return pending();
+      }
+
+      class TestCase extends React.Component {
+        constructor() {
+          super();
+          this.state = {text: false};
+        }
+        render() {
+          return (
+            <div>
+              <input type="text" onChange={(e) => this.setState({text: e.target.value})} size={5} />
+              {!this.state.text && (
+                <Draggable>
+                  <div />
+                </Draggable>
+              )}
+            </div>
+          );
+        }
+      }
+
+      drag = TestUtils.renderIntoDocument(<TestCase/>);
+      const dragEl = ReactDOM.findDOMNode(drag);
+      // Need to append to a real document to test focus/selection, can't just be a fragment
+      document.body.appendChild(dragEl);
+      const input = dragEl.querySelector('input');
+      input.focus();
+
+      assert(window.getSelection().type === 'Caret', 'Element should be focused before draggable unmounts');
+      TestUtils.Simulate.keyDown(input, {key: 'a', keyCode: 65, which: 65});
+      assert(window.getSelection().type === 'Caret', 'Element should be focused after draggable unmounts');
+      document.body.removeChild(dragEl);
+    });
 
     it('should be draggable when in an iframe', function (done) {
       let dragged = false;
