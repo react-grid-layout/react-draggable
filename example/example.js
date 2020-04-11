@@ -63,7 +63,7 @@ class App extends React.Component {
         <h1>React Draggable</h1>
         <p>Active DragHandlers: {this.state.activeDrags}</p>
         <p>
-          <a href="https://github.com/mzabriskie/react-draggable/blob/master/example/index.html">Demo Source</a>
+          <a href="https://github.com/STRML/react-draggable/blob/master/example/example.js">Demo Source</a>
         </p>
         <Draggable {...dragHandlers}>
           <div className="box">I can be dragged anywhere</div>
