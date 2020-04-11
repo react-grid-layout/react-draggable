@@ -38,7 +38,7 @@ test-phantom: $(BIN)
 	@NODE_ENV=test $(BIN)/karma start karma-phantomjs.conf.js
 
 dev: $(BIN) clean
-	DRAGGABLE_DEBUG=true $(BIN)/webpack-dev-server
+	$(BIN)/webpack-dev-server
 
 node_modules/.bin: install
 

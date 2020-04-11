@@ -24,6 +24,7 @@ module.exports = (env, argv) => ({
     hot: true,
     open: true,
     openPage: 'example/index.html',
+    disableHostCheck: true,
     writeToDisk: true,
   },
   devtool: 'source-map',
@@ -57,7 +58,7 @@ module.exports = (env, argv) => ({
   plugins: [
     new webpack.EnvironmentPlugin({
       // Default values
-      DRAGGABLE_DEBUG: argv.mode === 'development',
+      DRAGGABLE_DEBUG: (process.env.DRAGGABLE_DEBUG || ''),
       NODE_ENV: ['development', 'production'].includes(argv.mode) ? 
         argv.mode : 
         (process.env.NODE_ENV || 'production'),

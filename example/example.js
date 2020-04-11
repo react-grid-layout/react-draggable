@@ -89,6 +89,17 @@ class App extends React.Component {
             <div>You must click my handle to drag me</div>
           </div>
         </Draggable>
+        <Draggable handle="strong">
+          <div className="box no-cursor" style={{display: 'flex', flexDirection: 'column'}}>
+            <strong className="cursor"><div>Drag here</div></strong>
+            <div style={{overflow: 'scroll'}}>
+              <div style={{background: 'yellow', whiteSpace: 'pre-wrap'}}>
+                I have long scrollable content with a handle
+                {'\n' + Array(40).fill('x').join('\n')}
+              </div>
+            </div>
+          </div>
+        </Draggable>
         <Draggable cancel="strong" {...dragHandlers}>
           <div className="box">
             <strong className="no-cursor">Can't drag here</strong>
@@ -144,24 +155,24 @@ class App extends React.Component {
           <div className="box">
             My position can be changed programmatically. <br />
             I have a drag handler to sync state.
-            <p>
+            <div>
               <a href="#" onClick={this.adjustXPos}>Adjust x ({controlledPosition.x})</a>
-            </p>
-            <p>
+            </div>
+            <div>
               <a href="#" onClick={this.adjustYPos}>Adjust y ({controlledPosition.y})</a>
-            </p>
+            </div>
           </div>
         </Draggable>
         <Draggable position={controlledPosition} {...dragHandlers} onStop={this.onControlledDragStop}>
           <div className="box">
             My position can be changed programmatically. <br />
             I have a dragStop handler to sync state.
-            <p>
+            <div>
               <a href="#" onClick={this.adjustXPos}>Adjust x ({controlledPosition.x})</a>
-            </p>
-            <p>
+            </div>
+            <div>
               <a href="#" onClick={this.adjustYPos}>Adjust y ({controlledPosition.y})</a>
-            </p>
+            </div>
           </div>
         </Draggable>
 
