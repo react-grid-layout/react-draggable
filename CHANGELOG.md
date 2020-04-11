@@ -1,5 +1,17 @@
 # Changelog
 
+### 4.3.0 (Apr 10, 2020)
+
+- Fix setState warning after dismount if drag still active. Harmless, but prints a warning. [#424](https://github.com/mzabriskie/react-draggable/pull/424)
+- Fix a long-standing issue where text inputs would unfocus upon dismounting a `<Draggable>`.
+  - Thanks @schnerd, [#450](https://github.com/mzabriskie/react-draggable/pull/450)
+- Fix an issue where the insides of a `<Draggable>` were not scrollable on touch devices due to the outer container having `touch-action: none`.
+    - This was a long-standing hack for mobile devices. Without it, the page will scroll while you drag the element.
+    - The new solution will simply cancel the touch event `e.preventDefault()`. However, due to changes in Chrome >= 56, this is only possible on 
+      non-passive event handlers. To fix this, we now add/remove the touchEvent on lifecycle events rather than using React's event system.
+    - [#465](https://github.com/mzabriskie/react-draggable/pull/465)
+- Upgrade devDeps and fix security warnings. None of them actually applied to this module.
+
 ### 4.2.0 (Dec 2, 2019)
 
 - Fix: Apply `scale` parameter also while dragging an element. [#438](https://github.com/mzabriskie/react-draggable/pull/438)
