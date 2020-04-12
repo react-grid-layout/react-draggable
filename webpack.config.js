@@ -49,7 +49,7 @@ module.exports = (env, argv) => ({
         test: /\.(?:js|es).?$/,
         loader: 'babel-loader',
         options: {
-          cacheDirectory: true,
+          cacheDirectory: false, // intended, have had bugs with env like DRAGGABLE_DEBUG in the past
         },
         exclude: /(node_modules)/
       }
@@ -57,11 +57,9 @@ module.exports = (env, argv) => ({
 	},
   plugins: [
     new webpack.EnvironmentPlugin({
-      // Default values
-      DRAGGABLE_DEBUG: (process.env.DRAGGABLE_DEBUG || ''),
-      NODE_ENV: ['development', 'production'].includes(argv.mode) ? 
-        argv.mode : 
-        (process.env.NODE_ENV || 'production'),
+      // these are default values
+      DRAGGABLE_DEBUG: false,
+      NODE_ENV: ['development', 'production'].includes(argv.mode) ? argv.mode : 'production'
     }),
     // Scope hoisting
     new webpack.optimize.ModuleConcatenationPlugin(),

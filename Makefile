@@ -16,7 +16,7 @@ lint:
 	@$(BIN)/eslint lib/* lib/utils/* specs/*
 	@$(BIN)/tsc -p typings
 
-build: build-cjs build-esm build-web
+build: clean build-cjs build-esm build-web
 
 build-cjs: $(BIN)
 	$(BIN)/babel --out-dir ./build/cjs ./lib
@@ -38,7 +38,7 @@ test-phantom: $(BIN)
 	@NODE_ENV=test $(BIN)/karma start karma-phantomjs.conf.js
 
 dev: $(BIN) clean
-	$(BIN)/webpack-dev-server
+	env DRAGGABLE_DEBUG=1 $(BIN)/webpack-dev-server
 
 node_modules/.bin: install
 
