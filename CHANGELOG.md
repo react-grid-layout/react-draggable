@@ -1,5 +1,19 @@
 # Changelog
 
+### 4.3.1 (Apr 11, 2020) 
+
+> This is a bugfix release.
+
+- Happy Easter!
+- Fixed a serious bug that caused `<DraggableCore>` not to pass styles.
+  - `React.cloneElement` has an odd quirk. When you do:
+    ```js
+    return React.cloneElement(this.props.children, {style: this.props.children.props.style});
+    ```
+    , `style` ends up undefined.
+- Fixed a bug that caused debug output to show up in the build. 
+  - `babel-loader` cache does not invalidate when it should. I had modified webpack.config.js in the last version but it reused stale cache.
+
 ### 4.3.0 (Apr 10, 2020)
 
 - Fix setState warning after dismount if drag still active. Harmless, but prints a warning. [#424](https://github.com/mzabriskie/react-draggable/pull/424)
