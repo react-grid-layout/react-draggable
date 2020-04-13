@@ -1,52 +1,45 @@
-var webpack = require('webpack');
+'use strict';
+
+const _ = require('lodash');
 process.env.NODE_ENV = 'test';
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function(config) {
   config.set({
 
     basePath: '',
 
-    frameworks: ['phantomjs-shim', 'jasmine'],
+    frameworks: [ 'jasmine'],
 
     files: [
-      'specs/main.js'
+      'specs/draggable.spec.jsx'
     ],
 
     exclude: [
     ],
 
     preprocessors: {
-      'specs/main.js': ['webpack']
+      'specs/draggable.spec.jsx': ['webpack']
     },
 
-    webpack: {
-      module: {
-        loaders: [
-          {
-            test: /\.(?:jsx?|es6)$/,
-            loader: 'babel',
-            query: {
-              cacheDirectory: true,
-            },
-            exclude: /node_modules/
-          },
-          {
-            test: /\.json$/,
-            loader: 'json'
-          }
-        ],
-      },
-      plugins: [
-        new webpack.DefinePlugin({
-          'process.env': {
-            NODE_ENV: '"test"'
-          }
-        })
-      ],
-      resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.es6']
+    webpack: _.merge(
+      require('./webpack.config.js')({}, {}),
+      {
+        mode: 'production',
+        // Remove source maps: *speeeeeed*
+        devtool: 'none',
+        cache: true,
+        module: {
+          // Suppress power-assert warning
+          exprContextCritical: false,
+        },
+        performance: {
+          hints: false,
+        },
+        // zero out externals; we want to bundle React
+        externals: '',
       }
-    },
+    ),
 
     webpackServer: {
       stats: {
@@ -65,31 +58,8 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['PhantomJS_custom', 'Firefox', process.env.TRAVIS ? 'Chrome_travis_ci' : 'Chrome'],
-
-    customLaunchers: {
-      Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
-      },
-      PhantomJS_custom: {
-        base: 'PhantomJS',
-        options: {
-          viewportSize: {width: 1024, height: 768}
-        }
-      }
-    },
+    browsers: ['Firefox', 'ChromeHeadless'],
 
     singleRun: true,
-
-    plugins: [
-      'karma-jasmine',
-      'karma-phantomjs-launcher',
-      'karma-firefox-launcher',
-      'karma-chrome-launcher',
-      'karma-ie-launcher',
-      'karma-webpack',
-      'karma-phantomjs-shim',
-    ]
   });
 };

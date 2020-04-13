@@ -1,4 +1,10 @@
-# React-Draggable [![Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable) ![https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true) [![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)]()
+# React-Draggable
+
+[![TravisCI Build Status](https://travis-ci.org/strml/react-draggable.svg?branch=master)](https://travis-ci.org/strml/react-draggable)
+[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/strml/react-draggable)
+[![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)](http://npmjs.com/package/react-draggable)
+[![gzip size](http://img.badgesize.io/https://npmcdn.com/react-draggable/dist/react-draggable.min.js?compression=gzip)]()
+[![version](https://img.shields.io/npm/v/react-draggable.svg)]()
 
 A simple component for making elements draggable.
 
@@ -8,8 +14,17 @@ A simple component for making elements draggable.
 </Draggable>
 ```
 
-- [Demo](http://mzabriskie.github.io/react-draggable/example/)
+- [Demo](http://strml.github.io/react-draggable/example/)
 - [Changelog](CHANGELOG.md)
+
+
+|Version     | Compatibility|
+|------------|--------------|
+|4.x         | React 16.3+  |
+|3.x         | React 15-16  |
+|2.x         | React 0.14 - 15   |
+|1.x         | React 0.13 - 0.14 |
+|0.x         | React 0.10 - 0.13 |
 
 ------
 
@@ -68,18 +83,18 @@ an intermediate wrapper (`<Draggable><span>...</span></Draggable>`) in this case
 
 ### Draggable Usage
 
-View the [Demo](http://mzabriskie.github.io/react-draggable/example/) and its
-[source](/example/index.html) for more.
+View the [Demo](http://strml.github.io/react-draggable/example/) and its
+[source](/example/example.js) for more.
 
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 
-class App extends React.Element {
+class App extends React.Component {
 
   eventLogger = (e: MouseEvent, data: Object) => {
-    console.log('Event: ', event);
+    console.log('Event: ', e);
     console.log('Data: ', data);
   };
 
@@ -91,7 +106,7 @@ class App extends React.Element {
         defaultPosition={{x: 0, y: 0}}
         position={null}
         grid={[25, 25]}
-        zIndex={100}
+        scale={1}
         onStart={this.handleStart}
         onDrag={this.handleDrag}
         onStop={this.handleStop}>
@@ -163,7 +178,8 @@ axis: string,
 //   can be moved.
 bounds: {left: number, top: number, right: number, bottom: number} | string,
 
-// Specifies a selector to be used to prevent drag initialization.
+// Specifies a selector to be used to prevent drag initialization. The string is passed to
+// Element.matches, so it's possible to use multiple selectors like `.first, .second`.
 // Example: '.body'
 cancel: string,
 
@@ -212,6 +228,17 @@ onStop: DraggableEventHandler,
 // becomes 'controlled' and is not responsive to user input. Use `position`
 // if you need to have direct control of the element.
 position: {x: number, y: number}
+
+// A position offset to start with. Useful for giving an initial position
+// to the element. Differs from `defaultPosition` in that it does not
+// affect the postiion returned in draggable callbacks, and in that it
+// accepts strings, like `{x: '10%', y: '10%'}`.
+positionOffset: {x: number | string, y: number | string},
+
+// Specifies the scale of the canvas your are dragging this element on. This allows
+// you to, for example, get the correct drag deltas while you are zoomed in or out via
+// a transform or matrix in the parent of this element.
+scale: number
 }
 ```
 
@@ -267,7 +294,8 @@ on itself and thus must have callbacks attached to be useful.
   onStart: DraggableEventHandler,
   onDrag: DraggableEventHandler,
   onStop: DraggableEventHandler,
-  onMouseDown: (e: MouseEvent) => void
+  onMouseDown: (e: MouseEvent) => void,
+  scale: number
 }
 ```
 
