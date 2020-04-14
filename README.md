@@ -1,9 +1,9 @@
 # React-Draggable
 
-[![TravisCI Build Status](https://travis-ci.org/mzabriskie/react-draggable.svg?branch=master)](https://travis-ci.org/mzabriskie/react-draggable)
-[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/mzabriskie/react-draggable)
+[![TravisCI Build Status](https://api.travis-ci.org/STRML/react-draggable.svg?branch=master)](https://travis-ci.org/strml/react-draggable)
+[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/strml/react-draggable)
 [![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)](http://npmjs.com/package/react-draggable)
-[![gzip size](http://img.badgesize.io/https://npmcdn.com/react-draggable/dist/react-draggable.min.js?compression=gzip)]()
+[![gzip size](http://img.badgesize.io/https://npmcdn.com/react-draggable/build/web/react-draggable.min.js?compression=gzip)]()
 [![version](https://img.shields.io/npm/v/react-draggable.svg)]()
 
 A simple component for making elements draggable.
@@ -14,7 +14,7 @@ A simple component for making elements draggable.
 </Draggable>
 ```
 
-- [Demo](http://mzabriskie.github.io/react-draggable/example/)
+- [Demo](http://strml.github.io/react-draggable/example/)
 - [Changelog](CHANGELOG.md)
 
 
@@ -83,7 +83,7 @@ an intermediate wrapper (`<Draggable><span>...</span></Draggable>`) in this case
 
 ### Draggable Usage
 
-View the [Demo](http://mzabriskie.github.io/react-draggable/example/) and its
+View the [Demo](http://strml.github.io/react-draggable/example/) and its
 [source](/example/example.js) for more.
 
 ```js
@@ -178,7 +178,8 @@ axis: string,
 //   can be moved.
 bounds: {left: number, top: number, right: number, bottom: number} | string,
 
-// Specifies a selector to be used to prevent drag initialization.
+// Specifies a selector to be used to prevent drag initialization. The string is passed to
+// Element.matches, so it's possible to use multiple selectors like `.first, .second`.
 // Example: '.body'
 cancel: string,
 

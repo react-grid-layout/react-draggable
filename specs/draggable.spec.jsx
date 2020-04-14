@@ -31,7 +31,7 @@ describe('react-draggable', function () {
   afterEach(function() {
     try {
       TestUtils.Simulate.mouseUp(ReactDOM.findDOMNode(drag)); // reset user-select
-      React.unmountComponentAtNode(ReactDOM.findDOMNode(drag).parentNode);
+      ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(drag).parentNode);
     } catch(e) { return; }
   });
 
@@ -52,8 +52,9 @@ describe('react-draggable', function () {
       drag = (<Draggable><div className="foo" style={{color: 'black'}}/></Draggable>);
 
       const node = renderToNode(drag);
+      // Touch-action hack has been removed
       if ('touchAction' in document.body.style) {
-        assert(node.getAttribute('style').indexOf('touch-action: none') >= 0);
+        assert(node.getAttribute('style').indexOf('touch-action: none') === -1);
       }
       assert(node.getAttribute('style').indexOf('color: black') >= 0);
       assert(new RegExp(transformStyle + ': translate\\(0px(?:, 0px)?\\)').test(node.getAttribute('style')));
@@ -355,58 +356,98 @@ describe('react-draggable', function () {
       assert(transform.indexOf('translate(100,100)') >= 0);
     });
 
-      it('should add and remove transparent selection class', function () {
-         drag = TestUtils.renderIntoDocument(
-           <Draggable>
-             <div />
-           </Draggable>
-         );
+    it('should add and remove transparent selection class', function () {
+      drag = TestUtils.renderIntoDocument(
+        <Draggable>
+          <div />
+        </Draggable>
+      );
 
-         const node = ReactDOM.findDOMNode(drag);
+      const node = ReactDOM.findDOMNode(drag);
+      
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      mouseMove(100, 100, node);
+      assert(document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseUp(node);
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+    });
 
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         mouseMove(100, 100, node);
-         assert(document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseUp(node);
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-       });
+    it('should not add and remove transparent selection class when disabled', function () {
 
-       it('should not add and remove transparent selection class when disabled', function () {
+      drag = TestUtils.renderIntoDocument(
+        <Draggable enableUserSelectHack={false}>
+          <div />
+        </Draggable>
+      );
 
-         drag = TestUtils.renderIntoDocument(
-           <Draggable enableUserSelectHack={false}>
-             <div />
-           </Draggable>
-         );
+      const node = ReactDOM.findDOMNode(drag);
 
-         const node = ReactDOM.findDOMNode(drag);
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseUp(node);
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+    });
 
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseUp(node);
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-       });
+    it('should not add and remove transparent selection class when onStart returns false', function () {
+      function onStart() { return false; }
 
-       it('should not add and remove transparent selection class when onStart returns false', function () {
-         function onStart() { return false; }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onStart={onStart}>
+          <div />
+        </Draggable>
+      );
 
-         drag = TestUtils.renderIntoDocument(
-           <Draggable onStart={onStart}>
-             <div />
-           </Draggable>
-         );
+      const node = ReactDOM.findDOMNode(drag);
 
-         const node = ReactDOM.findDOMNode(drag);
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseUp(node);
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+    });
 
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-         TestUtils.Simulate.mouseUp(node);
-         assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-       });
+    it('should not defocus inputs when unmounting', function () {
+      // Have only successfully gotten this to run on Chrome unfortunately, otherwise the initial
+      // select does not work.
+      // As of April 2020 we have verified this works in other browsers manually
+      if (!/Chrome/.test(window.navigator.userAgent)) {
+        return pending();
+      }
+
+      class TestCase extends React.Component {
+        constructor() {
+          super();
+          this.state = {text: false};
+        }
+        render() {
+          return (
+            <div>
+              <input type="text" onChange={(e) => this.setState({text: e.target.value})} size={5} />
+              {!this.state.text && (
+                <Draggable>
+                  <div />
+                </Draggable>
+              )}
+            </div>
+          );
+        }
+      }
+
+      drag = TestUtils.renderIntoDocument(<TestCase/>);
+      const dragEl = ReactDOM.findDOMNode(drag);
+      // Need to append to a real document to test focus/selection, can't just be a fragment
+      document.body.appendChild(dragEl);
+      const input = dragEl.querySelector('input');
+      input.focus();
+
+      assert(window.getSelection().type === 'Caret', 'Element should be focused before draggable unmounts');
+      TestUtils.Simulate.keyDown(input, {key: 'a', keyCode: 65, which: 65});
+      assert(window.getSelection().type === 'Caret', 'Element should be focused after draggable unmounts');
+      document.body.removeChild(dragEl);
+    });
 
     it('should be draggable when in an iframe', function (done) {
       let dragged = false;
@@ -563,6 +604,48 @@ describe('react-draggable', function () {
       assert(drag.state.dragging === true);
 
       resetDragging(drag);
+    });
+
+    it('should initialize dragging ontouchstart', function () {
+      drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
+
+      // Need to dispatch this ourselves as there is no onTouchStart handler (due to passive)
+      // so TestUtils.Simulate will not work
+      const e = new Event('touchstart');
+      ReactDOM.findDOMNode(drag).dispatchEvent(e);
+      assert(drag.state.dragging === true);
+    });
+
+    it('should call preventDefault on touchStart event', function () {
+      drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
+
+      const e = new Event('touchstart');
+      // Oddly `e.defaultPrevented` is not changing here. Maybe because we're not mounted to a real doc?
+      let pdCalled = false;
+      e.preventDefault = function() { pdCalled = true; };
+      ReactDOM.findDOMNode(drag).dispatchEvent(e);
+      assert(pdCalled);
+      assert(drag.state.dragging === true);
+    });
+
+    it('should not call preventDefault on touchStart event if not on handle', function () {
+      drag = TestUtils.renderIntoDocument(
+        <Draggable handle=".handle">
+          <div>
+            <div className="handle">
+              <div><span><div className="deep">Handle</div></span></div>
+            </div>
+            <div className="content">Lorem ipsum...</div>
+          </div>
+        </Draggable>
+      );
+
+      const e = new Event('touchstart');
+      let pdCalled = false;
+      e.preventDefault = function() { pdCalled = true; };
+      ReactDOM.findDOMNode(drag).querySelector('.content').dispatchEvent(e);
+      assert(!pdCalled);
+      assert(drag.state.dragging !== true);
     });
 
     it('should modulate position on scroll', function (done) {
@@ -726,6 +809,38 @@ describe('react-draggable', function () {
       // (element, fromX, fromY, toX, toY)
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
+
+    it('should not throw an error if unmounted during a callback', function () {
+      function App(props) {
+        const [firstVisible, setFirstVisible] = React.useState(true);
+        // Callback with ref to draggable
+        const dragRef = React.useRef(null);
+        props.draggableRefCb(dragRef);
+        return (
+          <div className="App">
+            <button onClick={() => setFirstVisible(true)}>Show draggables</button>
+
+            {firstVisible && (
+              <Draggable onStop={() => setFirstVisible(false)} ref={dragRef}>
+                <h2>1. Drag me!</h2>
+              </Draggable>
+            )}
+          </div>
+        );
+      }
+      let dragRef;
+      const appContainer = TestUtils.renderIntoDocument(
+        <App draggableRefCb={(_ref) => {dragRef = _ref;}}/>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(dragRef.current, 0, 0, 100, 100);
+
+      // ok, was a setstate warning thrown?
+      // Assert unmounted
+      assert(dragRef.current === null);
+    });
+
   });
 
   describe('DraggableCore callbacks', function () {
