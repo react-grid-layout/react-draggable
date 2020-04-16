@@ -176,7 +176,7 @@ axis: string,
 // - An object with `left, top, right, and bottom` properties.
 //   These indicate how far in each direction the draggable
 //   can be moved.
-bounds: {left: number, top: number, right: number, bottom: number} | string,
+bounds: {left?: number, top?: number, right?: number, bottom?: number} | string,
 
 // Specifies a selector to be used to prevent drag initialization. The string is passed to
 // Element.matches, so it's possible to use multiple selectors like `.first, .second`.
