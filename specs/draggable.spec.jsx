@@ -722,10 +722,30 @@ describe('react-draggable', function () {
         assert(data.y === 100);
         assert(data.deltaX === 100);
         assert(data.deltaY === 100);
+        assert(data.node === ReactDOM.findDOMNode(drag));
       }
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={onDrag}>
           <div />
+        </Draggable>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
+
+    it('should call back with correct dom node with nodeRef', function () {
+      function onDrag(event, data) {
+        // Being tricky here and installing the ref on the inner child, to ensure it's working
+        // and not just falling back on ReactDOM.findDOMNode()
+        assert(data.node === ReactDOM.findDOMNode(drag).firstChild);
+      }
+      const nodeRef = React.createRef();
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag} nodeRef={nodeRef}>
+          <span>
+            <div ref={nodeRef} />
+          </span>
         </Draggable>
       );
 
