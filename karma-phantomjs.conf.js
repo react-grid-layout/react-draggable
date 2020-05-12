@@ -1,8 +1,6 @@
 'use strict';
 
 const baseConfig = require('./karma.conf.js');
-// Phantom build can't handle the modern JS in the module build
-process.env.BABEL_MODULE_TYPE = 'cjs';
 
 module.exports = function(config) {
   // Set base config options.

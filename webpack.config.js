@@ -1,11 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-// Grabbed in .babelrc.js to switch on transpiling modules.
-// We want webpack to handle modules if possible.
-// This can be overridden and webpack will handle babelified CJS.
-process.env.BABEL_MODULE_TYPE = process.env.BABEL_MODULE_TYPE || 'module';
-
 module.exports = (env, argv) => ({
 	entry: {
     'react-draggable.min': './lib/cjs.js',

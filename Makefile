@@ -21,9 +21,6 @@ build: clean build-cjs build-esm build-web
 build-cjs: $(BIN)
 	$(BIN)/babel --out-dir ./build/cjs ./lib
 
-build-esm: $(BIN)
-	env BABEL_MODULE_TYPE="module" BABEL_ES_COMPAT="6" $(BIN)/babel --out-dir ./build/module ./lib
-
 build-web: $(BIN)
 	$(BIN)/webpack --mode=production --display-modules
 
