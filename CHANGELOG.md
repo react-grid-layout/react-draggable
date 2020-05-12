@@ -1,5 +1,14 @@
 # Changelog
 
+### 4.4.1 (May 12, 2020)
+
+- Fix: Remove "module" definition in package.json
+  - Giving up on this: there isn't a great reason to publish modules
+    here as they won't be significantly tree-shook, and it bloats
+    the published package.
+  - Fixes incompatiblity in 4.4.0 with webpack, where webpack is now
+    selecting "module" because "browser" is no longer present.
+
 ### 4.4.0 (May 12, 2020)
 
 - Add `nodeRef`:
