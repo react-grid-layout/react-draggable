@@ -224,6 +224,28 @@ onDrag: DraggableEventHandler,
 // Called when dragging stops.
 onStop: DraggableEventHandler,
 
+// If running in React Strict mode, ReactDOM.findDOMNode() is deprecated.
+// Unfortunately, in order for <Draggable> to work properly, we need raw access
+// to the underlying DOM node. If you want to avoid the warning, pass a `nodeRef`
+// as in this example:
+//
+// function MyComponent() {
+//   const nodeRef = React.useRef(null);
+//   return (
+//     <Draggable nodeRef={nodeRef}>
+//       <div ref={nodeRef}>Example Target</div>
+//     </Draggable>
+//   );
+// }
+//
+// This can be used for arbitrarily nested components, so long as the ref ends up
+// pointing to the actual child DOM node and not a custom component.
+//
+// Thanks to react-transition-group for the inspiration.
+//
+// `nodeRef` is also available on <DraggableCore>.
+nodeRef: React.Ref<typeof React.Component>,
+
 // Much like React form elements, if this property is present, the item
 // becomes 'controlled' and is not responsive to user input. Use `position`
 // if you need to have direct control of the element.
