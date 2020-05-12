@@ -3,7 +3,6 @@
   "version": "4.3.1",
   "description": "React draggable component",
   "main": "build/cjs/cjs.js",
-  "browser": "build/web/react-draggable.min.js",
   "module": "build/module/Draggable.js",
   "scripts": {
     "test": "make test",

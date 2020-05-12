@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
 
 // Grabbed in .babelrc.js to switch on transpiling modules.
 // We want webpack to handle modules if possible.
@@ -65,10 +64,6 @@ module.exports = (env, argv) => ({
     new webpack.optimize.ModuleConcatenationPlugin(),
   ],
   optimization: {
-    minimizer: [new TerserPlugin({
-      include: /\.min\.js$/,
-      sourceMap: true,
-      terserOptions: {}
-    })],
+    minimize: false,
   }
 });
