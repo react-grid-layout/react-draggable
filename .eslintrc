@@ -4,6 +4,7 @@
   "plugins": [
     "react"
   ],
+  "ignorePatterns": ["build/**/*.js"],
   "rules": {
     "strict": 0,
     "quotes": [1, "single"],
