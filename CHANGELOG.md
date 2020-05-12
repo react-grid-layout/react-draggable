@@ -1,5 +1,48 @@
 # Changelog
 
+### 4.4.0 (May 12, 2020)
+
+- Add `nodeRef`:
+  - If running in React Strict mode, ReactDOM.findDOMNode() is deprecated.
+    Unfortunately, in order for <Draggable> to work properly, we need raw access
+    to the underlying DOM node. If you want to avoid the warning, pass a `nodeRef`
+    as in this example:
+    ```js
+    function MyComponent() {
+      const nodeRef = React.useRef(null);
+      return (
+        <Draggable nodeRef={nodeRef}>
+          <div ref={nodeRef}>Example Target</div>
+        </Draggable>
+      );
+    }
+    ````
+    This can be used for arbitrarily nested components, so long as the ref ends up
+    pointing to the actual child DOM node and not a custom component.
+    Thanks to react-transition-group for the inspiration.
+    `nodeRef` is also available on <DraggableCore>.
+- Remove "browser" field in "package.json":
+  - There is nothing special in the browser build that is actually practical
+    for modern use. The "browser" field, as defined in 
+    https://github.com/defunctzombie/package-browser-field-spec#overview,
+    indicates that you should use it if you are directly accessing globals,
+    using browser-specific features, dom manipulation, etc.
+    
+    React components like react-draggable are built to do minimal raw
+    DOM manipulation, and to always gate this behind conditionals to ensure
+    that server-side rendering still works. We don't make any changes
+    to any of that for the "browser" build, so it's entirely redundant.
+    
+    This should also fix the "Super expression must either be null or
+    a function" error (#472) that some users have experienced with particular
+    bundler configurations.
+
+    The browser build may still be imported at "build/web/react-draggable.min.js".
+    This is to prevent breakage only. The file is no longer minified to prevent
+    possible [terser bugs](https://github.com/terser/terser/issues/308).
+  - The browser build will likely be removed entirely in 5.0.
+- Fix: Make `bounds` optional in TypeScript [#473](https://github.com/strml/react-draggable/pull/473)
+
 ### 4.3.1 (Apr 11, 2020) 
 
 > This is a bugfix release.
