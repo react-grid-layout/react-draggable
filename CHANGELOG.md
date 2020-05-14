@@ -1,5 +1,10 @@
 # Changelog
 
+### 4.4.2 (May 14, 2020)
+
+- Fix: Remove "module" from package.json (it is no longer being built)
+  - Fixes #482
+
 ### 4.4.1 (May 12, 2020)
 
 - Fix: Remove "module" definition in package.json
