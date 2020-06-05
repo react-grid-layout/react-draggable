@@ -9,6 +9,7 @@ function handleDrag() {}
 function handleStop() {}
 function handleMouseDown() {}
 
+const nodeRef = React.createRef<HTMLDivElement>();
 ReactDOM.render(
   <Draggable
     axis="y"
@@ -28,9 +29,10 @@ ReactDOM.render(
     defaultClassNameDragging={'dragging'}
     defaultClassNameDragged={'dragged'}
     defaultPosition={{x: 0, y: 0}}
+    nodeRef={nodeRef}
     positionOffset={{x: 0, y: 0}}
     position={{x: 50, y: 50}}>
-    <div className="foo bar">
+    <div className="foo bar" ref={nodeRef}>
       <div className="handle"/>
       <div className="cancel"/>
     </div>
@@ -38,6 +40,7 @@ ReactDOM.render(
   root
 );
 
+const nodeRefCore = React.createRef<HTMLDivElement>();
 ReactDOM.render(
   <DraggableCore
     handle=".handle"
@@ -46,12 +49,13 @@ ReactDOM.render(
     disabled={true}
     onMouseDown={handleMouseDown}
     grid={[10, 10]}
+    nodeRef={nodeRefCore}
     onStart={handleStart}
     onDrag={handleDrag}
     onStop={handleStop}
     offsetParent={document.body}
     enableUserSelectHack={false}>
-    <div className="foo bar">
+    <div className="foo bar" ref={nodeRefCore}>
       <div className="handle"/>
       <div className="cancel"/>
     </div>
