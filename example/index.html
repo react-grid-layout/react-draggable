@@ -51,6 +51,16 @@
       padding: 10px;
       float: left;
     }
+
+
+    /*
+     * RemWrapper needs to take it's styles from this element,
+     * and this element can't have an absolute position after it's kicked in.
+     * AFAIK it's not possible to do this directly in the RemWrapper component.
+     */
+    .rem-position-fix {
+      position: static !important;
+    }
   </style>
 </head>
 <body>
