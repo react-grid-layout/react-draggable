@@ -957,7 +957,7 @@ function mouseMove(x, y, node) {
 function simulateMovementFromTo(drag, fromX, fromY, toX, toY) {
   const node = ReactDOM.findDOMNode(drag);
 
-  TestUtils.Simulate.mouseDown(node, {clientX: fromX, clientY: fromX});
+  TestUtils.Simulate.mouseDown(node, {clientX: fromX, clientY: fromY});
   mouseMove(toX, toY, node);
   TestUtils.Simulate.mouseUp(node);
 }
