@@ -153,6 +153,54 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
 
+    // https://github.com/STRML/react-draggable/issues/413
+    it('should adjust draggable data output when `grid` prop supplied', function () {
+      let dragCount = 0;
+      function onDrag(event, data) {
+        if (dragCount === 0) {
+          // Should be 150, not 160
+          assert(data.x === 150);
+          assert(data.y === 150);
+          assert(data.lastX === 0);
+          assert(data.lastY === 0);
+        } else {
+          // Should be 200, not 180 (snaps)
+          assert(data.x === 200);
+          assert(data.y === 150);
+          assert(data.lastX === 150);
+          assert(data.lastY === 150);
+        }
+      }
+      function onDragStop(event, data) {
+        if (dragCount === 0) {
+          assert(data.x === 150);
+          assert(data.y === 150);
+          // As this is another step: drag, then dragStop
+          // dragStops lastX always === x
+          assert(data.lastX === 150);
+          assert(data.lastY === 150);
+        } else {
+          assert(data.x === 200);
+          assert(data.y === 150);
+          assert(data.lastX === 200);
+          assert(data.lastY === 150);
+        }
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable 
+          grid={[50, 50]}
+          onDrag={onDrag}
+          onStop={onDragStop}>
+          <div />
+        </Draggable>
+      );
+
+      simulateMovementFromTo(drag, 0, 0, 160, 160);
+      // then, move again, should snap `x` to 200
+      dragCount++;
+      simulateMovementFromTo(drag, 150, 150, 180, 160);
+    });
+
     it('should throw when setting className', function () {
       drag = (<Draggable className="foo"><span /></Draggable>);
 
@@ -959,7 +1007,7 @@ function simulateMovementFromTo(drag, fromX, fromY, toX, toY) {
 
   TestUtils.Simulate.mouseDown(node, {clientX: fromX, clientY: fromX});
   mouseMove(toX, toY, node);
-  TestUtils.Simulate.mouseUp(node);
+  TestUtils.Simulate.mouseUp(node, {clientX: toX, clientY: toY});
 }
 
 function fragmentFromString(strHTML) {
