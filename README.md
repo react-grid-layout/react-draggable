@@ -253,7 +253,7 @@ position: {x: number, y: number}
 
 // A position offset to start with. Useful for giving an initial position
 // to the element. Differs from `defaultPosition` in that it does not
-// affect the postiion returned in draggable callbacks, and in that it
+// affect the position returned in draggable callbacks, and in that it
 // accepts strings, like `{x: '10%', y: '10%'}`.
 positionOffset: {x: number | string, y: number | string},
 
