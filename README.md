@@ -48,7 +48,7 @@ $ npm install react-draggable
 ```
 
 If you aren't using browserify/webpack, a
-[UMD version of react-draggable](dist/react-draggable.js) is available. It is updated per-release only.
+[UMD version of react-draggable](https://unpkg.com/browse/react-draggable/build/web/react-draggable.min.js) is available. It is updated per-release only.
 This bundle is also what is loaded when installing from npm. It expects external `React` and `ReactDOM`.
 
 If you want a UMD version of the latest `master` revision, you can generate it yourself from master by cloning this
