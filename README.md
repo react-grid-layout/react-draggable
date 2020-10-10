@@ -6,6 +6,10 @@
 [![gzip size](http://img.badgesize.io/https://npmcdn.com/react-draggable/build/web/react-draggable.min.js?compression=gzip)]()
 [![version](https://img.shields.io/npm/v/react-draggable.svg)]()
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/6365230/95649276-f3a02480-0b06-11eb-8504-e0614a780ba4.gif" />
+</p>
+
 A simple component for making elements draggable.
 
 ```js
