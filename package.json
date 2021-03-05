@@ -11,6 +11,7 @@
     "test-ie": "karma start --browsers=IE --single-run=false --auto-watch=true",
     "dev": "make dev",
     "build": "make clean build",
+    "prepare": "make clean build",
     "lint": "make lint",
     "flow": "flow"
   },
