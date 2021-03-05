@@ -22,7 +22,7 @@ build-cjs: $(BIN)
 	$(BIN)/babel --out-dir ./build/cjs ./lib
 
 build-web: $(BIN)
-	$(BIN)/webpack --mode=production --display-modules
+	$(BIN)/webpack --mode=production
 
 # Allows usage of `make install`, `make link`
 install link:
@@ -54,13 +54,13 @@ define release
 	git tag "v$$NEXT_VERSION" -m "release v$$NEXT_VERSION"
 endef
 
-release-patch: test 
+release-patch: test
 	@$(call release,patch)
 
-release-minor: test 
+release-minor: test
 	@$(call release,minor)
 
-release-major: test 
+release-major: test
 	@$(call release,major)
 
 publish: build

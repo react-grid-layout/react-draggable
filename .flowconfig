@@ -1,4 +1,5 @@
 [ignore]
+<PROJECT_ROOT>/node_modules/webpack-cli.*
 
 [include]
 lib/
@@ -12,3 +13,4 @@ suppress_comment=\\(.\\|\n\\)*\\s*\\$FlowNewLine.*
 suppress_comment=\\(.\\|\n\\)*\\s*\\$FlowIssue
 esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
+sharedmemory.heap_size=3221225472

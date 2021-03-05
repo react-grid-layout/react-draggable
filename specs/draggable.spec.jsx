@@ -5,7 +5,7 @@ import TestUtils from 'react-dom/test-utils';
 import ShallowRenderer from 'react-test-renderer/shallow';
 import Draggable, {DraggableCore} from '../lib/Draggable';
 import FrameComponent from 'react-frame-component';
-import assert from 'power-assert';
+import assert from 'assert';
 import _ from 'lodash';
 import {getPrefix, browserPrefixToKey, browserPrefixToStyle} from '../lib/utils/getPrefix';
 const transformStyle = browserPrefixToStyle('transform', getPrefix('transform'));
@@ -143,7 +143,7 @@ describe('react-draggable', function () {
         assert(data.deltaY === 200);
       }
       drag = TestUtils.renderIntoDocument(
-        <Draggable 
+        <Draggable
           scale={0.5}
           onDrag={onDrag}>
           <div />

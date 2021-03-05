@@ -1,15 +1,37 @@
 'use strict';
 
 const _ = require('lodash');
+const webpack = require('webpack');
 process.env.NODE_ENV = 'test';
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function(config) {
+  const webpackConfig = _.merge(
+    require('./webpack.config.js')({}, {}),
+    {
+      mode: 'production',
+      // Remove source maps: *speeeeeed*
+      devtool: false,
+      cache: true,
+      performance: {
+        hints: false,
+      },
+      // zero out externals; we want to bundle React
+      externals: '',
+    }
+  );
+
+  delete webpackConfig.entry; // karma-webpack complains
+  delete webpackConfig.output; // karma-webpack complains
+  webpackConfig.plugins.push(new webpack.DefinePlugin({
+    process: {env: {}},
+  }));
+
   config.set({
 
     basePath: '',
 
-    frameworks: [ 'jasmine'],
+    frameworks: ['webpack', 'jasmine'],
 
     files: [
       'specs/draggable.spec.jsx'
@@ -22,24 +44,7 @@ module.exports = function(config) {
       'specs/draggable.spec.jsx': ['webpack']
     },
 
-    webpack: _.merge(
-      require('./webpack.config.js')({}, {}),
-      {
-        mode: 'production',
-        // Remove source maps: *speeeeeed*
-        devtool: 'none',
-        cache: true,
-        module: {
-          // Suppress power-assert warning
-          exprContextCritical: false,
-        },
-        performance: {
-          hints: false,
-        },
-        // zero out externals; we want to bundle React
-        externals: '',
-      }
-    ),
+    webpack: webpackConfig,
 
     webpackServer: {
       stats: {

@@ -15,12 +15,5 @@ module.exports = {
     "@babel/plugin-transform-flow-comments",
     "@babel/plugin-proposal-class-properties",
     "transform-inline-environment-variables"
-  ],
-  "env": {
-    "test": {
-      "plugins": [
-        "espower"
-      ]
-    }
-  }
+  ]
 }
