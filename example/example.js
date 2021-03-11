@@ -28,6 +28,21 @@ class App extends React.Component {
   onStop = () => {
     this.setState({activeDrags: --this.state.activeDrags});
   };
+  onDrop = (e) => {
+    this.setState({activeDrags: --this.state.activeDrags});
+    if (e.target.classList.contains("drop-target")) {
+      alert("Dropped!");
+      e.target.classList.remove('hovered');
+    }
+  };
+  onDropAreaMouseEnter = (e) => {
+    if (this.state.activeDrags) {
+      e.target.classList.add('hovered');
+    }
+  }
+  onDropAreaMouseLeave = (e) => {
+    e.target.classList.remove('hovered');
+  }
 
   // For controlled component
   adjustXPos = (e) => {
@@ -114,6 +129,12 @@ class App extends React.Component {
         </Draggable>
         <Draggable bounds={{top: -100, left: -100, right: 100, bottom: 100}} {...dragHandlers}>
           <div className="box">I can only be moved 100px in any direction.</div>
+        </Draggable>
+        <Draggable {...dragHandlers}>
+          <div className="box drop-target" onMouseEnter={this.onDropAreaMouseEnter} onMouseLeave={this.onDropAreaMouseLeave}>I can detect drops from the next box.</div>
+        </Draggable>
+        <Draggable {...dragHandlers} onStop={this.onDrop}>
+          <div className={`box ${this.state.activeDrags ? "no-pointer-events" : ""}`}>I can be dropped onto another box.</div>
         </Draggable>
         <div className="box" style={{height: '500px', width: '500px', position: 'relative', overflow: 'auto', padding: '0'}}>
           <div style={{height: '1000px', width: '1000px', padding: '10px'}}>
