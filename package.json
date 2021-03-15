@@ -3,6 +3,7 @@
   "version": "4.4.3",
   "description": "React draggable component",
   "main": "build/cjs/cjs.js",
+  "unpkg": "build/web/react-draggable.min.js",
   "scripts": {
     "test": "make test",
     "test-phantom": "make test-phantom",
