@@ -40,8 +40,6 @@ describe('react-draggable', function () {
       drag = TestUtils.renderIntoDocument(<Draggable><div/></Draggable>);
 
       assert(drag.props.axis === 'both');
-      assert(drag.props.handle === null);
-      assert(drag.props.cancel === null);
       assert(drag.props.bounds == false);
       assert(typeof drag.props.onStart === 'function');
       assert(typeof drag.props.onDrag === 'function');

@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 
+// Builds web module. Only really used in example code / static site.
 module.exports = (env, argv) => ({
 	entry: {
     'react-draggable.min': './lib/cjs.js',
@@ -17,6 +18,7 @@ module.exports = (env, argv) => ({
     contentBase: '.',
     hot: true,
     open: true,
+    inline: false,
     openPage: 'example/index.html',
     disableHostCheck: true,
     writeToDisk: true,
@@ -60,5 +62,8 @@ module.exports = (env, argv) => ({
   ],
   optimization: {
     minimize: false,
+  },
+  stats: {
+    errorDetails: true,
   }
 });

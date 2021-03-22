@@ -29,13 +29,13 @@ install link:
 	@yarn $@
 
 test: $(BIN)
-	@NODE_ENV=test $(BIN)/karma start
+	@$(BIN)/karma start
 
 test-phantom: $(BIN)
-	@NODE_ENV=test $(BIN)/karma start karma-phantomjs.conf.js
+	@$(BIN)/karma start karma-phantomjs.conf.js
 
 dev: $(BIN) clean
-	env DRAGGABLE_DEBUG=1 $(BIN)/webpack-dev-server
+	env DRAGGABLE_DEBUG=1 $(BIN)/webpack serve --mode=development
 
 node_modules/.bin: install
 
