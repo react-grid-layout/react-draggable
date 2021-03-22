@@ -22,7 +22,7 @@
 
 - Add `nodeRef`:
   - If running in React Strict mode, ReactDOM.findDOMNode() is deprecated.
-    Unfortunately, in order for <Draggable> to work properly, we need raw access
+    Unfortunately, in order for `<Draggable>` to work properly, we need raw access
     to the underlying DOM node. If you want to avoid the warning, pass a `nodeRef`
     as in this example:
     ```js
@@ -38,7 +38,7 @@
     This can be used for arbitrarily nested components, so long as the ref ends up
     pointing to the actual child DOM node and not a custom component.
     Thanks to react-transition-group for the inspiration.
-    `nodeRef` is also available on <DraggableCore>.
+    `nodeRef` is also available on `<DraggableCore>`.
 - Remove "browser" field in "package.json":
   - There is nothing special in the browser build that is actually practical
     for modern use. The "browser" field, as defined in 
