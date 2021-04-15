@@ -25,7 +25,7 @@
   "types": "./typings/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mzabriskie/react-draggable.git"
+    "url": "https://github.com/react-grid-layout/react-draggable.git"
   },
   "keywords": [
     "react",
@@ -35,9 +35,9 @@
   "author": "Matt Zabriskie",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mzabriskie/react-draggable/issues"
+    "url": "https://github.com/react-grid-layout/react-draggable/issues"
   },
-  "homepage": "https://github.com/mzabriskie/react-draggable",
+  "homepage": "https://github.com/react-grid-layout/react-draggable",
   "devDependencies": {
     "@babel/cli": "^7.13.10",
     "@babel/core": "^7.13.10",
