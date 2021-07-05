@@ -150,6 +150,11 @@ class App extends React.Component {
                 Both parent padding and child margin work properly.
               </div>
             </Draggable>
+            <Draggable bounds="parent" {...dragHandlers} preventDefault={false}>
+              <div className="box">
+                I don't prevent touches from scrolling the container.
+              </div>
+            </Draggable>
           </div>
         </div>
         <Draggable bounds="body" {...dragHandlers}>

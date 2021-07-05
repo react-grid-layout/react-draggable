@@ -97,7 +97,7 @@ describe('react-draggable', function () {
 
       // Not easy to actually test equality here. The functions are bound as static props so we can't test those easily.
       const toOmit = ['onStart', 'onStop', 'onDrag', 'onMouseDown', 'children'];
-      assert.deepEqual(
+      assert.deepStrictEqual(
         _.omit(output.props, toOmit),
         _.omit(expected.props, toOmit)
       );
@@ -148,7 +148,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
     });
 
     it('should throw when setting className', function () {
@@ -249,7 +249,7 @@ describe('react-draggable', function () {
       );
 
       const node = ReactDOM.findDOMNode(drag);
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
 
       const style = node.getAttribute('style');
       assert(dragged === true);
@@ -265,7 +265,7 @@ describe('react-draggable', function () {
       );
 
       const node = ReactDOM.findDOMNode(drag);
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
 
       const style = node.getAttribute('style');
       assert(dragged === true);
@@ -281,7 +281,7 @@ describe('react-draggable', function () {
       );
 
       const node = ReactDOM.findDOMNode(drag);
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
 
       const style = node.getAttribute('style');
       assert(dragged === true);
@@ -297,7 +297,7 @@ describe('react-draggable', function () {
       );
 
       const node = ReactDOM.findDOMNode(drag);
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
 
       const style = node.getAttribute('style');
       assert(dragged === true);
@@ -313,7 +313,7 @@ describe('react-draggable', function () {
       );
 
       const node = ReactDOM.findDOMNode(drag);
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
 
       const style = node.getAttribute('style');
       assert(dragged === true);
@@ -348,7 +348,7 @@ describe('react-draggable', function () {
       );
 
       const node = ReactDOM.findDOMNode(drag);
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
 
       const transform = node.getAttribute('transform');
       assert(transform.indexOf('translate(100,100)') >= 0);
@@ -461,7 +461,7 @@ describe('react-draggable', function () {
         const body = iframeDoc.body;
         const node = body.querySelector('.react-draggable');
         if (!node) return setTimeout(checkIframe, 50);
-        simulateMovementFromTo(node, 0, 0, 100, 100);
+        simulateMouseFromTo(node, 0, 0, 100, 100);
 
         const style = node.getAttribute('style');
         assert(dragged === true);
@@ -711,6 +711,48 @@ describe('react-draggable', function () {
         done();
       }, 50);
     });
+
+    // it('should allow touch scrolling parent', function (done) {
+    //   let dragCalled = false;
+    //   function onDrag(event, data) {
+    //     dragCalled = true;
+    //     // assert(data.x === 100);
+    //     // assert(data.y === 100);
+    //     // assert(data.deltaX === 100);
+    //     // assert(data.deltaY === 100);
+    //   }
+
+    //   const scrollParent = fragmentFromString(`
+    //     <div style="overflow: auto; width: 500px; height: 500px; outline: 1px solid black">
+    //       <div style="width: 10000px; height: 10000px;">
+    //       </div>
+    //     </div>
+    //   `);
+
+    //   drag = TestUtils.renderIntoDocument(
+    //     <Draggable onDrag={onDrag} preventDefault={false} defaultPosition={{x: 200, y: 200}} offsetParent={scrollParent}>
+    //       <div style={{position: 'relative', width: '100px', height: '100px', outline: '1px solid red'}} />
+    //     </Draggable>
+    //   );
+    //   const node = ReactDOM.findDOMNode(drag);
+
+    //   transplantNodeInto(node, scrollParent, (f) => f.children[0]);
+
+    //   const scrollParentNode = ReactDOM.findDOMNode(scrollParent);
+
+    //   simulateTouchFromTo(node, 200, 200, 100, 100);
+
+    //   setTimeout(() => {
+    //     console.log(node);
+    //     assert(dragCalled, 'onDrag was not called');
+    //     assert(scrollParentNode.scrollTop !== 0 && scrollParentNode.scrollLeft !== 0, 'parent didn\'t scroll on touch');
+    //     assert(scrollParentNode.scrollTop === 100, 'parent vertical scroll is off');
+    //     assert(scrollParentNode.scrollLeft === 100, 'parent horizontal scroll is off');
+    //     // cleanup
+    //     document.body.removeChild(scrollParent);
+    //     done();
+    //   }, 50);
+    // });
   });
 
   describe('draggable callbacks', function () {
@@ -729,7 +771,7 @@ describe('react-draggable', function () {
       );
 
       // (element, fromX, fromY, toX, toY)
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
     });
 
     it('should call back with correct dom node with nodeRef', function () {
@@ -748,7 +790,7 @@ describe('react-draggable', function () {
       );
 
       // (element, fromX, fromY, toX, toY)
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
     });
 
     it('should call back on drag, with values within the defined bounds', function(){
@@ -765,7 +807,7 @@ describe('react-draggable', function () {
       );
 
       // (element, fromX, fromY, toX, toY)
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
 
     });
 
@@ -782,7 +824,7 @@ describe('react-draggable', function () {
         </Draggable>
       );
 
-      simulateMovementFromTo(drag, 200, 200, 300, 300);
+      simulateMouseFromTo(drag, 200, 200, 300, 300);
     });
 
     it('should call back with correct position when parent element is 2x scaled', function() {
@@ -801,7 +843,7 @@ describe('react-draggable', function () {
       );
 
       // (element, fromX, fromY, toX, toY)
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
     });
 
     it('should call back with correct position when parent element is 0.5x scaled', function() {
@@ -820,7 +862,7 @@ describe('react-draggable', function () {
       );
 
       // (element, fromX, fromY, toX, toY)
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
     });
 
     it('should not throw an error if unmounted during a callback', function () {
@@ -847,7 +889,7 @@ describe('react-draggable', function () {
       );
 
       // (element, fromX, fromY, toX, toY)
-      simulateMovementFromTo(dragRef.current, 0, 0, 100, 100);
+      simulateMouseFromTo(dragRef.current, 0, 0, 100, 100);
 
       // ok, was a setstate warning thrown?
       // Assert unmounted
@@ -872,7 +914,7 @@ describe('react-draggable', function () {
       );
 
       // (element, fromX, fromY, toX, toY)
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
     });
 
     it('should call back with correct position when parent element is 2x scaled', function() {
@@ -891,7 +933,7 @@ describe('react-draggable', function () {
       );
 
       // (element, fromX, fromY, toX, toY)
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
     });
 
     it('should call back with correct position when parent element is 0.5x scaled', function() {
@@ -910,10 +952,9 @@ describe('react-draggable', function () {
       );
 
       // (element, fromX, fromY, toX, toY)
-      simulateMovementFromTo(drag, 0, 0, 100, 100);
+      simulateMouseFromTo(drag, 0, 0, 100, 100);
     });
   });
-
 
   describe('validation', function () {
     it('should result with invariant when there isn\'t a child', function () {
@@ -951,14 +992,51 @@ function mouseMove(x, y, node) {
   return evt;
 }
 
+function createClientXY(x, y) {
+  return { clientX: x, clientY: y };
+}
 
-function simulateMovementFromTo(drag, fromX, fromY, toX, toY) {
+function touchMove(x, y, node) {
+  const touchObj = new Touch({
+    identifier: Date.now(),
+    target: node,
+    clientX: x,
+    clientY: y,
+    radiusX: 2.5,
+    radiusY: 2.5,
+    rotationAngle: 10,
+    force: 0.5,
+  });
+
+  const touchEvent = new TouchEvent('touchmove', {
+    cancelable: true,
+    bubbles: true,
+    touches: [touchObj],
+    targetTouches: [],
+    changedTouches: [touchObj],
+    shiftKey: true,
+  });
+
+  node.dispatchEvent(touchEvent);
+}
+
+
+function simulateMouseFromTo(drag, fromX, fromY, toX, toY) {
   const node = ReactDOM.findDOMNode(drag);
 
-  TestUtils.Simulate.mouseDown(node, {clientX: fromX, clientY: fromY});
+  TestUtils.Simulate.mouseDown(node, createClientXY(fromX, fromY));
   mouseMove(toX, toY, node);
   TestUtils.Simulate.mouseUp(node);
 }
+
+// // Does not work, cannot figure out how to correctly simulate touches
+// function simulateTouchFromTo(drag, fromX, fromY, toX, toY) {
+//   const node = ReactDOM.findDOMNode(drag);
+
+//   TestUtils.Simulate.touchStart(node, { touches: [createClientXY(fromX, fromY)] });
+//   touchMove(toX, toY, node);
+//   TestUtils.Simulate.touchEnd(node, { touches: [createClientXY(toX, toY)], changedTouches: [createClientXY(toX, toY)]});
+// }
 
 function fragmentFromString(strHTML) {
   var temp = document.createElement('div');

@@ -264,7 +264,12 @@ positionOffset: {x: number | string, y: number | string},
 // Specifies the scale of the canvas your are dragging this element on. This allows
 // you to, for example, get the correct drag deltas while you are zoomed in or out via
 // a transform or matrix in the parent of this element.
-scale: number
+scale: number,
+
+// If set to false, the input event will not be default-prevented.
+// You should call `.preventDefault() `within the `onStart`, `onDrag`, and `onEnd` event handlers.
+// This allows for touch scrolling to work when the event originates on a draggable element.
+preventDefault: boolean
 }
 ```
 
@@ -321,7 +326,8 @@ on itself and thus must have callbacks attached to be useful.
   onDrag: DraggableEventHandler,
   onStop: DraggableEventHandler,
   onMouseDown: (e: MouseEvent) => void,
-  scale: number
+  scale: number,
+  preventDefault: boolean
 }
 ```
 
