@@ -245,6 +245,19 @@ onStop: DraggableEventHandler,
 // This can be used for arbitrarily nested components, so long as the ref ends up
 // pointing to the actual child DOM node and not a custom component.
 //
+// For rich components, you need to both forward the ref *and props* to the underlying DOM
+// element. Props must be forwarded so that DOM event handlers can be attached. 
+// For example:
+//
+//   const Component1 = React.forwardRef(function (props, ref) {
+//     return <div {...props} ref={ref}>Nested component</div>;
+//   });
+//
+//   const nodeRef = React.useRef(null);
+//   <DraggableCore onDrag={onDrag} nodeRef={nodeRef}>
+//     <Component1 ref={nodeRef} />
+//   </DraggableCore>
+//
 // Thanks to react-transition-group for the inspiration.
 //
 // `nodeRef` is also available on <DraggableCore>.
