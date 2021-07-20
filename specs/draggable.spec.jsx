@@ -714,13 +714,14 @@ describe('react-draggable', function () {
   });
 
   describe('draggable callbacks', function () {
-    it('should call back on drag', function () {
+    it('should call back on drag', function (done) {
       function onDrag(event, data) {
         assert(data.x === 100);
         assert(data.y === 100);
         assert(data.deltaX === 100);
         assert(data.deltaY === 100);
         assert(data.node === ReactDOM.findDOMNode(drag));
+        done();
       }
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={onDrag}>
@@ -732,11 +733,12 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
 
-    it('should call back with correct dom node with nodeRef', function () {
+    it('should call back with correct dom node with nodeRef', function (done) {
       function onDrag(event, data) {
         // Being tricky here and installing the ref on the inner child, to ensure it's working
         // and not just falling back on ReactDOM.findDOMNode()
         assert(data.node === ReactDOM.findDOMNode(drag).firstChild);
+        done();
       }
       const nodeRef = React.createRef();
       drag = TestUtils.renderIntoDocument(
@@ -751,12 +753,35 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
 
-    it('should call back on drag, with values within the defined bounds', function(){
+    it('should call back with correct dom node with nodeRef (forwardRef)', function (done) {
+
+      const Component1 = React.forwardRef(function (props, ref) {
+        return <div {...props} ref={ref}>Nested component</div>;
+      });
+
+      function onDrag(event, data) {
+        assert(data.node === ReactDOM.findDOMNode(drag));
+        assert(data.node.innerText === 'Nested component');
+        done();
+      }
+      const nodeRef = React.createRef();
+      drag = TestUtils.renderIntoDocument(
+        <DraggableCore onDrag={onDrag} nodeRef={nodeRef}>
+          <Component1 ref={nodeRef} />
+        </DraggableCore>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
+
+    it('should call back on drag, with values within the defined bounds', function(done){
       function onDrag(event, data) {
         assert(data.x === 90);
         assert(data.y === 90);
         assert(data.deltaX === 90);
         assert(data.deltaY === 90);
+        done();
       }
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={onDrag} bounds={{left: 0, right: 90, top: 0, bottom: 90}}>
@@ -769,12 +794,13 @@ describe('react-draggable', function () {
 
     });
 
-    it('should call back with offset left/top, not client', function () {
+    it('should call back with offset left/top, not client', function(done) {
       function onDrag(event, data) {
         assert(data.x === 100);
         assert(data.y === 100);
         assert(data.deltaX === 100);
         assert(data.deltaY === 100);
+        done();
       }
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={onDrag} >
@@ -785,7 +811,7 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 200, 200, 300, 300);
     });
 
-    it('should call back with correct position when parent element is 2x scaled', function() {
+    it('should call back with correct position when parent element is 2x scaled', function(done) {
       function onDrag(event, data) {
         // visually it will look like 100, because parent is 2x scaled
         assert(data.x === 50);
@@ -793,6 +819,7 @@ describe('react-draggable', function () {
         assert(data.deltaX === 50);
         assert(data.deltaY === 50);
         assert(data.node === ReactDOM.findDOMNode(drag));
+        done();
       }
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={onDrag} scale={2}>
@@ -804,7 +831,7 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
 
-    it('should call back with correct position when parent element is 0.5x scaled', function() {
+    it('should call back with correct position when parent element is 0.5x scaled', function(done) {
       function onDrag(event, data) {
         // visually it will look like 100, because parent is 0.5x scaled
         assert(data.x === 200);
@@ -812,6 +839,7 @@ describe('react-draggable', function () {
         assert(data.deltaX === 200);
         assert(data.deltaY === 200);
         assert(data.node === ReactDOM.findDOMNode(drag));
+        done();
       }
       drag = TestUtils.renderIntoDocument(
         <Draggable onDrag={onDrag} scale={0.5}>
@@ -857,13 +885,14 @@ describe('react-draggable', function () {
   });
 
   describe('DraggableCore callbacks', function () {
-    it('should call back with node on drag', function () {
+    it('should call back with node on drag', function(done) {
       function onDrag(event, data) {
         assert(data.x === 100);
         assert(data.y === 100);
         assert(data.deltaX === 100);
         assert(data.deltaY === 100);
         assert(data.node === ReactDOM.findDOMNode(drag));
+        done();
       }
       drag = TestUtils.renderIntoDocument(
         <DraggableCore onDrag={onDrag}>
@@ -875,7 +904,7 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
 
-    it('should call back with correct position when parent element is 2x scaled', function() {
+    it('should call back with correct position when parent element is 2x scaled', function(done) {
       function onDrag(event, data) {
         // visually it will look like 100, because parent is 2x scaled
         assert(data.x === 50);
@@ -883,6 +912,7 @@ describe('react-draggable', function () {
         assert(data.deltaX === 50);
         assert(data.deltaY === 50);
         assert(data.node === ReactDOM.findDOMNode(drag));
+        done();
       }
       drag = TestUtils.renderIntoDocument(
         <DraggableCore onDrag={onDrag} scale={2}>
@@ -894,7 +924,7 @@ describe('react-draggable', function () {
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
 
-    it('should call back with correct position when parent element is 0.5x scaled', function() {
+    it('should call back with correct position when parent element is 0.5x scaled', function(done) {
       function onDrag(event, data) {
         // visually it will look like 100, because parent is  0.5x scaled
         assert(data.x === 200);
@@ -902,6 +932,7 @@ describe('react-draggable', function () {
         assert(data.deltaX === 200);
         assert(data.deltaY === 200);
         assert(data.node === ReactDOM.findDOMNode(drag));
+        done();
       }
       drag = TestUtils.renderIntoDocument(
         <DraggableCore onDrag={onDrag} scale={0.5}>
