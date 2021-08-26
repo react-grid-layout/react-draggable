@@ -6,8 +6,5 @@ lib/
 index.js
 
 [options]
-esproposal.class_instance_fields=enable
-esproposal.class_static_fields=enable
 sharedmemory.heap_size=3221225472
-esproposal.optional_chaining=enable
 exact_by_default=true

@@ -457,9 +457,8 @@ describe('react-draggable', function () {
 
       setTimeout(function checkIframe() {
         const iframeDoc = ReactDOM.findDOMNode(frame).contentDocument;
-        if (!iframeDoc) return setTimeout(checkIframe, 50);
-        const body = iframeDoc.body;
-        const node = body.querySelector('.react-draggable');
+        if (!(iframeDoc && iframeDoc.body)) return setTimeout(checkIframe, 50);
+        const node = iframeDoc.body.querySelector('.react-draggable');
         if (!node) return setTimeout(checkIframe, 50);
         simulateMovementFromTo(node, 0, 0, 100, 100);
 

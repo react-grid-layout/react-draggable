@@ -15,13 +15,18 @@ module.exports = (env, argv) => ({
     path: path.resolve(__dirname, 'build', 'web'),
 	},
   devServer: {
-    contentBase: '.',
     hot: true,
-    open: true,
-    inline: false,
-    openPage: 'example/index.html',
-    disableHostCheck: true,
-    writeToDisk: true,
+    open: 'example/index.html',
+    client: {
+      overlay: true,
+    },
+    devMiddleware: {
+      // disableHostCheck: true,
+      writeToDisk: true,
+    },
+    static: {
+      directory: '.',
+    }
   },
   devtool: 'source-map',
   externals: {
