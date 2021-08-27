@@ -1,5 +1,5 @@
 {
-  "name": "react-draggable",
+  "name": "react-draggable-motionbox",
   "version": "4.4.3",
   "description": "React draggable component",
   "main": "build/cjs/cjs.js",
