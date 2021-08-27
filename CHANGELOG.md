@@ -1,5 +1,14 @@
 # Changelog
 
+### 4.4.4 (Aug 27, 2021)
+
+- Fix: Ensure `documentElement.style` actually exists. Fixes crashes in some obscure environments. #574 #575
+- Fix: Add react/react-dom as `peerDependencies` again to fix Yarn PnP
+- Size: Replace `classnames` with `clsx` to save a few bytes
+- Internal: Additional tests on `ref` functionality and additional README content on `nodeRef`
+- Internal: Lots of devDependencies updates
+- Docs: Various README and demo updates, see git commits
+
 ### 4.4.3 (June 8, 2020)
 
 - Add `nodeRef` to TypeScript definitions
