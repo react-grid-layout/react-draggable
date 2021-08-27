@@ -1,5 +1,9 @@
 # Changelog
 
+### 4.4.4 (July 4, 2021)
+
+- Add `preventDefault` prop to allow touch scroll
+
 ### 4.4.3 (June 8, 2020)
 
 - Add `nodeRef` to TypeScript definitions
