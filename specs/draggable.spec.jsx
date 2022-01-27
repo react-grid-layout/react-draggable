@@ -942,6 +942,33 @@ describe('react-draggable', function () {
       // (element, fromX, fromY, toX, toY)
       simulateMovementFromTo(drag, 0, 0, 100, 100);
     });
+
+    it('should call back with snapped data output when grid prop is provided', function(done) {
+      function onDrag(event, data) {
+        assert(data.x === 99);
+        assert(data.y === 96);
+        assert(data.deltaX === 99);
+        assert(data.deltaY === 96);
+        assert(data.node === ReactDOM.findDOMNode(drag));
+      }
+      function onStop(event, data) {
+        assert(data.x === 99);
+        assert(data.y === 96);
+        // Single drag-and-stop so stop {x, y} is same as drag {x, y}.
+        assert(data.deltaX === 0);
+        assert(data.deltaY === 0);
+        assert(data.node === ReactDOM.findDOMNode(drag));
+        done();
+      }
+      drag = TestUtils.renderIntoDocument(
+        <DraggableCore onDrag={onDrag} onStop={onStop} grid={[9, 16]}>
+          <div />
+        </DraggableCore>
+      );
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 0, 0, 100, 100);
+    });
   });
 
 
