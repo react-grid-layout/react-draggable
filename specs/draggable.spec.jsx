@@ -355,20 +355,22 @@ describe('react-draggable', function () {
     });
 
     it('should add and remove transparent selection class', function () {
-       drag = TestUtils.renderIntoDocument(
-         <Draggable>
-           <div />
-         </Draggable>
-       );
+      drag = TestUtils.renderIntoDocument(
+        <Draggable>
+          <div />
+        </Draggable>
+      );
 
-       const node = ReactDOM.findDOMNode(drag);
-
-       assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-       TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
-       assert(document.body.classList.contains('react-draggable-transparent-selection'));
-       TestUtils.Simulate.mouseUp(node);
-       assert(!document.body.classList.contains('react-draggable-transparent-selection'));
-     });
+      const node = ReactDOM.findDOMNode(drag);
+      
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+      mouseMove(100, 100, node);
+      assert(document.body.classList.contains('react-draggable-transparent-selection'));
+      TestUtils.Simulate.mouseUp(node);
+      assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+    });
 
     it('should not add and remove transparent selection class when disabled', function () {
 
@@ -489,6 +491,9 @@ describe('react-draggable', function () {
           assert(!document.body.classList.contains('react-draggable-transparent-selection'));
           assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
           TestUtils.Simulate.mouseDown(node, {clientX: 0, clientY: 0});
+          assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+          assert(!iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
+          mouseMove(100, 100, node);
           assert(!document.body.classList.contains('react-draggable-transparent-selection'));
           assert(iframeDoc.body.classList.contains('react-draggable-transparent-selection'));
           TestUtils.Simulate.mouseUp(node);
