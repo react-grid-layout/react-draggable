@@ -179,7 +179,7 @@ axis: string,
 // - a selector, restricts movement within the targeted node
 // - An object with `left, top, right, and bottom` properties.
 //   These indicate how far in each direction the draggable
-//   can be moved.
+//   can be moved. (Note: `left` and `top` are typically values <= 0)
 bounds: {left?: number, top?: number, right?: number, bottom?: number} | string,
 
 // Specifies a selector to be used to prevent drag initialization. The string is passed to
