@@ -43,6 +43,7 @@ declare module 'react-draggable' {
   export interface DraggableCoreProps {
     allowAnyClick: boolean,
     cancel: string,
+    children?: React.ReactNode,
     disabled: boolean,
     enableUserSelectHack: boolean,
     offsetParent: HTMLElement,
