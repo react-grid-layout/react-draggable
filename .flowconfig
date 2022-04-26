@@ -1,5 +1,6 @@
 [ignore]
 <PROJECT_ROOT>/node_modules/webpack-cli.*
+<PROJECT_ROOT>/node_modules/resolve.*
 
 [include]
 lib/

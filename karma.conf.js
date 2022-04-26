@@ -10,8 +10,6 @@ module.exports = function(config) {
     require('./webpack.config.js')({}, {}),
     {
       mode: 'development',
-      // Remove source maps: *speeeeeed*
-      devtool: false,
       cache: true,
       performance: {
         hints: false,
@@ -64,7 +62,10 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    browsers: ['Firefox', 'ChromeHeadless'],
+    browsers: [
+      'Firefox',
+      'ChromeHeadless'
+    ],
 
     singleRun: true,
   });
