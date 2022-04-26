@@ -1,5 +1,11 @@
 # Changelog
 
+### 4.4.5 (Apr 26, 2022)
+
+- Fix: `grid` prop unused in `handleDragStop` #621
+- Fix: `children` prop missing in TypeScript definition #648
+- Internal: Various devDep updates
+
 ### 4.4.4 (Aug 27, 2021)
 
 - Fix: Ensure `documentElement.style` actually exists. Fixes crashes in some obscure environments. #574 #575
