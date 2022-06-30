@@ -1,5 +1,5 @@
 {
-  "name": "react-draggable",
+  "name": "@cristianpjensen/react-draggable",
   "version": "4.4.7",
   "description": "React draggable component",
   "main": "build/cjs/cjs.js",
