@@ -182,10 +182,10 @@ axis: string,
 //   can be moved.
 bounds: {left?: number, top?: number, right?: number, bottom?: number} | string,
 
-// Specifies a selector to be used to prevent drag initialization. The string is passed to
+// Specifies a ref or selector to be used to prevent drag initialization. The selector is passed to
 // Element.matches, so it's possible to use multiple selectors like `.first, .second`.
 // Example: '.body'
-cancel: string,
+cancel: string | React.Ref<typeof React.Component>,
 
 // Class names for draggable UI.
 // Default to 'react-draggable', 'react-draggable-dragging', and 'react-draggable-dragged'
@@ -205,9 +205,9 @@ disabled: boolean,
 // Specifies the x and y that dragging should snap to.
 grid: [number, number],
 
-// Specifies a selector to be used as the handle that initiates drag.
+// Specifies a ref or selector to be used as the handle that initiates drag.
 // Example: '.handle'
-handle: string,
+handle: string | React.Ref<typeof React.Component>,
 
 // If desired, you can provide your own offsetParent for drag calculations.
 // By default, we use the Draggable's offsetParent. This can be useful for elements
