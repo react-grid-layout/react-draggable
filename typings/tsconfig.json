@@ -2,7 +2,8 @@
   "compilerOptions": {
     "noEmit": true,
     "jsx": "preserve",
-    "strict": true
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
   },
   "files": [
     "index.d.ts",
