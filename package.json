@@ -33,6 +33,9 @@
     "react-component"
   ],
   "author": "Matt Zabriskie",
+  "contributors": [
+    "Samuel Reed <samuel.trace.reed@gmail.com> (http://strml.net/)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/react-grid-layout/react-draggable/issues"
