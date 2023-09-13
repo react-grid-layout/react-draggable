@@ -537,6 +537,19 @@ describe('react-draggable', function () {
 
       mouseDownOn(drag, '.content', false);
       mouseDownOn(drag, '.handle', true);
+
+      const handle = React.createRef();
+      drag = TestUtils.renderIntoDocument(
+        <Draggable handle={handle}>
+          <div>
+            <div ref={handle} className="handle">Handle</div>
+            <div className="content">Lorem ipsum...</div>
+          </div>
+        </Draggable>
+      );
+
+      mouseDownOn(drag, '.content', false);
+      mouseDownOn(drag, '.handle', true);
     });
 
     it('should only initialize dragging onmousedown of handle, even if children fire event', function () {
@@ -563,6 +576,19 @@ describe('react-draggable', function () {
         <Draggable cancel=".cancel">
           <div>
             <div className="cancel">Cancel</div>
+            <div className="content">Lorem ipsum...</div>
+          </div>
+        </Draggable>
+      );
+
+      mouseDownOn(drag, '.cancel', false);
+      mouseDownOn(drag, '.content', true);
+
+      const cancel = React.createRef();
+      drag = TestUtils.renderIntoDocument(
+        <Draggable cancel={cancel}>
+          <div>
+            <div ref={cancel} className="cancel">Cancel</div>
             <div className="content">Lorem ipsum...</div>
           </div>
         </Draggable>
