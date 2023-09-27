@@ -13,7 +13,7 @@ module.exports = {
   ],
   "plugins": [
     "@babel/plugin-transform-flow-comments",
-    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-class-properties",
     "transform-inline-environment-variables"
   ]
 }

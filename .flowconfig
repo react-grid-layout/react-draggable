@@ -1,6 +1,6 @@
 [ignore]
 <PROJECT_ROOT>/node_modules/webpack-cli.*
-<PROJECT_ROOT>/node_modules/resolve.*
+<PROJECT_ROOT>/node_modules/.*malformed_package_json.*
 
 [include]
 lib/

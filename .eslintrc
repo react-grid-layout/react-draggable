@@ -27,8 +27,8 @@
     // For Flow
     "ReactElement",
     "ReactClass",
-    "$Shape",
     "$Exact",
+    "Partial",
     "$Keys",
     "MouseTouchEvent",
   }
