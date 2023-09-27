@@ -1,5 +1,10 @@
 # Changelog
 
+### 4.4.6 (Sep 27, 2023)
+
+- Fix: state inconsistency in React 18 #699
+- Internal: devDependencies updates
+
 ### 4.4.5 (Apr 26, 2022)
 
 - Fix: `grid` prop unused in `handleDragStop` #621
