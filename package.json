@@ -12,6 +12,7 @@
     "test-ie": "karma start --browsers=IE --single-run=false --auto-watch=true",
     "dev": "make dev",
     "build": "make clean build",
+    "prepare": "babel --out-dir ./build/cjs ./lib && webpack --mode=production --display-modules",
     "lint": "make lint",
     "flow": "flow"
   },
