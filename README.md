@@ -111,6 +111,7 @@ class App extends React.Component {
         position={null}
         grid={[25, 25]}
         scale={1}
+        angle={0}
         onStart={this.handleStart}
         onDrag={this.handleDrag}
         onStop={this.handleStop}>
@@ -278,6 +279,11 @@ positionOffset: {x: number | string, y: number | string},
 // you to, for example, get the correct drag deltas while you are zoomed in or out via
 // a transform or matrix in the parent of this element.
 scale: number
+
+// Specifies the angle of the canvas your are dragging this element on. This allows
+// you to, for example, get the correct drag deltas while you are rotated via
+// a transform or matrix in the parent of this element.
+angle: number
 }
 ```
 
@@ -335,6 +341,7 @@ on itself and thus must have callbacks attached to be useful.
   onStop: DraggableEventHandler,
   onMouseDown: (e: MouseEvent) => void,
   scale: number
+  angle: number
 }
 ```
 
