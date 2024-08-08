@@ -24,7 +24,7 @@ ReactDOM.render(
     onMouseDown={handleMouseDown}
     disabled={true}
     enableUserSelectHack={false}
-    doNotPreventMobileScroll={false}
+    allowMobileScroll={false}
     bounds={false}
     defaultClassName={'draggable'}
     defaultClassNameDragging={'dragging'}
@@ -56,7 +56,7 @@ ReactDOM.render(
     onStop={handleStop}
     offsetParent={document.body}
     enableUserSelectHack={false}
-    doNotPreventMobileScroll={false}>
+    allowMobileScroll={false}>
     <div className="foo bar" ref={nodeRefCore}>
       <div className="handle"/>
       <div className="cancel"/>
