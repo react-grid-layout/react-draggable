@@ -327,6 +327,7 @@ on itself and thus must have callbacks attached to be useful.
   cancel: string,
   disabled: boolean,
   enableUserSelectHack: boolean,
+  doNotPreventMobileScroll: boolean,
   offsetParent: HTMLElement,
   grid: [number, number],
   handle: string,

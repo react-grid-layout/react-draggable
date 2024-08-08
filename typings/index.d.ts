@@ -46,6 +46,7 @@ declare module 'react-draggable' {
     children?: React.ReactNode,
     disabled: boolean,
     enableUserSelectHack: boolean,
+    doNotPreventMobileScroll: boolean,
     offsetParent: HTMLElement,
     grid: [number, number],
     handle: string,
