@@ -20,11 +20,11 @@ ReactDOM.render(
     onDrag={handleDrag}
     onStop={handleStop}
     offsetParent={document.body}
-    allowAnyClick={true}
     onMouseDown={handleMouseDown}
+    allowAnyClick={true}
+    allowMobileScroll={false}
     disabled={true}
     enableUserSelectHack={false}
-    allowMobileScroll={false}
     bounds={false}
     defaultClassName={'draggable'}
     defaultClassNameDragging={'dragging'}
