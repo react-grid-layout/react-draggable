@@ -622,6 +622,18 @@ describe('react-draggable', function () {
       assert.equal(drag.state.dragging, true);
     });
 
+    it('should *not* call preventDefault on touchStart event if "allowMobileScroll"', function () {
+      drag = TestUtils.renderIntoDocument(<Draggable allowMobileScroll={true}><div/></Draggable>);
+
+      const e = new Event('touchstart');
+      // Oddly `e.defaultPrevented` is not changing here. Maybe because we're not mounted to a real doc?
+      let pdCalled = false;
+      e.preventDefault = function() { pdCalled = true; };
+      ReactDOM.findDOMNode(drag).dispatchEvent(e);
+      assert(!pdCalled);
+      assert.equal(drag.state.dragging, true);
+    });
+
     it('should not call preventDefault on touchStart event if not on handle', function () {
       drag = TestUtils.renderIntoDocument(
         <Draggable handle=".handle">

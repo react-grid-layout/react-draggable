@@ -164,6 +164,14 @@ type DraggableData = {
 // If set to `true`, will allow dragging on non left-button clicks.
 allowAnyClick: boolean,
 
+// Default `false` and default behavior before 4.5.0.
+// If set to `true`, the 'touchstart' event will not be prevented,
+// which will allow scrolling inside containers. We recommend
+// using the 'handle' / 'cancel' props when possible instead of enabling this.
+// 
+// See https://github.com/react-grid-layout/react-draggable/issues/728
+allowMobileScroll: boolean,
+
 // Determines which axis the draggable can move. This only affects
 // flushing to the DOM. Callbacks will still include all values.
 // Accepted values:
@@ -201,6 +209,9 @@ defaultPosition: {x: number, y: number},
 
 // If true, will not call any drag handlers.
 disabled: boolean,
+
+// Default `true`. Adds "user-select: none" while dragging to avoid selecting text.
+enableUserSelectHack: boolean,
 
 // Specifies the x and y that dragging should snap to.
 grid: [number, number],
@@ -324,6 +335,7 @@ on itself and thus must have callbacks attached to be useful.
 ```js
 {
   allowAnyClick: boolean,
+  allowMobileScroll: boolean,
   cancel: string,
   disabled: boolean,
   enableUserSelectHack: boolean,

@@ -42,6 +42,7 @@ declare module 'react-draggable' {
 
   export interface DraggableCoreProps {
     allowAnyClick: boolean,
+    allowMobileScroll: boolean,
     cancel: string,
     children?: React.ReactNode,
     disabled: boolean,
