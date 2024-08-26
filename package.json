@@ -93,7 +93,7 @@
     "test"
   ],
   "dependencies": {
-    "clsx": "^1.1.1",
+    "clsx": "^2.1.1",
     "prop-types": "^15.8.1"
   },
   "peerDependencies": {
