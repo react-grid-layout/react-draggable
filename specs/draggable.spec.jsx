@@ -807,6 +807,129 @@ describe('react-draggable', function () {
 
     });
 
+    it('should clip dragging to parent, with bounds set to "parent"', function(done){
+      function onDrag(event, data) {
+        assert.equal(data.x, 100);
+        assert.equal(data.y, 100);
+        assert.equal(data.deltaX, 50);
+        assert.equal(data.deltaY, 50);
+        done();
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag} bounds="parent" defaultPosition={{x:50,y:50}}>
+          <div style={{position: 'relative', width:'100px', height:'100px'}} />
+        </Draggable>
+      );
+      const node = ReactDOM.findDOMNode(drag);
+
+      // Create a parent container.
+      const fragment = fragmentFromString(`
+        <div style="position: relative; width: 200px; height: 200px;">
+        </div>
+      `);
+      transplantNodeInto(node, fragment, (f) => f);
+
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 50, 50, 350, 350);
+
+    });
+
+    it('should clip dragging to parent, with bounds set to "parent", in a shadow tree', function(done){
+      function onDrag(event, data) {
+        assert.equal(data.x, 100);
+        assert.equal(data.y, 100);
+        assert.equal(data.deltaX, 50);
+        assert.equal(data.deltaY, 50);
+        done();
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag} bounds="parent" defaultPosition={{x:50,y:50}}>
+          <div style={{position: 'relative', width:'100px', height:'100px'}} />
+        </Draggable>
+      );
+      const node = ReactDOM.findDOMNode(drag);
+
+      // Create a parent container.
+      const fragment = fragmentFromString(`
+        <div style="position: relative; width: 200px; height: 200px;">
+        </div>
+      `);
+
+      // Add the parent fragment to a shadow root
+      const div = document.createElement('div');
+      const shadowRoot = div.attachShadow({mode: 'open'});
+      shadowRoot.appendChild(fragment);
+
+      transplantNodeInto(node, shadowRoot, (f) => f.children[0]);
+
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 50, 50, 350, 350);
+
+    });
+
+    it('should clip dragging to parent, with bounds set to selector', function(done){
+      function onDrag(event, data) {
+        assert.equal(data.x, 100);
+        assert.equal(data.y, 100);
+        assert.equal(data.deltaX, 50);
+        assert.equal(data.deltaY, 50);
+        done();
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag} bounds="#container" defaultPosition={{x:50,y:50}}>
+          <div style={{position: 'relative', width:'100px', height:'100px'}} />
+        </Draggable>
+      );
+      const node = ReactDOM.findDOMNode(drag);
+
+      // Create a parent container.
+      const fragment = fragmentFromString(`
+        <div id="container" style="position: relative; width: 200px; height: 200px;">
+        </div>
+      `);
+      transplantNodeInto(node, fragment, (f) => f);
+
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 50, 50, 350, 350);
+
+    });
+
+    it('should clip dragging to parent, with bounds set to selector, in a shadow tree', function(done){
+      function onDrag(event, data) {
+        assert.equal(data.x, 100);
+        assert.equal(data.y, 100);
+        assert.equal(data.deltaX, 50);
+        assert.equal(data.deltaY, 50);
+        done();
+      }
+      drag = TestUtils.renderIntoDocument(
+        <Draggable onDrag={onDrag} bounds="#container" defaultPosition={{x:50,y:50}}>
+          <div style={{position: 'relative', width:'100px', height:'100px'}} />
+        </Draggable>
+      );
+      const node = ReactDOM.findDOMNode(drag);
+
+      // Create a parent container.
+      const fragment = fragmentFromString(`
+        <div id="container" style="position: relative; width: 200px; height: 200px;">
+        </div>
+      `);
+
+      // Add the parent fragment to a shadow root
+      const div = document.createElement('div');
+      const shadowRoot = div.attachShadow({mode: 'open'});
+      shadowRoot.appendChild(fragment);
+
+      transplantNodeInto(node, shadowRoot, (f) => f.children[0]);
+
+      // (element, fromX, fromY, toX, toY)
+      simulateMovementFromTo(drag, 50, 50, 350, 350);
+
+    });
+
     it('should call back with offset left/top, not client', function(done) {
       function onDrag(event, data) {
         assert.equal(data.x, 100);
