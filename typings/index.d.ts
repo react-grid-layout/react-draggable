@@ -50,7 +50,7 @@ declare module 'react-draggable' {
     offsetParent: HTMLElement,
     grid: [number, number],
     handle: string,
-    nodeRef?: React.RefObject<HTMLElement>,
+    nodeRef?: React.RefObject<HTMLElement | null>,
     onStart: DraggableEventHandler,
     onDrag: DraggableEventHandler,
     onStop: DraggableEventHandler,
