@@ -280,7 +280,7 @@ positionOffset: {x: number | string, y: number | string},
 // a transform or matrix in the parent of this element.
 scale: number
 
-// Specifies the angle of the canvas your are dragging this element on. This allows
+// Specifies the angle in degrees of the canvas your are dragging this element on. This allows
 // you to, for example, get the correct drag deltas while you are rotated via
 // a transform or matrix in the parent of this element.
 angle: number
