@@ -288,11 +288,13 @@ positionOffset: {x: number | string, y: number | string},
 // Specifies the scale of the canvas your are dragging this element on. This allows
 // you to, for example, get the correct drag deltas while you are zoomed in or out via
 // a transform or matrix in the parent of this element.
-scale: number
-}
+scale: number,
 
 // Drag behavior is correct after resetting data
 resetData: { x: number, y: number, slackX: number, slackY: number } | undefined, 
+}
+
+
 ```
 
 
