@@ -290,6 +290,9 @@ positionOffset: {x: number | string, y: number | string},
 // a transform or matrix in the parent of this element.
 scale: number
 }
+
+// Drag behavior is correct after resetting data
+resetData: { x: number, y: number, slackX: number, slackY: number } | undefined, 
 ```
 
 
