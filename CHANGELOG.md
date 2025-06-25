@@ -1,5 +1,14 @@
 # Changelog
 
+### 4.5.0 (Jun 25, 2025)
+
+- Internal: Update clsx version (#754)
+- Fix: bounds="selector" functionality when in a Shadow DOM tree. (#763)
+- Perf: Update nodeRef type for React v19 compatibility (#769)
+- Fix: forgotten requestAnimationFrame call (#773)
+- Perf: setState in lifecycles + forced reflow (#556)
+- Fix: add allowMobileScroll prop to allow for clicks to optionally pass through on mobile (#760)
+
 ### 4.4.6 (Sep 27, 2023)
 
 - Fix: state inconsistency in React 18 #699
