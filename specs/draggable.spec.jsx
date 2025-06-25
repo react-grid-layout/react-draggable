@@ -26,6 +26,7 @@ describe('react-draggable', function () {
 
   beforeEach(function() {
     spyOn(console, 'error');
+    spyOn(window, 'requestAnimationFrame').and.callFake(function(fn) { fn(); });
   });
 
   afterEach(function() {
@@ -368,6 +369,8 @@ describe('react-draggable', function () {
        assert(document.body.classList.contains('react-draggable-transparent-selection'));
        TestUtils.Simulate.mouseUp(node);
        assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+
+       assert(window.requestAnimationFrame.calls.any()); // should have been called
      });
 
     it('should not add and remove transparent selection class when disabled', function () {
@@ -385,6 +388,8 @@ describe('react-draggable', function () {
       assert(!document.body.classList.contains('react-draggable-transparent-selection'));
       TestUtils.Simulate.mouseUp(node);
       assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+
+      assert(!window.requestAnimationFrame.calls.any()); // should not have been called
     });
 
     it('should not add and remove transparent selection class when onStart returns false', function () {
@@ -403,6 +408,8 @@ describe('react-draggable', function () {
       assert(!document.body.classList.contains('react-draggable-transparent-selection'));
       TestUtils.Simulate.mouseUp(node);
       assert(!document.body.classList.contains('react-draggable-transparent-selection'));
+
+      assert(!window.requestAnimationFrame.calls.any()); // should not have been called
     });
 
     it('should not defocus inputs when unmounting', function () {
