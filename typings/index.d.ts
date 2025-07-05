@@ -55,7 +55,8 @@ declare module 'react-draggable' {
     onDrag: DraggableEventHandler,
     onStop: DraggableEventHandler,
     onMouseDown: (e: MouseEvent) => void,
-    scale: number
+    scale: number,
+    angle: number
   }
 
   export default class Draggable extends React.Component<Partial<DraggableProps>, {}> {
