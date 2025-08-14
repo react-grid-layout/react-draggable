@@ -25,7 +25,7 @@
     "types": "./typings/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/zsobecki-futurum/react-draggable.git"
+        "url": "git+https://github.com/zsobecki-futurum/react-draggable.git"
     },
     "keywords": [
         "react",
