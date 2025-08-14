@@ -62,13 +62,13 @@ Here's how to use it:
 
 ```js
 // ES6
-import Draggable from 'react-draggable' // The default
-import { DraggableCore } from 'react-draggable' // <DraggableCore>
-import Draggable, { DraggableCore } from 'react-draggable' // Both at the same time
+import Draggable from 'react-draggable'; // The default
+import { DraggableCore } from 'react-draggable'; // <DraggableCore>
+import Draggable, { DraggableCore } from 'react-draggable'; // Both at the same time
 
 // CommonJS
-let Draggable = require('react-draggable')
-let DraggableCore = Draggable.DraggableCore
+let Draggable = require('react-draggable');
+let DraggableCore = Draggable.DraggableCore;
 ```
 
 ## `<Draggable>`
@@ -88,15 +88,15 @@ View the [Demo](http://react-grid-layout.github.io/react-draggable/example/) and
 [source](/example/example.js) for more.
 
 ```js
-import React from 'react'
-import ReactDOM from 'react-dom'
-import Draggable from 'react-draggable'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Draggable from 'react-draggable';
 
 class App extends React.Component {
     eventLogger = (e: MouseEvent, data: Object) => {
-        console.log('Event: ', e)
-        console.log('Data: ', data)
-    }
+        console.log('Event: ', e);
+        console.log('Data: ', data);
+    };
 
     render() {
         return (
@@ -116,11 +116,11 @@ class App extends React.Component {
                     <div>This readme is really dragging on...</div>
                 </div>
             </Draggable>
-        )
+        );
     }
 }
 
-ReactDOM.render(<App />, document.body)
+ReactDOM.render(<App />, document.body);
 ```
 
 ### Draggable API
@@ -288,9 +288,9 @@ positionOffset: {x: number | string, y: number | string},
 // a transform or matrix in the parent of this element.
 scale: number,
 
-// If true, will add a delay to the start of the drag on mobile devices.
-// This is useful to prevent accidental drags when a user is trying to scroll.
-mobileDragDelay: number,
+// The delay is in milliseconds and defaults to 0. If you set this to a value greater than 0,
+// the drag will not start until the specified delay has passed after the initial touchstart event.
+mobileDragDelay: number | undefined
 }
 ```
 
