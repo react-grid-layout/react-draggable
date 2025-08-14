@@ -1,5 +1,5 @@
 {
-    "name": "@zsobecki-futurum/react-draggable",
+    "name": "@zsobecki_futurum/react-draggable",
     "version": "4.5.1",
     "description": "React draggable component with better support for touch events",
     "main": "build/cjs/cjs.js",
