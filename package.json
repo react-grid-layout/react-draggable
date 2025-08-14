@@ -1,6 +1,6 @@
 {
     "name": "@zsobecki_futurum/react-draggable",
-    "version": "4.5.0",
+    "version": "4.5.1",
     "description": "React draggable component with better support for touch events",
     "main": "build/cjs/cjs.js",
     "unpkg": "build/web/react-draggable.min.js",
