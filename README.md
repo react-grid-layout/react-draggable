@@ -14,36 +14,33 @@ A simple component for making elements draggable.
 
 ```js
 <Draggable>
-  <div>I can now be moved around!</div>
+    <div>I can now be moved around!</div>
 </Draggable>
 ```
 
-- [Demo](http://react-grid-layout.github.io/react-draggable/example/)
-- [Changelog](CHANGELOG.md)
+-   [Demo](http://react-grid-layout.github.io/react-draggable/example/)
+-   [Changelog](CHANGELOG.md)
 
+| Version | Compatibility     |
+| ------- | ----------------- |
+| 4.x     | React 16.3+       |
+| 3.x     | React 15-16       |
+| 2.x     | React 0.14 - 15   |
+| 1.x     | React 0.13 - 0.14 |
+| 0.x     | React 0.10 - 0.13 |
 
-|Version     | Compatibility|
-|------------|--------------|
-|4.x         | React 16.3+  |
-|3.x         | React 15-16  |
-|2.x         | React 0.14 - 15   |
-|1.x         | React 0.13 - 0.14 |
-|0.x         | React 0.10 - 0.13 |
-
-------
+---
 
 #### Technical Documentation
 
-- [Installing](#installing)
-- [Exports](#exports)
-- [Draggable](#draggable)
-- [Draggable Usage](#draggable-usage)
-- [Draggable API](#draggable-api)
-- [Controlled vs. Uncontrolled](#controlled-vs-uncontrolled)
-- [DraggableCore](#draggablecore)
-- [DraggableCore API](#draggablecore-api)
-
-
+-   [Installing](#installing)
+-   [Exports](#exports)
+-   [Draggable](#draggable)
+-   [Draggable Usage](#draggable-usage)
+-   [Draggable API](#draggable-api)
+-   [Controlled vs. Uncontrolled](#controlled-vs-uncontrolled)
+-   [DraggableCore](#draggablecore)
+-   [DraggableCore API](#draggablecore-api)
 
 ### Installing
 
@@ -66,8 +63,8 @@ Here's how to use it:
 ```js
 // ES6
 import Draggable from 'react-draggable'; // The default
-import {DraggableCore} from 'react-draggable'; // <DraggableCore>
-import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
+import { DraggableCore } from 'react-draggable'; // <DraggableCore>
+import Draggable, { DraggableCore } from 'react-draggable'; // Both at the same time
 
 // CommonJS
 let Draggable = require('react-draggable');
@@ -96,34 +93,34 @@ import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 
 class App extends React.Component {
+    eventLogger = (e: MouseEvent, data: Object) => {
+        console.log('Event: ', e);
+        console.log('Data: ', data);
+    };
 
-  eventLogger = (e: MouseEvent, data: Object) => {
-    console.log('Event: ', e);
-    console.log('Data: ', data);
-  };
-
-  render() {
-    return (
-      <Draggable
-        axis="x"
-        handle=".handle"
-        defaultPosition={{x: 0, y: 0}}
-        position={null}
-        grid={[25, 25]}
-        scale={1}
-        onStart={this.handleStart}
-        onDrag={this.handleDrag}
-        onStop={this.handleStop}>
-        <div>
-          <div className="handle">Drag from here</div>
-          <div>This readme is really dragging on...</div>
-        </div>
-      </Draggable>
-    );
-  }
+    render() {
+        return (
+            <Draggable
+                axis="x"
+                handle=".handle"
+                defaultPosition={{ x: 0, y: 0 }}
+                position={null}
+                grid={[25, 25]}
+                scale={1}
+                onStart={this.handleStart}
+                onDrag={this.handleDrag}
+                onStop={this.handleStop}
+            >
+                <div>
+                    <div className="handle">Drag from here</div>
+                    <div>This readme is really dragging on...</div>
+                </div>
+            </Draggable>
+        );
+    }
 }
 
-ReactDOM.render(<App/>, document.body);
+ReactDOM.render(<App />, document.body);
 ```
 
 ### Draggable API
@@ -134,9 +131,10 @@ The `<Draggable/>` component transparently adds draggability to its children.
 
 For the `<Draggable/>` component to correctly attach itself to its child, the child element must provide support
 for the following props:
-- `style` is used to give the transform css to the child.
-- `className` is used to apply the proper classes to the object being dragged.
-- `onMouseDown`, `onMouseUp`, `onTouchStart`, and `onTouchEnd`  are used to keep track of dragging state.
+
+-   `style` is used to give the transform css to the child.
+-   `className` is used to apply the proper classes to the object being dragged.
+-   `onMouseDown`, `onMouseUp`, `onTouchStart`, and `onTouchEnd` are used to keep track of dragging state.
 
 React.DOM elements support the above properties by default, so you may use those elements as children without
 any changes. If you wish to use a React component you created, you'll need to be sure to
@@ -168,7 +166,7 @@ allowAnyClick: boolean,
 // If set to `true`, the 'touchstart' event will not be prevented,
 // which will allow scrolling inside containers. We recommend
 // using the 'handle' / 'cancel' props when possible instead of enabling this.
-// 
+//
 // See https://github.com/react-grid-layout/react-draggable/issues/728
 allowMobileScroll: boolean,
 
@@ -257,7 +255,7 @@ onStop: DraggableEventHandler,
 // pointing to the actual child DOM node and not a custom component.
 //
 // For rich components, you need to both forward the ref *and props* to the underlying DOM
-// element. Props must be forwarded so that DOM event handlers can be attached. 
+// element. Props must be forwarded so that DOM event handlers can be attached.
 // For example:
 //
 //   const Component1 = React.forwardRef(function (props, ref) {
@@ -288,14 +286,16 @@ positionOffset: {x: number | string, y: number | string},
 // Specifies the scale of the canvas your are dragging this element on. This allows
 // you to, for example, get the correct drag deltas while you are zoomed in or out via
 // a transform or matrix in the parent of this element.
-scale: number
+scale: number,
+
+// The delay is in milliseconds and defaults to 0. If you set this to a value greater than 0,
+// the drag will not start until the specified delay has passed after the initial touchstart event.
+mobileDragDelay: number | undefined
 }
 ```
 
-
 Note that sending `className`, `style`, or `transform` as properties will error - set them on the child element
 directly.
-
 
 ## Controlled vs. Uncontrolled
 
@@ -346,7 +346,8 @@ on itself and thus must have callbacks attached to be useful.
   onDrag: DraggableEventHandler,
   onStop: DraggableEventHandler,
   onMouseDown: (e: MouseEvent) => void,
-  scale: number
+  scale: number,
+  mobileDragDelay: number,
 }
 ```
 
@@ -356,24 +357,24 @@ to set actual positions on `<DraggableCore>`.
 
 Drag callbacks (`onStart`, `onDrag`, `onStop`) are called with the [same arguments as `<Draggable>`](#draggable-api).
 
-----
+---
 
 ### Contributing
 
-- Fork the project
-- Run the project in development mode: `$ npm run dev`
-- Make changes.
-- Add appropriate tests
-- `$ npm test`
-- If tests don't pass, make them pass.
-- Update README with appropriate docs.
-- Commit and PR
+-   Fork the project
+-   Run the project in development mode: `$ npm run dev`
+-   Make changes.
+-   Add appropriate tests
+-   `$ npm test`
+-   If tests don't pass, make them pass.
+-   Update README with appropriate docs.
+-   Commit and PR
 
 ### Release checklist
 
-- Update CHANGELOG
-- `make release-patch`, `make release-minor`, or `make-release-major`
-- `make publish`
+-   Update CHANGELOG
+-   `make release-patch`, `make release-minor`, or `make-release-major`
+-   `make publish`
 
 ### License
 
