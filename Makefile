@@ -13,7 +13,7 @@ clean:
 
 lint:
 	@$(BIN)/flow
-	@$(BIN)/eslint lib/* lib/utils/* specs/*
+	@$(BIN)/eslint lib/* lib/utils/*
 	@$(BIN)/tsc -p typings
 
 build: clean build-cjs build-esm build-web
@@ -29,10 +29,12 @@ install link:
 	@yarn $@
 
 test: $(BIN)
-	@$(BIN)/karma start
+	@$(BIN)/vitest run
 
-test-phantom: $(BIN)
-	@$(BIN)/karma start karma-phantomjs.conf.js
+test-browser: build $(BIN)
+	@$(BIN)/vitest run --config vitest.browser.config.js
+
+test-all: test test-browser
 
 dev: $(BIN) clean
 	env DRAGGABLE_DEBUG=1 $(BIN)/webpack serve --mode=development
