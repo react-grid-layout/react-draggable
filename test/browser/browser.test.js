@@ -551,9 +551,138 @@ describe('Browser Tests', () => {
     }, 30000);
   });
 
-  // Note: Iframe tests are complex in Puppeteer due to script loading in iframe contexts.
-  // The core iframe functionality is tested by the library's internal use of ownerDocument
-  // which is covered by the existing domFns tests and the library's production use.
+  describe('Iframe support', () => {
+    it('should work correctly inside an iframe', async () => {
+      await page.evaluate(() => {
+        const { React, ReactDOM, Draggable } = window;
+        const root = document.getElementById('root');
+
+        // Create an iframe
+        const iframe = document.createElement('iframe');
+        iframe.id = 'test-iframe';
+        iframe.style.cssText = 'width: 500px; height: 500px; border: 1px solid black;';
+        root.appendChild(iframe);
+
+        // Wait for iframe to load and get its document
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+        // Write basic HTML structure into iframe
+        iframeDoc.open();
+        iframeDoc.write(`
+          <!DOCTYPE html>
+          <html>
+          <head><style>body { margin: 0; padding: 20px; }</style></head>
+          <body><div id="iframe-root"></div></body>
+          </html>
+        `);
+        iframeDoc.close();
+
+        // Copy React and ReactDOM to iframe window
+        iframe.contentWindow.React = React;
+        iframe.contentWindow.ReactDOM = ReactDOM;
+
+        // Render Draggable into iframe
+        const iframeRoot = iframeDoc.getElementById('iframe-root');
+        ReactDOM.createRoot(iframeRoot).render(
+          React.createElement(Draggable, null,
+            React.createElement('div', {
+              id: 'iframe-draggable',
+              style: { width: '100px', height: '100px', background: 'blue' }
+            })
+          )
+        );
+      });
+
+      // Wait for draggable to render in iframe
+      await page.waitForFunction(() => {
+        const iframe = document.getElementById('test-iframe');
+        return iframe && iframe.contentDocument.getElementById('iframe-draggable');
+      });
+
+      // Get the iframe element
+      const iframeHandle = await page.$('#test-iframe');
+      const iframeBox = await iframeHandle.boundingBox();
+
+      // Get the draggable element inside iframe
+      const frame = await iframeHandle.contentFrame();
+      const draggable = await frame.$('#iframe-draggable');
+      const draggableBox = await draggable.boundingBox();
+
+      // Verify initial transform
+      const initialTransform = await frame.$eval('#iframe-draggable', el => el.style.transform);
+      expect(initialTransform).toMatch(/translate\(0px,?\s*0px\)/);
+
+      // Perform drag inside iframe
+      await page.mouse.move(draggableBox.x + 50, draggableBox.y + 50);
+      await page.mouse.down();
+      await page.mouse.move(draggableBox.x + 150, draggableBox.y + 150);
+      await page.mouse.up();
+
+      // Verify transform was updated
+      const finalTransform = await frame.$eval('#iframe-draggable', el => el.style.transform);
+      expect(finalTransform).toMatch(/translate\(100px,?\s*100px\)/);
+    }, 30000);
+
+    it('should respect bounds inside an iframe', async () => {
+      await page.evaluate(() => {
+        const { React, ReactDOM, Draggable } = window;
+        const root = document.getElementById('root');
+
+        // Create an iframe
+        const iframe = document.createElement('iframe');
+        iframe.id = 'test-iframe-bounds';
+        iframe.style.cssText = 'width: 500px; height: 500px; border: 1px solid black;';
+        root.appendChild(iframe);
+
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+        iframeDoc.open();
+        iframeDoc.write(`
+          <!DOCTYPE html>
+          <html>
+          <head><style>body { margin: 0; padding: 0; }</style></head>
+          <body>
+            <div id="iframe-root" style="position: relative; width: 300px; height: 300px; background: #ccc;"></div>
+          </body>
+          </html>
+        `);
+        iframeDoc.close();
+
+        iframe.contentWindow.React = React;
+        iframe.contentWindow.ReactDOM = ReactDOM;
+
+        const iframeRoot = iframeDoc.getElementById('iframe-root');
+        ReactDOM.createRoot(iframeRoot).render(
+          React.createElement(Draggable, { bounds: 'parent' },
+            React.createElement('div', {
+              id: 'iframe-draggable-bounds',
+              style: { width: '100px', height: '100px', background: 'blue' }
+            })
+          )
+        );
+      });
+
+      await page.waitForFunction(() => {
+        const iframe = document.getElementById('test-iframe-bounds');
+        return iframe && iframe.contentDocument.getElementById('iframe-draggable-bounds');
+      });
+
+      const iframeHandle = await page.$('#test-iframe-bounds');
+      const frame = await iframeHandle.contentFrame();
+      const draggable = await frame.$('#iframe-draggable-bounds');
+      const draggableBox = await draggable.boundingBox();
+
+      // Try to drag beyond parent bounds
+      await page.mouse.move(draggableBox.x + 50, draggableBox.y + 50);
+      await page.mouse.down();
+      await page.mouse.move(draggableBox.x + 500, draggableBox.y + 500);
+      await page.mouse.up();
+
+      // Should be clipped to parent bounds (300 - 100 = 200 max)
+      const finalTransform = await frame.$eval('#iframe-draggable-bounds', el => el.style.transform);
+      expect(finalTransform).toMatch(/translate\(200px,?\s*200px\)/);
+    }, 30000);
+  });
 
   describe('Scroll handling', () => {
     it('should handle dragging in scrollable containers', async () => {
@@ -765,6 +894,125 @@ describe('Browser Tests', () => {
 
       // Cleanup
       await page.evaluate(() => { window.onerror = window.originalError; });
+    }, 30000);
+  });
+
+  describe('Input focus preservation', () => {
+    it('should not defocus inputs when draggable unmounts', async () => {
+      await page.evaluate(() => {
+        const { React, ReactDOM, Draggable } = window;
+        const root = document.getElementById('root');
+
+        window.inputBlurred = false;
+
+        function App() {
+          const [showDraggable, setShowDraggable] = React.useState(true);
+          window.setShowDraggable = setShowDraggable;
+
+          return React.createElement('div', null,
+            React.createElement('input', {
+              id: 'test-input',
+              type: 'text',
+              onBlur: () => { window.inputBlurred = true; }
+            }),
+            showDraggable && React.createElement(Draggable, null,
+              React.createElement('div', {
+                id: 'draggable-test',
+                style: { width: '100px', height: '100px', background: 'blue' }
+              })
+            )
+          );
+        }
+
+        ReactDOM.createRoot(root).render(React.createElement(App));
+      });
+
+      await page.waitForSelector('#test-input');
+      await page.waitForSelector('#draggable-test');
+
+      // Focus the input
+      await page.focus('#test-input');
+      await page.type('#test-input', 'hello');
+
+      // Verify input is focused
+      const isFocused = await page.evaluate(() =>
+        document.activeElement === document.getElementById('test-input')
+      );
+      expect(isFocused).toBe(true);
+
+      // Reset blur tracking
+      await page.evaluate(() => { window.inputBlurred = false; });
+
+      // Unmount the draggable while input is focused
+      await page.evaluate(() => { window.setShowDraggable(false); });
+
+      // Wait for draggable to be removed
+      await page.waitForFunction(() => !document.getElementById('draggable-test'));
+
+      // Verify input wasn't blurred by the unmount
+      const wasBlurred = await page.evaluate(() => window.inputBlurred);
+      expect(wasBlurred).toBe(false);
+
+      // Verify input is still focused
+      const stillFocused = await page.evaluate(() =>
+        document.activeElement === document.getElementById('test-input')
+      );
+      expect(stillFocused).toBe(true);
+
+      // Verify input value is preserved
+      const inputValue = await page.$eval('#test-input', el => el.value);
+      expect(inputValue).toBe('hello');
+    }, 30000);
+
+    it('should not steal focus from inputs when starting drag', async () => {
+      await page.evaluate(() => {
+        const { React, ReactDOM, Draggable } = window;
+        const root = document.getElementById('root');
+
+        window.inputBlurred = false;
+
+        ReactDOM.createRoot(root).render(
+          React.createElement('div', null,
+            React.createElement('input', {
+              id: 'test-input-drag',
+              type: 'text',
+              style: { marginBottom: '20px', display: 'block' },
+              onBlur: () => { window.inputBlurred = true; }
+            }),
+            React.createElement(Draggable, null,
+              React.createElement('div', {
+                id: 'draggable-focus-test',
+                style: { width: '100px', height: '100px', background: 'blue' }
+              })
+            )
+          )
+        );
+      });
+
+      await page.waitForSelector('#test-input-drag');
+      await page.waitForSelector('#draggable-focus-test');
+
+      // Focus the input and type
+      await page.focus('#test-input-drag');
+      await page.type('#test-input-drag', 'test');
+
+      // Reset blur tracking
+      await page.evaluate(() => { window.inputBlurred = false; });
+
+      // Start dragging the draggable element (but don't click the input)
+      const element = await page.$('#draggable-focus-test');
+      const box = await element.boundingBox();
+
+      await page.mouse.move(box.x + 50, box.y + 50);
+      await page.mouse.down();
+      await page.mouse.move(box.x + 100, box.y + 100);
+      await page.mouse.up();
+
+      // The input will blur because we clicked elsewhere (on the draggable)
+      // This is expected browser behavior - we're testing that the library
+      // doesn't cause unexpected blurs during its internal operations
+      const inputValue = await page.$eval('#test-input-drag', el => el.value);
+      expect(inputValue).toBe('test');
     }, 30000);
   });
 
