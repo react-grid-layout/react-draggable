@@ -16,7 +16,8 @@ describe('Browser Tests', () => {
   beforeAll(async () => {
     browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      // Disable sandbox in CI environments (required for GitHub Actions runners)
+      args: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : [],
     });
   }, 30000);
 
