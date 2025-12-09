@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>React Draggable Browser Tests</title>
+  <style>
+    body { margin: 0; padding: 20px; }
+    #root { position: relative; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <!-- Load React 18 UMD builds locally -->
+  <script src="../../node_modules/react/umd/react.development.js"></script>
+  <script src="../../node_modules/react-dom/umd/react-dom.development.js"></script>
+  <!-- Load the built library -->
+  <script src="../../build/web/react-draggable.min.js"></script>
+  <script>
+    // Make things available globally for tests
+    window.Draggable = ReactDraggable.default;
+    window.DraggableCore = ReactDraggable.DraggableCore;
+  </script>
+</body>
+</html>
