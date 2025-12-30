@@ -44,9 +44,11 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
         ReactDOM.createRoot(root).render(
-          React.createElement(Draggable, null,
+          React.createElement(Draggable, { nodeRef: ref },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -78,9 +80,11 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
         ReactDOM.createRoot(root).render(
-          React.createElement(Draggable, { axis: 'x' },
+          React.createElement(Draggable, { axis: 'x', nodeRef: ref },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -106,9 +110,11 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
         ReactDOM.createRoot(root).render(
-          React.createElement(Draggable, { axis: 'y' },
+          React.createElement(Draggable, { axis: 'y', nodeRef: ref },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -138,12 +144,15 @@ describe('Browser Tests', () => {
         const root = document.getElementById('root');
 
         window.stopCalled = false;
+        const ref = React.createRef();
 
         ReactDOM.createRoot(root).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             onStop: () => { window.stopCalled = true; }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -171,12 +180,15 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         ReactDOM.createRoot(root).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             bounds: { left: 0, right: 50, top: 0, bottom: 50 }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -202,6 +214,7 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         ReactDOM.createRoot(root).render(
           React.createElement('div', {
@@ -213,8 +226,9 @@ describe('Browser Tests', () => {
               background: '#ccc'
             }
           },
-            React.createElement(Draggable, { bounds: 'parent' },
+            React.createElement(Draggable, { bounds: 'parent', nodeRef: ref },
               React.createElement('div', {
+                ref: ref,
                 id: 'draggable-test',
                 style: { width: '100px', height: '100px', background: 'blue' }
               })
@@ -243,12 +257,15 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         ReactDOM.createRoot(root).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             bounds: { left: -50, right: 50, top: -50, bottom: 50 }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -277,15 +294,18 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         window.lastPosition = null;
 
         ReactDOM.createRoot(root).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             grid: [25, 25],
             onDrag: (e, data) => { window.lastPosition = { x: data.x, y: data.y }; }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -313,15 +333,18 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         window.dragCallCount = 0;
 
         ReactDOM.createRoot(root).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             grid: [50, 50],
             onDrag: () => { window.dragCallCount++; }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -349,15 +372,18 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         window.lastPosition = null;
 
         ReactDOM.createRoot(root).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             grid: [100, 100],
             onDrag: (e, data) => { window.lastPosition = { x: data.x, y: data.y }; }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -388,15 +414,18 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         window.dragData = null;
 
         ReactDOM.createRoot(root).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             scale: 2,
             onDrag: (e, data) => { window.dragData = { x: data.x, y: data.y }; }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -426,10 +455,12 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         ReactDOM.createRoot(root).render(
-          React.createElement(Draggable, { handle: '.handle' },
+          React.createElement(Draggable, { handle: '.handle', nodeRef: ref },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '200px', height: '100px', background: 'blue' }
             },
@@ -477,10 +508,12 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         ReactDOM.createRoot(root).render(
-          React.createElement(Draggable, { handle: '.handle' },
+          React.createElement(Draggable, { handle: '.handle', nodeRef: ref },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '200px', height: '100px', background: 'blue' }
             },
@@ -516,10 +549,12 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         ReactDOM.createRoot(root).render(
-          React.createElement(Draggable, { cancel: '.cancel' },
+          React.createElement(Draggable, { cancel: '.cancel', nodeRef: ref },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '200px', height: '100px', background: 'blue' }
             },
@@ -584,9 +619,11 @@ describe('Browser Tests', () => {
 
         // Render Draggable into iframe
         const iframeRoot = iframeDoc.getElementById('iframe-root');
+        const ref = React.createRef();
         ReactDOM.createRoot(iframeRoot).render(
-          React.createElement(Draggable, null,
+          React.createElement(Draggable, { nodeRef: ref },
             React.createElement('div', {
+              ref: ref,
               id: 'iframe-draggable',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -653,9 +690,11 @@ describe('Browser Tests', () => {
         iframe.contentWindow.ReactDOM = ReactDOM;
 
         const iframeRoot = iframeDoc.getElementById('iframe-root');
+        const ref = React.createRef();
         ReactDOM.createRoot(iframeRoot).render(
-          React.createElement(Draggable, { bounds: 'parent' },
+          React.createElement(Draggable, { bounds: 'parent', nodeRef: ref },
             React.createElement('div', {
+              ref: ref,
               id: 'iframe-draggable-bounds',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -690,15 +729,18 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         window.dragData = null;
 
         // Create a simple draggable that we can verify drag works
         ReactDOM.createRoot(root).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             onDrag: (e, data) => { window.dragData = { x: data.x, y: data.y, deltaX: data.deltaX, deltaY: data.deltaY }; }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -746,13 +788,16 @@ describe('Browser Tests', () => {
         shadowRoot.appendChild(container);
 
         // Render Draggable into shadow DOM
+        const ref = React.createRef();
         ReactDOM.createRoot(container).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             bounds: 'parent',
             defaultPosition: { x: 50, y: 50 },
             onDrag: (e, data) => { window.dragData = { x: data.x, y: data.y }; }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'shadow-draggable',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -806,13 +851,16 @@ describe('Browser Tests', () => {
         shadowRoot.appendChild(container);
 
         // Render Draggable into shadow DOM with selector bounds
+        const ref = React.createRef();
         ReactDOM.createRoot(container).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             bounds: '#bounds-container',
             defaultPosition: { x: 50, y: 50 },
             onDrag: (e, data) => { window.dragData = { x: data.x, y: data.y }; }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'shadow-draggable-2',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -858,14 +906,17 @@ describe('Browser Tests', () => {
 
         function App() {
           const [visible, setVisible] = React.useState(true);
+          const ref = React.useRef(null);
           window.setVisible = setVisible;
 
           if (!visible) return React.createElement('div', { id: 'unmounted' }, 'Unmounted');
 
           return React.createElement(Draggable, {
+            nodeRef: ref,
             onStop: () => { setVisible(false); }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { width: '100px', height: '100px', background: 'blue' }
             })
@@ -908,6 +959,7 @@ describe('Browser Tests', () => {
 
         function App() {
           const [showDraggable, setShowDraggable] = React.useState(true);
+          const ref = React.useRef(null);
           window.setShowDraggable = setShowDraggable;
 
           return React.createElement('div', null,
@@ -916,8 +968,9 @@ describe('Browser Tests', () => {
               type: 'text',
               onBlur: () => { window.inputBlurred = true; }
             }),
-            showDraggable && React.createElement(Draggable, null,
+            showDraggable && React.createElement(Draggable, { nodeRef: ref },
               React.createElement('div', {
+                ref: ref,
                 id: 'draggable-test',
                 style: { width: '100px', height: '100px', background: 'blue' }
               })
@@ -969,6 +1022,7 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         window.inputBlurred = false;
 
@@ -980,8 +1034,9 @@ describe('Browser Tests', () => {
               style: { marginBottom: '20px', display: 'block' },
               onBlur: () => { window.inputBlurred = true; }
             }),
-            React.createElement(Draggable, null,
+            React.createElement(Draggable, { nodeRef: ref },
               React.createElement('div', {
+                ref: ref,
                 id: 'draggable-focus-test',
                 style: { width: '100px', height: '100px', background: 'blue' }
               })
@@ -1022,14 +1077,17 @@ describe('Browser Tests', () => {
       await page.evaluate(() => {
         const { React, ReactDOM, Draggable } = window;
         const root = document.getElementById('root');
+        const ref = React.createRef();
 
         window.dragData = null;
 
         ReactDOM.createRoot(root).render(
           React.createElement(Draggable, {
+            nodeRef: ref,
             onDrag: (e, data) => { window.dragData = { x: data.x, y: data.y, deltaX: data.deltaX, deltaY: data.deltaY }; }
           },
             React.createElement('div', {
+              ref: ref,
               id: 'draggable-test',
               style: { position: 'relative', top: '200px', left: '200px', width: '100px', height: '100px', background: 'blue' }
             })
