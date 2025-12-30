@@ -4,6 +4,16 @@ import { render, cleanup } from '@testing-library/react';
 import { DraggableCore } from '../lib/Draggable';
 import { simulateDrag, startDrag, moveDrag, endDrag, createTouchEvent } from './testUtils';
 
+// Helper wrapper component that provides nodeRef (required in React 19)
+function DraggableCoreWrapper({ children, coreRef, ...props }) {
+  const nodeRef = useRef(null);
+  return (
+    <DraggableCore ref={coreRef} nodeRef={nodeRef} {...props}>
+      {React.cloneElement(children, { ref: nodeRef })}
+    </DraggableCore>
+  );
+}
+
 describe('DraggableCore', () => {
   afterEach(() => {
     cleanup();
@@ -11,27 +21,25 @@ describe('DraggableCore', () => {
 
   describe('rendering', () => {
     it('should render its child', () => {
-      // Suppress findDOMNode deprecation warning
-      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
       const { container } = render(
-        <DraggableCore>
+        <DraggableCoreWrapper>
           <div data-testid="child">Hello</div>
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
       expect(container.querySelector('[data-testid="child"]')).toBeTruthy();
       expect(container.textContent).toBe('Hello');
-      spy.mockRestore();
     });
 
     it('should accept a single child only', () => {
       // Suppress React error boundary logs for this test
       const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const nodeRef = React.createRef();
 
       // Use try/catch instead of expect().toThrow() to avoid stderr output
       let threw = false;
       try {
         render(
-          <DraggableCore>
+          <DraggableCore nodeRef={nodeRef}>
             <div>One</div>
             <div>Two</div>
           </DraggableCore>
@@ -50,9 +58,9 @@ describe('DraggableCore', () => {
     it('should call onStart when mouse down', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <DraggableCore onStart={onStart}>
+        <DraggableCoreWrapper onStart={onStart}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -62,9 +70,9 @@ describe('DraggableCore', () => {
     it('should call onDrag during mouse move', () => {
       const onDrag = vi.fn();
       const { container } = render(
-        <DraggableCore onDrag={onDrag}>
+        <DraggableCoreWrapper onDrag={onDrag}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -79,9 +87,9 @@ describe('DraggableCore', () => {
     it('should call onStop when mouse up', () => {
       const onStop = vi.fn();
       const { container } = render(
-        <DraggableCore onStop={onStop}>
+        <DraggableCoreWrapper onStop={onStop}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       simulateDrag(container.firstChild, { from: { x: 0, y: 0 }, to: { x: 100, y: 100 } });
@@ -91,9 +99,9 @@ describe('DraggableCore', () => {
     it('should provide correct data in callbacks', () => {
       const onDrag = vi.fn();
       const { container } = render(
-        <DraggableCore onDrag={onDrag}>
+        <DraggableCoreWrapper onDrag={onDrag}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 50, y: 50 });
@@ -114,9 +122,9 @@ describe('DraggableCore', () => {
     it('should not start dragging when disabled', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <DraggableCore disabled onStart={onStart}>
+        <DraggableCoreWrapper disabled onStart={onStart}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -129,9 +137,9 @@ describe('DraggableCore', () => {
       const onStart = vi.fn(() => false);
       const onDrag = vi.fn();
       const { container } = render(
-        <DraggableCore onStart={onStart} onDrag={onDrag}>
+        <DraggableCoreWrapper onStart={onStart} onDrag={onDrag}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -145,9 +153,9 @@ describe('DraggableCore', () => {
       const onDrag = vi.fn(() => false);
       const onStop = vi.fn();
       const { container } = render(
-        <DraggableCore onDrag={onDrag} onStop={onStop}>
+        <DraggableCoreWrapper onDrag={onDrag} onStop={onStop}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -162,12 +170,12 @@ describe('DraggableCore', () => {
     it('should only drag from handle', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <DraggableCore handle=".handle" onStart={onStart}>
+        <DraggableCoreWrapper handle=".handle" onStart={onStart}>
           <div>
             <div className="handle">Handle</div>
             <div className="content">Content</div>
           </div>
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       // Click on content - should not start drag
@@ -182,13 +190,13 @@ describe('DraggableCore', () => {
     it('should work with nested elements in handle', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <DraggableCore handle=".handle" onStart={onStart}>
+        <DraggableCoreWrapper handle=".handle" onStart={onStart}>
           <div>
             <div className="handle">
               <span className="nested">Nested</span>
             </div>
           </div>
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.querySelector('.nested'), { x: 0, y: 0 });
@@ -200,12 +208,12 @@ describe('DraggableCore', () => {
     it('should not drag from cancel elements', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <DraggableCore cancel=".cancel" onStart={onStart}>
+        <DraggableCoreWrapper cancel=".cancel" onStart={onStart}>
           <div>
             <div className="cancel">Cancel</div>
             <div className="content">Content</div>
           </div>
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       // Click on cancel - should not start drag
@@ -222,9 +230,9 @@ describe('DraggableCore', () => {
     it('should snap movement to grid', () => {
       const onDrag = vi.fn();
       const { container } = render(
-        <DraggableCore grid={[50, 50]} onDrag={onDrag}>
+        <DraggableCoreWrapper grid={[50, 50]} onDrag={onDrag}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -239,9 +247,9 @@ describe('DraggableCore', () => {
     it('should not call onDrag if movement is less than grid', () => {
       const onDrag = vi.fn();
       const { container } = render(
-        <DraggableCore grid={[100, 100]} onDrag={onDrag}>
+        <DraggableCoreWrapper grid={[100, 100]} onDrag={onDrag}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -256,9 +264,9 @@ describe('DraggableCore', () => {
     it('should adjust position based on scale', () => {
       const onDrag = vi.fn();
       const { container } = render(
-        <DraggableCore scale={2} onDrag={onDrag}>
+        <DraggableCoreWrapper scale={2} onDrag={onDrag}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -273,9 +281,9 @@ describe('DraggableCore', () => {
     it('should work with scale < 1', () => {
       const onDrag = vi.fn();
       const { container } = render(
-        <DraggableCore scale={0.5} onDrag={onDrag}>
+        <DraggableCoreWrapper scale={0.5} onDrag={onDrag}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -292,9 +300,9 @@ describe('DraggableCore', () => {
     it('should only respond to left click by default', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <DraggableCore onStart={onStart}>
+        <DraggableCoreWrapper onStart={onStart}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       // Right click (button 2)
@@ -311,9 +319,9 @@ describe('DraggableCore', () => {
     it('should respond to any click when allowAnyClick is true', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <DraggableCore allowAnyClick onStart={onStart}>
+        <DraggableCoreWrapper allowAnyClick onStart={onStart}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       // Right click (button 2)
@@ -382,9 +390,9 @@ describe('DraggableCore', () => {
     it('should handle touch start', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <DraggableCore onStart={onStart}>
+        <DraggableCoreWrapper onStart={onStart}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       container.firstChild.dispatchEvent(createTouchEvent('touchstart', { clientX: 0, clientY: 0 }));
@@ -393,9 +401,9 @@ describe('DraggableCore', () => {
 
     it('should call preventDefault on touchstart by default', () => {
       const { container } = render(
-        <DraggableCore>
+        <DraggableCoreWrapper>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       const event = createTouchEvent('touchstart', { clientX: 0, clientY: 0 });
@@ -408,9 +416,9 @@ describe('DraggableCore', () => {
 
     it('should not call preventDefault when allowMobileScroll is true', () => {
       const { container } = render(
-        <DraggableCore allowMobileScroll>
+        <DraggableCoreWrapper allowMobileScroll>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       const event = createTouchEvent('touchstart', { clientX: 0, clientY: 0 });
@@ -426,9 +434,9 @@ describe('DraggableCore', () => {
     it('should call onMouseDown callback', () => {
       const onMouseDown = vi.fn();
       const { container } = render(
-        <DraggableCore onMouseDown={onMouseDown}>
+        <DraggableCoreWrapper onMouseDown={onMouseDown}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -439,9 +447,9 @@ describe('DraggableCore', () => {
       const onMouseDown = vi.fn();
       const onStart = vi.fn();
       const { container } = render(
-        <DraggableCore disabled onMouseDown={onMouseDown} onStart={onStart}>
+        <DraggableCoreWrapper disabled onMouseDown={onMouseDown} onStart={onStart}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -453,9 +461,9 @@ describe('DraggableCore', () => {
   describe('enableUserSelectHack prop', () => {
     it('should add transparent selection class by default', () => {
       const { container } = render(
-        <DraggableCore>
+        <DraggableCoreWrapper>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -468,9 +476,9 @@ describe('DraggableCore', () => {
 
     it('should not add class when enableUserSelectHack is false', () => {
       const { container } = render(
-        <DraggableCore enableUserSelectHack={false}>
+        <DraggableCoreWrapper enableUserSelectHack={false}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -480,9 +488,9 @@ describe('DraggableCore', () => {
     it('should not add user-select class when onStart returns false', () => {
       const onStart = vi.fn(() => false);
       const { container } = render(
-        <DraggableCore onStart={onStart}>
+        <DraggableCoreWrapper onStart={onStart}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       // Ensure class is not present before drag
@@ -498,18 +506,18 @@ describe('DraggableCore', () => {
 
   describe('unmount safety', () => {
     it('should track mounted state correctly', () => {
-      const ref = React.createRef();
+      const coreRef = React.createRef();
       render(
-        <DraggableCore ref={ref}>
+        <DraggableCoreWrapper coreRef={coreRef}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       // Verify mounted is true after mount
-      expect(ref.current.mounted).toBe(true);
+      expect(coreRef.current.mounted).toBe(true);
 
       // Store reference before unmount since ref.current becomes null
-      const instance = ref.current;
+      const instance = coreRef.current;
       cleanup();
 
       // Verify mounted is false after unmount (using stored reference)
@@ -520,9 +528,9 @@ describe('DraggableCore', () => {
       const onStart = vi.fn(() => false);
       const onDrag = vi.fn();
       const { container } = render(
-        <DraggableCore onStart={onStart} onDrag={onDrag}>
+        <DraggableCoreWrapper onStart={onStart} onDrag={onDrag}>
           <div />
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       startDrag(container.firstChild, { x: 0, y: 0 });
@@ -537,11 +545,11 @@ describe('DraggableCore', () => {
   describe('touch events with handle', () => {
     it('should call preventDefault on touchstart when using handle', () => {
       const { container } = render(
-        <DraggableCore handle=".handle">
+        <DraggableCoreWrapper handle=".handle">
           <div>
             <div className="handle">Handle</div>
           </div>
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       const handle = container.querySelector('.handle');
@@ -555,12 +563,12 @@ describe('DraggableCore', () => {
 
     it('should not call preventDefault on touchstart for cancel elements', () => {
       const { container } = render(
-        <DraggableCore cancel=".cancel">
+        <DraggableCoreWrapper cancel=".cancel">
           <div>
             <div className="cancel">Cancel</div>
             <div className="content">Content</div>
           </div>
-        </DraggableCore>
+        </DraggableCoreWrapper>
       );
 
       const cancel = container.querySelector('.cancel');
@@ -577,10 +585,11 @@ describe('DraggableCore', () => {
   describe('error handling', () => {
     it('should throw error when no children provided', () => {
       const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const nodeRef = React.createRef();
 
       let threw = false;
       try {
-        render(<DraggableCore />);
+        render(<DraggableCore nodeRef={nodeRef} />);
       } catch (e) {
         threw = true;
         expect(e.message).toMatch(/React.Children.only|expected/i);

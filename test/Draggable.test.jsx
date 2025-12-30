@@ -4,6 +4,25 @@ import { render, cleanup, act } from '@testing-library/react';
 import Draggable, { DraggableCore } from '../lib/Draggable';
 import { simulateDrag, startDrag, moveDrag, endDrag } from './testUtils';
 
+// Helper wrapper components that provide nodeRef (required in React 19)
+function DraggableWrapper({ children, draggableRef, ...props }) {
+  const nodeRef = useRef(null);
+  return (
+    <Draggable ref={draggableRef} nodeRef={nodeRef} {...props}>
+      {React.cloneElement(children, { ref: nodeRef })}
+    </Draggable>
+  );
+}
+
+function DraggableCorWrapper({ children, coreRef, ...props }) {
+  const nodeRef = useRef(null);
+  return (
+    <DraggableCore ref={coreRef} nodeRef={nodeRef} {...props}>
+      {React.cloneElement(children, { ref: nodeRef })}
+    </DraggableCore>
+  );
+}
+
 describe('Draggable', () => {
   afterEach(() => {
     cleanup();
@@ -13,31 +32,28 @@ describe('Draggable', () => {
 
   describe('default props', () => {
     it('should have sensible defaults', () => {
-      // Suppress findDOMNode deprecation warning
-      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      const ref = React.createRef();
+      const draggableRef = React.createRef();
       render(
-        <Draggable ref={ref}>
+        <DraggableWrapper draggableRef={draggableRef}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
-      expect(ref.current.props.axis).toBe('both');
-      expect(ref.current.props.bounds).toBe(false);
-      expect(ref.current.props.defaultClassName).toBe('react-draggable');
-      expect(ref.current.props.defaultClassNameDragging).toBe('react-draggable-dragging');
-      expect(ref.current.props.defaultClassNameDragged).toBe('react-draggable-dragged');
-      expect(ref.current.props.scale).toBe(1);
-      spy.mockRestore();
+      expect(draggableRef.current.props.axis).toBe('both');
+      expect(draggableRef.current.props.bounds).toBe(false);
+      expect(draggableRef.current.props.defaultClassName).toBe('react-draggable');
+      expect(draggableRef.current.props.defaultClassNameDragging).toBe('react-draggable-dragging');
+      expect(draggableRef.current.props.defaultClassNameDragged).toBe('react-draggable-dragged');
+      expect(draggableRef.current.props.scale).toBe(1);
     });
   });
 
   describe('rendering', () => {
     it('should render with default class', () => {
       const { container } = render(
-        <Draggable>
+        <DraggableWrapper>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.classList.contains('react-draggable')).toBe(true);
@@ -45,9 +61,9 @@ describe('Draggable', () => {
 
     it('should preserve child className', () => {
       const { container } = render(
-        <Draggable>
+        <DraggableWrapper>
           <div className="my-class" />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.classList.contains('my-class')).toBe(true);
@@ -56,9 +72,9 @@ describe('Draggable', () => {
 
     it('should preserve child styles', () => {
       const { container } = render(
-        <Draggable>
+        <DraggableWrapper>
           <div style={{ color: 'red' }} />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.style.color).toBe('red');
@@ -66,9 +82,9 @@ describe('Draggable', () => {
 
     it('should apply transform style', () => {
       const { container } = render(
-        <Draggable>
+        <DraggableWrapper>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.style.transform).toMatch(/translate\(0px,?\s*0px\)/);
@@ -76,9 +92,9 @@ describe('Draggable', () => {
 
     it('should use custom defaultClassName', () => {
       const { container } = render(
-        <Draggable defaultClassName="custom-draggable">
+        <DraggableWrapper defaultClassName="custom-draggable">
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.classList.contains('custom-draggable')).toBe(true);
@@ -89,9 +105,9 @@ describe('Draggable', () => {
   describe('dragging classes', () => {
     it('should add dragging class during drag', () => {
       const { container } = render(
-        <Draggable>
+        <DraggableWrapper>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.classList.contains('react-draggable-dragging')).toBe(false);
@@ -107,9 +123,9 @@ describe('Draggable', () => {
 
     it('should add dragged class after drag', () => {
       const { container } = render(
-        <Draggable>
+        <DraggableWrapper>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.classList.contains('react-draggable-dragged')).toBe(false);
@@ -121,13 +137,13 @@ describe('Draggable', () => {
 
     it('should use custom class names', () => {
       const { container } = render(
-        <Draggable
+        <DraggableWrapper
           defaultClassName="custom"
           defaultClassNameDragging="custom-dragging"
           defaultClassNameDragged="custom-dragged"
         >
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       act(() => {
@@ -148,9 +164,9 @@ describe('Draggable', () => {
 
     it('should respect defaultPosition', () => {
       const { container } = render(
-        <Draggable defaultPosition={{ x: 50, y: 50 }}>
+        <DraggableWrapper defaultPosition={{ x: 50, y: 50 }}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.style.transform).toMatch(/translate\(50px,?\s*50px\)/);
@@ -158,9 +174,9 @@ describe('Draggable', () => {
 
     it('should use controlled position', () => {
       const { container } = render(
-        <Draggable position={{ x: 100, y: 100 }}>
+        <DraggableWrapper position={{ x: 100, y: 100 }}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.style.transform).toMatch(/translate\(100px,?\s*100px\)/);
@@ -168,9 +184,9 @@ describe('Draggable', () => {
 
     it('should respect positionOffset with numbers', () => {
       const { container } = render(
-        <Draggable positionOffset={{ x: 10, y: 20 }}>
+        <DraggableWrapper positionOffset={{ x: 10, y: 20 }}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.style.transform).toContain('translate(10px, 20px)');
@@ -178,9 +194,9 @@ describe('Draggable', () => {
 
     it('should respect positionOffset with percentages', () => {
       const { container } = render(
-        <Draggable positionOffset={{ x: '50%', y: '50%' }}>
+        <DraggableWrapper positionOffset={{ x: '50%', y: '50%' }}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.style.transform).toContain('translate(50%, 50%)');
@@ -194,9 +210,9 @@ describe('Draggable', () => {
 
     it('should not move when axis="none"', () => {
       const { container } = render(
-        <Draggable axis="none">
+        <DraggableWrapper axis="none">
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       act(() => {
@@ -212,9 +228,9 @@ describe('Draggable', () => {
     it('should call onStart when drag starts', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <Draggable onStart={onStart}>
+        <DraggableWrapper onStart={onStart}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       act(() => {
@@ -231,9 +247,9 @@ describe('Draggable', () => {
       const onStart = vi.fn(() => false);
       const onDrag = vi.fn();
       const { container } = render(
-        <Draggable onStart={onStart} onDrag={onDrag}>
+        <DraggableWrapper onStart={onStart} onDrag={onDrag}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       act(() => {
@@ -248,32 +264,32 @@ describe('Draggable', () => {
 
   describe('SVG support', () => {
     it('should detect SVG elements', () => {
-      const ref = React.createRef();
+      const draggableRef = React.createRef();
       render(
-        <Draggable ref={ref}>
+        <DraggableWrapper draggableRef={draggableRef}>
           <svg />
-        </Draggable>
+        </DraggableWrapper>
       );
 
-      expect(ref.current.state.isElementSVG).toBe(true);
+      expect(draggableRef.current.state.isElementSVG).toBe(true);
     });
 
     it('should not set isElementSVG for non-SVG elements', () => {
-      const ref = React.createRef();
+      const draggableRef = React.createRef();
       render(
-        <Draggable ref={ref}>
+        <DraggableWrapper draggableRef={draggableRef}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
-      expect(ref.current.state.isElementSVG).toBe(false);
+      expect(draggableRef.current.state.isElementSVG).toBe(false);
     });
 
     it('should set initial transform attribute for SVG', () => {
       const { container } = render(
-        <Draggable>
+        <DraggableWrapper>
           <svg />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       expect(container.firstChild.getAttribute('transform')).toContain('translate(0,0)');
@@ -282,29 +298,35 @@ describe('Draggable', () => {
 
   describe('controlled component', () => {
     it('should respect position prop changes', () => {
-      const { container, rerender } = render(
-        <Draggable position={{ x: 0, y: 0 }}>
-          <div />
-        </Draggable>
-      );
+      function ControlledTest() {
+        const [position, setPosition] = useState({ x: 0, y: 0 });
+        return (
+          <>
+            <button onClick={() => setPosition({ x: 100, y: 100 })}>Move</button>
+            <DraggableWrapper position={position}>
+              <div data-testid="draggable" />
+            </DraggableWrapper>
+          </>
+        );
+      }
 
-      expect(container.firstChild.style.transform).toMatch(/translate\(0px,?\s*0px\)/);
+      const { container, getByRole, getByTestId } = render(<ControlledTest />);
 
-      rerender(
-        <Draggable position={{ x: 100, y: 100 }}>
-          <div />
-        </Draggable>
-      );
+      expect(getByTestId('draggable').style.transform).toMatch(/translate\(0px,?\s*0px\)/);
 
-      expect(container.firstChild.style.transform).toMatch(/translate\(100px,?\s*100px\)/);
+      act(() => {
+        getByRole('button').click();
+      });
+
+      expect(getByTestId('draggable').style.transform).toMatch(/translate\(100px,?\s*100px\)/);
     });
 
     it('should revert to controlled position after drag', () => {
       const onStop = vi.fn();
       const { container } = render(
-        <Draggable position={{ x: 50, y: 50 }} onStop={onStop}>
+        <DraggableWrapper position={{ x: 50, y: 50 }} onStop={onStop}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       act(() => {
@@ -320,9 +342,9 @@ describe('Draggable', () => {
     it('should not drag when disabled', () => {
       const onStart = vi.fn();
       const { container } = render(
-        <Draggable disabled onStart={onStart}>
+        <DraggableWrapper disabled onStart={onStart}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
       act(() => {
@@ -335,10 +357,11 @@ describe('Draggable', () => {
   describe('validation', () => {
     it('should throw when no children provided', () => {
       const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const nodeRef = React.createRef();
 
       let threw = false;
       try {
-        render(<Draggable />);
+        render(<Draggable nodeRef={nodeRef} />);
       } catch (e) {
         threw = true;
         // Can throw either React.Children.only error or props access error
@@ -351,11 +374,12 @@ describe('Draggable', () => {
 
     it('should throw when multiple children provided', () => {
       const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const nodeRef = React.createRef();
 
       let threw = false;
       try {
         render(
-          <Draggable>
+          <Draggable nodeRef={nodeRef}>
             <div>One</div>
             <div>Two</div>
           </Draggable>
@@ -370,58 +394,41 @@ describe('Draggable', () => {
       errorSpy.mockRestore();
     });
 
-    it('should warn when setting className on Draggable', () => {
-      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-      render(
-        <Draggable className="invalid">
+    // Note: React 19 removed runtime propTypes checking, so these tests now just verify
+    // that the component still renders correctly when invalid props are passed.
+    // The dontSetMe validators are defined but no longer trigger warnings in React 19.
+    it('should still render when className is set on Draggable', () => {
+      const { container } = render(
+        <DraggableWrapper className="invalid">
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
-      expect(spy).toHaveBeenCalled();
-      // Check that any of the error calls contain 'className'
-      const hasClassNameWarning = spy.mock.calls.some(call =>
-        call.some(arg => typeof arg === 'string' && arg.includes('className'))
-      );
-      expect(hasClassNameWarning).toBe(true);
-      spy.mockRestore();
+      // Component should still render
+      expect(container.firstChild).toBeTruthy();
+      expect(container.firstChild.classList.contains('react-draggable')).toBe(true);
     });
 
-    it('should warn when setting style on Draggable', () => {
-      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-      render(
-        <Draggable style={{ color: 'red' }}>
+    it('should still render when style is set on Draggable', () => {
+      const { container } = render(
+        <DraggableWrapper style={{ color: 'red' }}>
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
-      expect(spy).toHaveBeenCalled();
-      // Check that any of the error calls contain 'style'
-      const hasStyleWarning = spy.mock.calls.some(call =>
-        call.some(arg => typeof arg === 'string' && arg.includes('style'))
-      );
-      expect(hasStyleWarning).toBe(true);
-      spy.mockRestore();
+      // Component should still render
+      expect(container.firstChild).toBeTruthy();
     });
 
-    it('should warn when setting transform on Draggable', () => {
-      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-      render(
-        <Draggable transform="translate(100px, 100px)">
+    it('should still render when transform is set on Draggable', () => {
+      const { container } = render(
+        <DraggableWrapper transform="translate(100px, 100px)">
           <div />
-        </Draggable>
+        </DraggableWrapper>
       );
 
-      expect(spy).toHaveBeenCalled();
-      // Check that any of the error calls contain 'transform'
-      const hasTransformWarning = spy.mock.calls.some(call =>
-        call.some(arg => typeof arg === 'string' && arg.includes('transform'))
-      );
-      expect(hasTransformWarning).toBe(true);
-      spy.mockRestore();
+      // Component should still render
+      expect(container.firstChild).toBeTruthy();
     });
   });
 });

@@ -1,8 +1,9 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Draggable, {DraggableCore} from 'react-draggable';
 
-const root = document.getElementById('root')
+const rootElement = document.getElementById('root')!;
+const root = createRoot(rootElement);
 
 function handleStart() {}
 function handleDrag() {}
@@ -10,7 +11,7 @@ function handleStop() {}
 function handleMouseDown() {}
 
 const nodeRef = React.createRef<HTMLDivElement>();
-ReactDOM.render(
+root.render(
   <Draggable
     axis="y"
     handle=".handle"
@@ -37,12 +38,11 @@ ReactDOM.render(
       <div className="handle"/>
       <div className="cancel"/>
     </div>
-  </Draggable>,
-  root
+  </Draggable>
 );
 
 const nodeRefCore = React.createRef<HTMLDivElement>();
-ReactDOM.render(
+root.render(
   <DraggableCore
     handle=".handle"
     cancel=".cancel"
@@ -61,11 +61,9 @@ ReactDOM.render(
       <div className="handle"/>
       <div className="cancel"/>
     </div>
-  </DraggableCore>,
-  root
+  </DraggableCore>
 );
 
+root.render(<Draggable><div/></Draggable>);
 
-ReactDOM.render(<Draggable><div/></Draggable>, root);
-
-ReactDOM.render(<DraggableCore><div/></DraggableCore>, root);
+root.render(<DraggableCore><div/></DraggableCore>);

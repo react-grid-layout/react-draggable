@@ -10,15 +10,34 @@
 </head>
 <body>
   <div id="root"></div>
-  <!-- Load React 18 UMD builds locally -->
-  <script src="../../node_modules/react/umd/react.development.js"></script>
-  <script src="../../node_modules/react-dom/umd/react-dom.development.js"></script>
-  <!-- Load the built library -->
-  <script src="../../build/web/react-draggable.min.js"></script>
-  <script>
-    // Make things available globally for tests
-    window.Draggable = ReactDraggable.default;
-    window.DraggableCore = ReactDraggable.DraggableCore;
+  <!-- Load React 19 from esm.sh CDN (React 19 removed UMD builds) -->
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@19?dev",
+        "react-dom": "https://esm.sh/react-dom@19?dev",
+        "react-dom/client": "https://esm.sh/react-dom@19/client?dev"
+      }
+    }
+  </script>
+  <script type="module">
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import * as ReactDOMClient from 'react-dom/client';
+
+    // Make React available globally for the Draggable bundle
+    window.React = React;
+    window.ReactDOM = { ...ReactDOM, ...ReactDOMClient };
+
+    // Dynamically load the built library (it expects React/ReactDOM as globals)
+    const script = document.createElement('script');
+    script.src = '../../build/web/react-draggable.min.js';
+    script.onload = () => {
+      // Make things available globally for tests
+      window.Draggable = ReactDraggable.default;
+      window.DraggableCore = ReactDraggable.DraggableCore;
+    };
+    document.body.appendChild(script);
   </script>
 </body>
 </html>
