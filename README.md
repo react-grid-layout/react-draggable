@@ -1,7 +1,6 @@
 # React-Draggable
 
-[![TravisCI Build Status](https://api.travis-ci.org/react-grid-layout/react-draggable.svg?branch=master)](https://travis-ci.org/react-grid-layout/react-draggable)
-[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/react-grid-layout/react-draggable)
+[![CI](https://github.com/react-grid-layout/react-draggable/actions/workflows/ci.yml/badge.svg)](https://github.com/react-grid-layout/react-draggable/actions/workflows/ci.yml)
 [![npm downloads](https://img.shields.io/npm/dt/react-draggable.svg?maxAge=2592000)](http://npmjs.com/package/react-draggable)
 [![gzip size](http://img.badgesize.io/https://npmcdn.com/react-draggable/build/web/react-draggable.min.js?compression=gzip)]()
 [![version](https://img.shields.io/npm/v/react-draggable.svg)]()
@@ -12,7 +11,7 @@
 
 A simple component for making elements draggable.
 
-```js
+```jsx
 <Draggable>
   <div>I can now be moved around!</div>
 </Draggable>
@@ -21,109 +20,120 @@ A simple component for making elements draggable.
 - [Demo](http://react-grid-layout.github.io/react-draggable/example/)
 - [Changelog](CHANGELOG.md)
 
+| Version | Compatibility   |
+| ------- | --------------- |
+| 4.x     | React 16.3 - 19 |
+| 3.x     | React 15 - 16   |
+| 2.x     | React 0.14 - 15 |
 
-|Version     | Compatibility|
-|------------|--------------|
-|4.x         | React 16.3+  |
-|3.x         | React 15-16  |
-|2.x         | React 0.14 - 15   |
-|1.x         | React 0.13 - 0.14 |
-|0.x         | React 0.10 - 0.13 |
+---
 
-------
-
-#### Technical Documentation
+## Table of Contents
 
 - [Installing](#installing)
+- [Quick Start](#quick-start)
 - [Exports](#exports)
 - [Draggable](#draggable)
-- [Draggable Usage](#draggable-usage)
 - [Draggable API](#draggable-api)
+- [Using nodeRef](#using-noderef)
 - [Controlled vs. Uncontrolled](#controlled-vs-uncontrolled)
 - [DraggableCore](#draggablecore)
 - [DraggableCore API](#draggablecore-api)
+- [Contributing](#contributing)
 
-
-
-### Installing
+## Installing
 
 ```bash
-$ npm install react-draggable
+npm install react-draggable
+# or
+yarn add react-draggable
 ```
 
-If you aren't using browserify/webpack, a
-[UMD version of react-draggable](dist/react-draggable.js) is available. It is updated per-release only.
-This bundle is also what is loaded when installing from npm. It expects external `React` and `ReactDOM`.
+TypeScript types are included.
 
-If you want a UMD version of the latest `master` revision, you can generate it yourself from master by cloning this
-repository and running `$ make`. This will create umd dist files in the `dist/` folder.
+### UMD Build
 
-### Exports
+A [UMD version](build/web/react-draggable.min.js) is available for use in `<script>` tags or AMD loaders. It expects `React` and `ReactDOM` to be available as globals.
 
-The default export is `<Draggable>`. At the `.DraggableCore` property is [`<DraggableCore>`](#draggablecore).
-Here's how to use it:
+To generate a UMD build from `master`, clone the repository and run `make build`.
+
+## Quick Start
+
+```jsx
+import React, { useRef } from 'react';
+import Draggable from 'react-draggable';
+
+function App() {
+  const nodeRef = useRef(null);
+
+  const handleDrag = (e, data) => {
+    console.log('Dragging:', data.x, data.y);
+  };
+
+  return (
+    <Draggable nodeRef={nodeRef} onDrag={handleDrag}>
+      <div ref={nodeRef}>Drag me!</div>
+    </Draggable>
+  );
+}
+```
+
+## Exports
 
 ```js
-// ES6
+// ES Modules
 import Draggable from 'react-draggable'; // The default
-import {DraggableCore} from 'react-draggable'; // <DraggableCore>
-import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
+import { DraggableCore } from 'react-draggable'; // <DraggableCore>
+import Draggable, { DraggableCore } from 'react-draggable'; // Both
 
 // CommonJS
-let Draggable = require('react-draggable');
-let DraggableCore = Draggable.DraggableCore;
+const Draggable = require('react-draggable');
+const { DraggableCore } = require('react-draggable');
 ```
 
 ## `<Draggable>`
 
-A `<Draggable>` element wraps an existing element and extends it with new event handlers and styles.
-It does not create a wrapper element in the DOM.
+A `<Draggable>` element wraps an existing element and extends it with new event handlers and styles. It does not create a wrapper element in the DOM.
 
-Draggable items are moved using CSS Transforms. This allows items to be dragged regardless of their current
-positioning (relative, absolute, or static). Elements can also be moved between drags without incident.
+Draggable items are moved using CSS Transforms. This allows items to be dragged regardless of their current positioning (relative, absolute, or static). Elements can also be moved between drags without incident.
 
-If the item you are dragging already has a CSS Transform applied, it will be overwritten by `<Draggable>`. Use
-an intermediate wrapper (`<Draggable><span>...</span></Draggable>`) in this case.
+If the item you are dragging already has a CSS Transform applied, it will be overwritten by `<Draggable>`. Use an intermediate wrapper (`<Draggable><span>...</span></Draggable>`) in this case.
 
 ### Draggable Usage
 
-View the [Demo](http://react-grid-layout.github.io/react-draggable/example/) and its
-[source](/example/example.js) for more.
+View the [Demo](http://react-grid-layout.github.io/react-draggable/example/) and its [source](/example/example.js) for more examples.
 
-```js
-import React from 'react';
-import ReactDOM from 'react-dom';
+```jsx
+import React, { useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 
-class App extends React.Component {
+function App() {
+  const nodeRef = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  eventLogger = (e: MouseEvent, data: Object) => {
-    console.log('Event: ', e);
-    console.log('Data: ', data);
+  const handleDrag = (e, data) => {
+    setPosition({ x: data.x, y: data.y });
   };
 
-  render() {
-    return (
-      <Draggable
-        axis="x"
-        handle=".handle"
-        defaultPosition={{x: 0, y: 0}}
-        position={null}
-        grid={[25, 25]}
-        scale={1}
-        onStart={this.handleStart}
-        onDrag={this.handleDrag}
-        onStop={this.handleStop}>
+  return (
+    <Draggable
+      nodeRef={nodeRef}
+      axis="x"
+      handle=".handle"
+      defaultPosition={{ x: 0, y: 0 }}
+      grid={[25, 25]}
+      scale={1}
+      onDrag={handleDrag}
+    >
+      <div ref={nodeRef}>
+        <div className="handle">Drag from here</div>
         <div>
-          <div className="handle">Drag from here</div>
-          <div>This readme is really dragging on...</div>
+          Position: ({position.x}, {position.y})
         </div>
-      </Draggable>
-    );
-  }
+      </div>
+    </Draggable>
+  );
 }
-
-ReactDOM.render(<App/>, document.body);
 ```
 
 ### Draggable API
@@ -132,15 +142,13 @@ The `<Draggable/>` component transparently adds draggability to its children.
 
 **Note**: Only a single child is allowed or an Error will be thrown.
 
-For the `<Draggable/>` component to correctly attach itself to its child, the child element must provide support
-for the following props:
-- `style` is used to give the transform css to the child.
-- `className` is used to apply the proper classes to the object being dragged.
-- `onMouseDown`, `onMouseUp`, `onTouchStart`, and `onTouchEnd`  are used to keep track of dragging state.
+For the `<Draggable/>` component to correctly attach itself to its child, the child element must support the following props:
 
-React.DOM elements support the above properties by default, so you may use those elements as children without
-any changes. If you wish to use a React component you created, you'll need to be sure to
-[transfer prop](https://facebook.github.io/react/docs/transferring-props.html).
+- `style` - used to apply the transform CSS
+- `className` - used to apply dragging classes
+- `onMouseDown`, `onMouseUp`, `onTouchStart`, `onTouchEnd` - used to track dragging state
+
+React DOM elements support these by default. For custom components, ensure you spread props to the underlying DOM element.
 
 #### `<Draggable>` Props:
 
@@ -152,181 +160,202 @@ type DraggableEventHandler = (e: Event, data: DraggableData) => void | false;
 type DraggableData = {
   node: HTMLElement,
   // lastX + deltaX === x
-  x: number, y: number,
-  deltaX: number, deltaY: number,
-  lastX: number, lastY: number
+  x: number,
+  y: number,
+  deltaX: number,
+  deltaY: number,
+  lastX: number,
+  lastY: number,
 };
 
 //
 // Props:
 //
 {
-// If set to `true`, will allow dragging on non left-button clicks.
-allowAnyClick: boolean,
+  // If set to `true`, will allow dragging on non left-button clicks.
+  allowAnyClick: boolean,
 
-// Default `false` and default behavior before 4.5.0.
-// If set to `true`, the 'touchstart' event will not be prevented,
-// which will allow scrolling inside containers. We recommend
-// using the 'handle' / 'cancel' props when possible instead of enabling this.
-// 
-// See https://github.com/react-grid-layout/react-draggable/issues/728
-allowMobileScroll: boolean,
+  // Default `false`. If set to `true`, the 'touchstart' event will not be
+  // prevented, allowing scrolling inside containers. Consider using
+  // 'handle' / 'cancel' props instead when possible.
+  // See https://github.com/react-grid-layout/react-draggable/issues/728
+  allowMobileScroll: boolean,
 
-// Determines which axis the draggable can move. This only affects
-// flushing to the DOM. Callbacks will still include all values.
-// Accepted values:
-// - `both` allows movement horizontally and vertically (default).
-// - `x` limits movement to horizontal axis.
-// - `y` limits movement to vertical axis.
-// - 'none' stops all movement.
-axis: string,
+  // Determines which axis the draggable can move. This only affects
+  // flushing to the DOM. Callbacks will still include all values.
+  // Accepted values:
+  // - `both` allows movement horizontally and vertically (default).
+  // - `x` limits movement to horizontal axis.
+  // - `y` limits movement to vertical axis.
+  // - 'none' stops all movement.
+  axis: 'both' | 'x' | 'y' | 'none',
 
-// Specifies movement boundaries. Accepted values:
-// - `parent` restricts movement within the node's offsetParent
-//    (nearest node with position relative or absolute), or
-// - a selector, restricts movement within the targeted node
-// - An object with `left, top, right, and bottom` properties.
-//   These indicate how far in each direction the draggable
-//   can be moved.
-bounds: {left?: number, top?: number, right?: number, bottom?: number} | string,
+  // Specifies movement boundaries. Accepted values:
+  // - `parent` restricts movement within the node's offsetParent
+  //    (nearest node with position relative or absolute), or
+  // - a selector, restricts movement within the targeted node
+  // - An object with `left, top, right, and bottom` properties.
+  //   These indicate how far in each direction the draggable
+  //   can be moved.
+  bounds: { left?: number, top?: number, right?: number, bottom?: number } | string,
 
-// Specifies a selector to be used to prevent drag initialization. The string is passed to
-// Element.matches, so it's possible to use multiple selectors like `.first, .second`.
-// Example: '.body'
-cancel: string,
+  // Specifies a selector to be used to prevent drag initialization.
+  // The string is passed to Element.matches, so multiple selectors
+  // are supported: `.first, .second`.
+  // Example: '.body'
+  cancel: string,
 
-// Class names for draggable UI.
-// Default to 'react-draggable', 'react-draggable-dragging', and 'react-draggable-dragged'
-defaultClassName: string,
-defaultClassNameDragging: string,
-defaultClassNameDragged: string,
+  // Class names for draggable UI.
+  // Defaults: 'react-draggable', 'react-draggable-dragging', 'react-draggable-dragged'
+  defaultClassName: string,
+  defaultClassNameDragging: string,
+  defaultClassNameDragged: string,
 
-// Specifies the `x` and `y` that the dragged item should start at.
-// This is generally not necessary to use (you can use absolute or relative
-// positioning of the child directly), but can be helpful for uniformity in
-// your callbacks and with css transforms.
-defaultPosition: {x: number, y: number},
+  // Specifies the `x` and `y` that the dragged item should start at.
+  // This is generally not necessary to use (you can use absolute or relative
+  // positioning of the child directly), but can be helpful for uniformity in
+  // your callbacks and with css transforms.
+  defaultPosition: { x: number, y: number },
 
-// If true, will not call any drag handlers.
-disabled: boolean,
+  // If true, will not call any drag handlers.
+  disabled: boolean,
 
-// Default `true`. Adds "user-select: none" while dragging to avoid selecting text.
-enableUserSelectHack: boolean,
+  // Default `true`. Adds "user-select: none" while dragging to avoid selecting text.
+  enableUserSelectHack: boolean,
 
-// Specifies the x and y that dragging should snap to.
-grid: [number, number],
+  // Specifies the x and y that dragging should snap to.
+  grid: [number, number],
 
-// Specifies a selector to be used as the handle that initiates drag.
-// Example: '.handle'
-handle: string,
+  // Specifies a selector to be used as the handle that initiates drag.
+  // Example: '.handle'
+  handle: string,
 
-// If desired, you can provide your own offsetParent for drag calculations.
-// By default, we use the Draggable's offsetParent. This can be useful for elements
-// with odd display types or floats.
-offsetParent: HTMLElement,
+  // If desired, you can provide your own offsetParent for drag calculations.
+  // By default, we use the Draggable's offsetParent. This can be useful for elements
+  // with odd display types or floats.
+  offsetParent: HTMLElement,
 
-// Called whenever the user mouses down. Called regardless of handle or
-// disabled status.
-onMouseDown: (e: MouseEvent) => void,
+  // Called whenever the user mouses down. Called regardless of handle or
+  // disabled status.
+  onMouseDown: (e: MouseEvent) => void,
 
-// Called when dragging starts. If `false` is returned any handler,
-// the action will cancel.
-onStart: DraggableEventHandler,
+  // Called when dragging starts. If `false` is returned, the action will cancel.
+  onStart: DraggableEventHandler,
 
-// Called while dragging.
-onDrag: DraggableEventHandler,
+  // Called while dragging.
+  onDrag: DraggableEventHandler,
 
-// Called when dragging stops.
-onStop: DraggableEventHandler,
+  // Called when dragging stops.
+  onStop: DraggableEventHandler,
 
-// If running in React Strict mode, ReactDOM.findDOMNode() is deprecated.
-// Unfortunately, in order for <Draggable> to work properly, we need raw access
-// to the underlying DOM node. If you want to avoid the warning, pass a `nodeRef`
-// as in this example:
-//
-// function MyComponent() {
-//   const nodeRef = React.useRef(null);
-//   return (
-//     <Draggable nodeRef={nodeRef}>
-//       <div ref={nodeRef}>Example Target</div>
-//     </Draggable>
-//   );
-// }
-//
-// This can be used for arbitrarily nested components, so long as the ref ends up
-// pointing to the actual child DOM node and not a custom component.
-//
-// For rich components, you need to both forward the ref *and props* to the underlying DOM
-// element. Props must be forwarded so that DOM event handlers can be attached. 
-// For example:
-//
-//   const Component1 = React.forwardRef(function (props, ref) {
-//     return <div {...props} ref={ref}>Nested component</div>;
-//   });
-//
-//   const nodeRef = React.useRef(null);
-//   <DraggableCore onDrag={onDrag} nodeRef={nodeRef}>
-//     <Component1 ref={nodeRef} />
-//   </DraggableCore>
-//
-// Thanks to react-transition-group for the inspiration.
-//
-// `nodeRef` is also available on <DraggableCore>.
-nodeRef: React.Ref<typeof React.Component>,
+  // Ref to the DOM node being dragged. Required for React Strict Mode.
+  // See "Using nodeRef" section below.
+  nodeRef: React.RefObject<HTMLElement>,
 
-// Much like React form elements, if this property is present, the item
-// becomes 'controlled' and is not responsive to user input. Use `position`
-// if you need to have direct control of the element.
-position: {x: number, y: number}
+  // If this property is present, the item becomes 'controlled' and is not
+  // responsive to user input. Use `position` if you need direct control
+  // of the element.
+  position: { x: number, y: number },
 
-// A position offset to start with. Useful for giving an initial position
-// to the element. Differs from `defaultPosition` in that it does not
-// affect the position returned in draggable callbacks, and in that it
-// accepts strings, like `{x: '10%', y: '10%'}`.
-positionOffset: {x: number | string, y: number | string},
+  // A position offset to start with. Differs from `defaultPosition` in that
+  // it does not affect the position returned in draggable callbacks, and
+  // accepts strings like `{x: '10%', y: '10%'}`.
+  positionOffset: { x: number | string, y: number | string },
 
-// Specifies the scale of the canvas your are dragging this element on. This allows
-// you to, for example, get the correct drag deltas while you are zoomed in or out via
-// a transform or matrix in the parent of this element.
-scale: number
+  // Specifies the scale of the canvas you are dragging on. This allows
+  // correct drag deltas when zoomed in/out via a transform or matrix
+  // in the parent of this element.
+  scale: number
 }
 ```
 
+Note that sending `className`, `style`, or `transform` as properties will error - set them on the child element directly.
 
-Note that sending `className`, `style`, or `transform` as properties will error - set them on the child element
-directly.
+## Using nodeRef
 
+To avoid `ReactDOM.findDOMNode()` deprecation warnings in React Strict Mode, pass a `nodeRef` prop:
+
+```jsx
+import React, { useRef } from 'react';
+import Draggable from 'react-draggable';
+
+function App() {
+  const nodeRef = useRef(null);
+
+  return (
+    <Draggable nodeRef={nodeRef}>
+      <div ref={nodeRef}>Drag me!</div>
+    </Draggable>
+  );
+}
+```
+
+For custom components, you need to forward both the ref and props to the underlying DOM element:
+
+```jsx
+import React, { useRef, forwardRef } from 'react';
+import Draggable from 'react-draggable';
+
+const MyComponent = forwardRef((props, ref) => (
+  <div {...props} ref={ref}>
+    Draggable content
+  </div>
+));
+
+function App() {
+  const nodeRef = useRef(null);
+
+  return (
+    <Draggable nodeRef={nodeRef}>
+      <MyComponent ref={nodeRef} />
+    </Draggable>
+  );
+}
+```
+
+`nodeRef` is also available on `<DraggableCore>`.
 
 ## Controlled vs. Uncontrolled
 
-`<Draggable>` is a 'batteries-included' component that manages its own state. If you want to completely
-control the lifecycle of the component, use `<DraggableCore>`.
+`<Draggable>` is a 'batteries-included' component that manages its own state. If you want complete control over the lifecycle, use `<DraggableCore>`.
 
-For some users, they may want the nice state management that `<Draggable>` provides, but occasionally want
-to programmatically reposition their components. `<Draggable>` allows this customization via a system that
-is similar to how React handles form components.
+For programmatic repositioning while still using `<Draggable>`'s state management, pass the `position` prop:
 
-If the prop `position: {x: number, y: number}` is defined, the `<Draggable>` will ignore its internal state and use
-the provided position instead. Alternatively, you can seed the position using `defaultPosition`. Technically, since
-`<Draggable>` works only on position deltas, you could also seed the initial position using CSS `top/left`.
+```jsx
+function ControlledDraggable() {
+  const nodeRef = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
-We make one modification to the React philosophy here - we still allow dragging while a component is controlled.
-We then expect you to use at least an `onDrag` or `onStop` handler to synchronize state.
+  const handleDrag = (e, data) => {
+    setPosition({ x: data.x, y: data.y });
+  };
 
-To disable dragging while controlled, send the prop `disabled={true}` - at this point the `<Draggable>` will operate
-like a completely static component.
+  const resetPosition = () => {
+    setPosition({ x: 0, y: 0 });
+  };
+
+  return (
+    <>
+      <button onClick={resetPosition}>Reset</button>
+      <Draggable nodeRef={nodeRef} position={position} onDrag={handleDrag}>
+        <div ref={nodeRef}>Drag me or reset!</div>
+      </Draggable>
+    </>
+  );
+}
+```
+
+When `position` is defined, `<Draggable>` uses the provided position instead of its internal state. You should use at least an `onDrag` or `onStop` handler to synchronize state.
+
+To disable dragging while controlled, pass `disabled={true}`.
 
 ## `<DraggableCore>`
 
-For users that require absolute control, a `<DraggableCore>` element is available. This is useful as an abstraction
-over touch and mouse events, but with full control. `<DraggableCore>` has no internal state.
+For users that require absolute control, `<DraggableCore>` is available. This is useful as an abstraction over touch and mouse events, but with full control. `<DraggableCore>` has no internal state.
 
-See [React-Resizable](https://github.com/react-grid-layout/react-resizable) and
-[React-Grid-Layout](https://github.com/react-grid-layout/react-grid-layout) for some usage examples.
+See [React-Resizable](https://github.com/react-grid-layout/react-resizable) and [React-Grid-Layout](https://github.com/react-grid-layout/react-grid-layout) for usage examples.
 
-`<DraggableCore>` is a useful building block for other libraries that simply want to abstract browser-specific
-quirks and receive callbacks when a user attempts to move an element. It does not set styles or transforms
-on itself and thus must have callbacks attached to be useful.
+`<DraggableCore>` is a building block for libraries that want to abstract browser-specific quirks and receive callbacks when a user attempts to move an element. It does not set styles or transforms on itself, so callbacks must be attached to be useful.
 
 ### DraggableCore API
 
@@ -342,6 +371,7 @@ on itself and thus must have callbacks attached to be useful.
   offsetParent: HTMLElement,
   grid: [number, number],
   handle: string,
+  nodeRef: React.RefObject<HTMLElement>,
   onStart: DraggableEventHandler,
   onDrag: DraggableEventHandler,
   onStop: DraggableEventHandler,
@@ -350,31 +380,29 @@ on itself and thus must have callbacks attached to be useful.
 }
 ```
 
-Note that there is no start position. `<DraggableCore>` simply calls `drag` handlers with the below parameters,
-indicating its position (as inferred from the underlying MouseEvent) and deltas. It is up to the parent
-to set actual positions on `<DraggableCore>`.
+Note that there is no start position. `<DraggableCore>` simply calls drag handlers with position data (as inferred from the underlying MouseEvent) and deltas. It is up to the parent to set actual positions on `<DraggableCore>`.
 
 Drag callbacks (`onStart`, `onDrag`, `onStop`) are called with the [same arguments as `<Draggable>`](#draggable-api).
 
-----
+---
 
-### Contributing
+## Contributing
 
 - Fork the project
-- Run the project in development mode: `$ npm run dev`
-- Make changes.
+- Run the project in development mode: `yarn dev`
+- Make changes
 - Add appropriate tests
-- `$ npm test`
-- If tests don't pass, make them pass.
-- Update README with appropriate docs.
+- `yarn test`
+- If tests don't pass, make them pass
+- Update README with appropriate docs
 - Commit and PR
 
 ### Release checklist
 
 - Update CHANGELOG
-- `make release-patch`, `make release-minor`, or `make-release-major`
+- `make release-patch`, `make release-minor`, or `make release-major`
 - `make publish`
 
-### License
+## License
 
 MIT

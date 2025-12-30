@@ -13,14 +13,18 @@ This project uses Make for builds. Key commands:
 - `make test` - Runs unit tests via Vitest
 - `make test-browser` - Runs browser tests via Puppeteer (requires build first)
 - `make test-all` - Runs both unit and browser tests
-- `make dev` - Starts webpack dev server with example page
+- `make dev` - Starts webpack dev server with example page at localhost:8080
 
 Yarn scripts:
 - `yarn test` - Run unit tests (jsdom environment)
 - `yarn test:watch` - Run unit tests in watch mode
+- `yarn test -- path/to/test.jsx` - Run a single test file
+- `yarn test -- -t "test name"` - Run tests matching a pattern
 - `yarn test:browser` - Build and run browser tests (Puppeteer)
 - `yarn test:all` - Run all tests
 - `yarn test:coverage` - Run tests with coverage report
+
+Pre-commit hooks run `make lint` and `make test` automatically.
 
 ## Test Architecture
 
@@ -34,6 +38,13 @@ Tests are split into two categories:
 2. **Browser tests** (`test/browser/*.test.js`) - Run in headless Chrome via Puppeteer
    - Test actual drag behavior with real coordinate calculations
    - Test transforms, axis constraints, bounds, scale
+
+### Test Utilities
+
+`test/testUtils.js` provides helpers for simulating drag events:
+- `simulateDrag(element, {from, to})` - Complete drag operation
+- `startDrag(element, {x, y})` / `moveDrag({x, y})` / `endDrag(element, {x, y})` - Step-by-step drag
+- `simulateTouchDrag(element, {from, to})` - Touch event drag
 
 ## Architecture
 
@@ -64,7 +75,7 @@ Tests are split into two categories:
 
 ### Type Systems
 
-The codebase uses Flow for internal type checking (`// @flow` annotations) and ships TypeScript definitions in `typings/index.d.ts`. Both must stay in sync.
+The codebase uses Flow for internal type checking (`// @flow` annotations) and ships TypeScript definitions in `typings/index.d.ts`. Both must stay in sync when modifying component props or types.
 
 ## Key Patterns
 
@@ -82,3 +93,9 @@ Returning `false` from `onStart`, `onDrag`, or `onStop` cancels the drag operati
 
 ### CSS Transform Approach
 Dragging uses CSS transforms (`translate`) rather than absolute positioning, allowing draggable elements to work regardless of their CSS position value.
+
+## Release Process
+
+- Update CHANGELOG.md
+- `make release-patch`, `make release-minor`, or `make release-major`
+- `make publish`
