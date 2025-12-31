@@ -75,11 +75,12 @@ class App extends React.Component {
     const {deltaPosition, controlledPosition} = this.state;
     return (
       <div>
-        <h1>React Draggable</h1>
-        <p>Active DragHandlers: {this.state.activeDrags}</p>
-        <p>
-          <a href="https://github.com/STRML/react-draggable/blob/master/example/example.js">Demo Source</a>
-        </p>
+        <div className="active-drags">Active DragHandlers: {this.state.activeDrags}</div>
+        <ul className="nav-links">
+          <li><a href="https://github.com/react-grid-layout/react-draggable/blob/master/example/example.js">Demo Source</a></li>
+          <li><a href="https://github.com/react-grid-layout/react-draggable">GitHub</a></li>
+          <li><a href="https://www.npmjs.com/package/react-draggable">npm</a></li>
+        </ul>
         <Draggable {...dragHandlers}>
           <div className="box">I can be dragged anywhere</div>
         </Draggable>
@@ -107,8 +108,8 @@ class App extends React.Component {
         <Draggable handle="strong">
           <div className="box no-cursor" style={{display: 'flex', flexDirection: 'column'}}>
             <strong className="cursor"><div>Drag here</div></strong>
-            <div style={{overflow: 'scroll'}}>
-              <div style={{background: 'yellow', whiteSpace: 'pre-wrap'}}>
+            <div style={{overflow: 'scroll', flex: 1}}>
+              <div style={{background: 'rgba(250, 204, 21, 0.2)', border: '1px solid rgba(250, 204, 21, 0.4)', padding: '8px', whiteSpace: 'pre-wrap', color: 'var(--cyber-yellow)'}}>
                 I have long scrollable content with a handle
                 {'\n' + Array(40).fill('x').join('\n')}
               </div>
@@ -136,8 +137,8 @@ class App extends React.Component {
         <Draggable {...dragHandlers} onStop={this.onDrop}>
           <div className={`box ${this.state.activeDrags ? "no-pointer-events" : ""}`}>I can be dropped onto another box.</div>
         </Draggable>
-        <div className="box" style={{height: '500px', width: '500px', position: 'relative', overflow: 'auto', padding: '0'}}>
-          <div style={{height: '1000px', width: '1000px', padding: '10px'}}>
+        <div className="bounded-container">
+          <div className="bounded-inner">
             <Draggable bounds="parent" {...dragHandlers}>
               <div className="box">
                 I can only be moved within my offsetParent.<br /><br />

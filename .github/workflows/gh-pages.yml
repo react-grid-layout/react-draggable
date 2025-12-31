@@ -1,0 +1,27 @@
+name: Build and Deploy to GitHub Pages
+permissions:
+  contents: write
+on:
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Install and Build
+        run: |
+          yarn
+          yarn build
+          yarn build-example
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: example # The folder the action should deploy.
+          target-folder: example # The destination. Shouldn't touch other folders.
