@@ -2,64 +2,27 @@
 <html>
 <head>
   <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>React Draggable</title>
-  <style type="text/css">
-    * {
-      box-sizing: border-box;
-    }
-    html, body {
-      height: 100%;
-    }
-
-    body {
-      color: #222;
-      font-family: "Helvetica Neue", sans-serif;
-      font-weight: 200;
-      margin: 0 50px;
-    }
-
-    .react-draggable, .cursor {
-      cursor: move;
-    }
-    .no-cursor {
-      cursor: auto;
-    }
-    .cursor-y {
-      cursor: ns-resize;
-    }
-    .cursor-x {
-      cursor: ew-resize;
-    }
-
-    .react-draggable strong {
-      background: #ddd;
-      border: 1px solid #999;
-      border-radius: 3px;
-      display: block;
-      margin-bottom: 10px;
-      padding: 3px 5px;
-      text-align: center;
-    }
-
-    .box {
-      background: #fff;
-      border: 1px solid #999;
-      border-radius: 3px;
-      width: 180px;
-      height: 180px;
-      margin: 10px;
-      padding: 10px;
-      float: left;
-    }
-  </style>
+  <link rel="stylesheet" href="example-styles.css"/>
 </head>
 <body>
-<div id="container"></div>
-<script src="//unpkg.com/react@16/umd/react.development.js"></script>
-<script src="//unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-<script src="../build/web/react-draggable.min.js"></script>
+<div class="main-content">
+  <header class="main-header">
+    <h1>React-Draggable</h1>
+    <div class="header-links">
+      <a class="lib-link" href="https://react-grid-layout.github.io/react-grid-layout/examples/0-showcase.html">React-Grid-Layout</a>
+      <a class="lib-link" href="https://react-grid-layout.github.io/react-resizable/examples/example.html">React-Resizable</a>
+      <a class="version-badge" href="https://github.com/react-grid-layout/react-draggable">v4.5.0</a>
+    </div>
+  </header>
+  <div id="container"></div>
+</div>
+<script src="//unpkg.com/react@18/umd/react.development.js"></script>
+<script src="//unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="build/web/react-draggable.min.js"></script>
 <!-- for imported script -->
 <script src="//unpkg.com/@babel/standalone/babel.min.js"></script>
-<script type="text/babel" src="../example/example.js"></script>
+<script type="text/babel" src="example.js"></script>
 </body>
 </html>

@@ -28,6 +28,21 @@ class App extends React.Component {
   onStop = () => {
     this.setState({activeDrags: --this.state.activeDrags});
   };
+  onDrop = (e) => {
+    this.setState({activeDrags: --this.state.activeDrags});
+    if (e.target.classList.contains("drop-target")) {
+      alert("Dropped!");
+      e.target.classList.remove('hovered');
+    }
+  };
+  onDropAreaMouseEnter = (e) => {
+    if (this.state.activeDrags) {
+      e.target.classList.add('hovered');
+    }
+  }
+  onDropAreaMouseLeave = (e) => {
+    e.target.classList.remove('hovered');
+  }
 
   // For controlled component
   adjustXPos = (e) => {
@@ -60,11 +75,12 @@ class App extends React.Component {
     const {deltaPosition, controlledPosition} = this.state;
     return (
       <div>
-        <h1>React Draggable</h1>
-        <p>Active DragHandlers: {this.state.activeDrags}</p>
-        <p>
-          <a href="https://github.com/STRML/react-draggable/blob/master/example/example.js">Demo Source</a>
-        </p>
+        <div className="active-drags">Active DragHandlers: {this.state.activeDrags}</div>
+        <ul className="nav-links">
+          <li><a href="https://github.com/react-grid-layout/react-draggable/blob/master/example/example.js">Demo Source</a></li>
+          <li><a href="https://github.com/react-grid-layout/react-draggable">GitHub</a></li>
+          <li><a href="https://www.npmjs.com/package/react-draggable">npm</a></li>
+        </ul>
         <Draggable {...dragHandlers}>
           <div className="box">I can be dragged anywhere</div>
         </Draggable>
@@ -92,8 +108,8 @@ class App extends React.Component {
         <Draggable handle="strong">
           <div className="box no-cursor" style={{display: 'flex', flexDirection: 'column'}}>
             <strong className="cursor"><div>Drag here</div></strong>
-            <div style={{overflow: 'scroll'}}>
-              <div style={{background: 'yellow', whiteSpace: 'pre-wrap'}}>
+            <div style={{overflow: 'scroll', flex: 1}}>
+              <div style={{background: 'rgba(250, 204, 21, 0.2)', border: '1px solid rgba(250, 204, 21, 0.4)', padding: '8px', whiteSpace: 'pre-wrap', color: 'var(--cyber-yellow)'}}>
                 I have long scrollable content with a handle
                 {'\n' + Array(40).fill('x').join('\n')}
               </div>
@@ -115,8 +131,14 @@ class App extends React.Component {
         <Draggable bounds={{top: -100, left: -100, right: 100, bottom: 100}} {...dragHandlers}>
           <div className="box">I can only be moved 100px in any direction.</div>
         </Draggable>
-        <div className="box" style={{height: '500px', width: '500px', position: 'relative', overflow: 'auto', padding: '0'}}>
-          <div style={{height: '1000px', width: '1000px', padding: '10px'}}>
+        <Draggable {...dragHandlers}>
+          <div className="box drop-target" onMouseEnter={this.onDropAreaMouseEnter} onMouseLeave={this.onDropAreaMouseLeave}>I can detect drops from the next box.</div>
+        </Draggable>
+        <Draggable {...dragHandlers} onStop={this.onDrop}>
+          <div className={`box ${this.state.activeDrags ? "no-pointer-events" : ""}`}>I can be dropped onto another box.</div>
+        </Draggable>
+        <div className="bounded-container">
+          <div className="bounded-inner">
             <Draggable bounds="parent" {...dragHandlers}>
               <div className="box">
                 I can only be moved within my offsetParent.<br /><br />
@@ -140,6 +162,16 @@ class App extends React.Component {
           <div className="box" style={{position: 'absolute', bottom: '100px', right: '100px'}}>
             I already have an absolute position.
           </div>
+        </Draggable>
+        <Draggable {...dragHandlers}>
+          <RemWrapper>
+            <div className="box rem-position-fix" style={{position: 'absolute', bottom: '6.25rem', right: '18rem'}}>
+              I use <span style={{ fontWeight: 700 }}>rem</span> instead of <span style={{ fontWeight: 700 }}>px</span> for my transforms. I also have absolute positioning.
+
+              <br /><br />
+              I depend on a CSS hack to avoid double absolute positioning.
+            </div>
+          </RemWrapper>
         </Draggable>
         <Draggable defaultPosition={{x: 25, y: 25}} {...dragHandlers}>
           <div className="box">
@@ -180,5 +212,45 @@ class App extends React.Component {
     );
   }
 }
+
+class RemWrapper extends React.Component {
+  // PropTypes is not available in this environment, but here they are.
+  // static propTypes = {
+  //   style: PropTypes.shape({
+  //     transform: PropTypes.string.isRequired
+  //   }),
+  //   children: PropTypes.node.isRequired,
+  //   remBaseline: PropTypes.number,
+  // }
+
+  translateTransformToRem(transform, remBaseline = 16) {
+    const convertedValues = transform.replace('translate(', '').replace(')', '')
+      .split(',')
+      .map(px => px.replace('px', ''))
+      .map(px => parseInt(px, 10) / remBaseline)
+      .map(x => `${x}rem`)
+    const [x, y] = convertedValues
+
+    return `translate(${x}, ${y})`
+  }
+
+  render() {
+    const { children, remBaseline = 16, style } = this.props
+    const child = React.Children.only(children)
+
+    const editedStyle = {
+      ...child.props.style,
+      ...style,
+      transform: this.translateTransformToRem(style.transform, remBaseline),
+    }
+
+    return React.cloneElement(child, {
+       ...child.props,
+       ...this.props,
+       style: editedStyle
+    })
+  }
+}
+
 
 ReactDOM.render(<App/>, document.getElementById('container'));
