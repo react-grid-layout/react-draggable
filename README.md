@@ -7,7 +7,7 @@
 
 A simple component for making elements draggable.
 
-[**[Demo](https://react-grid-layout.github.io/react-draggable/example/) | [Changelog](CHANGELOG.md)**]
+[**[Demo](https://react-grid-layout.github.io/react-draggable/) | [Changelog](CHANGELOG.md)**]
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/6365230/95649276-f3a02480-0b06-11eb-8504-e0614a780ba4.gif" />
@@ -76,7 +76,7 @@ function App() {
 }
 ```
 
-View the [Demo](https://react-grid-layout.github.io/react-draggable/example/) and its [source](/example/example.js) for more examples.
+View the [Demo](https://react-grid-layout.github.io/react-draggable/) and its [source](/example/example.js) for more examples.
 
 ## API
 
