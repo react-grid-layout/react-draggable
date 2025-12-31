@@ -2,7 +2,12 @@
   "compilerOptions": {
     "noEmit": true,
     "jsx": "preserve",
-    "strict": true
+    "strict": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "react-draggable": ["./index.d.ts"]
+    }
   },
   "files": [
     "index.d.ts",
