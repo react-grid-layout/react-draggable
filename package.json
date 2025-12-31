@@ -13,6 +13,7 @@
     "test:all": "yarn test && yarn test:browser",
     "dev": "make dev",
     "build": "make clean build",
+    "build-example": "mkdir -p example/build/web && cp build/web/react-draggable.min.js example/build/web/ && sed -i.bak 's|../build/web/react-draggable|build/web/react-draggable|g' example/index.html && rm -f example/index.html.bak",
     "lint": "make lint",
     "flow": "flow"
   },

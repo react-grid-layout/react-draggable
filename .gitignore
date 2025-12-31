@@ -2,3 +2,5 @@
 *.iml
 node_modules/
 build/
+example/build/
+coverage/
