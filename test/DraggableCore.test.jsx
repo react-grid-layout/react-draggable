@@ -504,6 +504,48 @@ describe('DraggableCore', () => {
     });
   });
 
+
+  it('should add nonce attribute to style element when nonce prop is provided', () => {
+    const testNonce = 'test-nonce-12345';
+    const { container } = render(
+      <DraggableCoreWrapper nonce={testNonce}>
+        <div />
+      </DraggableCoreWrapper>
+    );
+
+    // Clean up any existing style element
+    const existingStyle = document.getElementById('react-draggable-style-el');
+    if (existingStyle) existingStyle.remove();
+
+    startDrag(container.firstChild, { x: 0, y: 0 });
+
+    const styleEl = document.getElementById('react-draggable-style-el');
+    expect(styleEl).toBeTruthy();
+    expect(styleEl.getAttribute('nonce')).toBe(testNonce);
+
+    endDrag(container.firstChild, { x: 0, y: 0 });
+  });
+
+  it('should not add nonce attribute when nonce prop is not provided', () => {
+    const { container } = render(
+      <DraggableCoreWrapper>
+        <div />
+      </DraggableCoreWrapper>
+    );
+
+    // Clean up any existing style element
+    const existingStyle = document.getElementById('react-draggable-style-el');
+    if (existingStyle) existingStyle.remove();
+
+    startDrag(container.firstChild, { x: 0, y: 0 });
+
+    const styleEl = document.getElementById('react-draggable-style-el');
+    expect(styleEl).toBeTruthy();
+    expect(styleEl.getAttribute('nonce')).toBeNull();
+
+    endDrag(container.firstChild, { x: 0, y: 0 });
+  });
+
   describe('unmount safety', () => {
     it('should track mounted state correctly', () => {
       const coreRef = React.createRef();

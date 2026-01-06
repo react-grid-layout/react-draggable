@@ -117,6 +117,7 @@ type DraggableData = {
 | `grid` | `[number, number]` | - | Snap to grid `[x, y]` |
 | `handle` | `string` | - | CSS selector for the drag handle |
 | `nodeRef` | `React.RefObject` | - | Ref to the DOM element. Required for React Strict Mode |
+| `nonce` | `string` | - | Nonce for Content Security Policy. Applied to dynamically created `<style>` tags |
 | `offsetParent` | `HTMLElement` | - | Custom offsetParent for drag calculations |
 | `onDrag` | `DraggableEventHandler` | - | Called while dragging |
 | `onMouseDown` | `(e: MouseEvent) => void` | - | Called on mouse down |
@@ -147,6 +148,7 @@ See [React-Resizable](https://github.com/react-grid-layout/react-resizable) and 
 - `handle`
 - `nodeRef`
 - `offsetParent`
+- `nonce`
 - `onDrag`
 - `onMouseDown`
 - `onStart`
