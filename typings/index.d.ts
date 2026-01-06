@@ -54,7 +54,8 @@ export interface DraggableCoreProps {
   onDrag: DraggableEventHandler,
   onStop: DraggableEventHandler,
   onMouseDown: (e: MouseEvent) => void,
-  scale: number
+  scale: number,
+  nonce?: string
 }
 
 export default class Draggable extends React.Component<Partial<DraggableProps>, {}> {
