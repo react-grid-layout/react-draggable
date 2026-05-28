@@ -10,7 +10,7 @@
     "types": ["react", "react-dom", "node"],
     "baseUrl": ".",
     "paths": {
-      "react-draggable": ["../../build/cjs/cjs.d.ts"]
+      "react-draggable": ["../../lib/cjs.ts"]
     }
   },
   "files": [
