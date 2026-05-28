@@ -19,7 +19,10 @@ lint:
 # tsup emits cjs + esm + dts into build/cjs (and rewrites build/cjs/cjs.js to the
 # legacy module.exports === Draggable shape). webpack emits the UMD global bundle.
 # Both depend on `clean` so the dir is reset first even under parallel make (-j).
+# The recipe runs after both prerequisites complete and verifies the published
+# CJS/UMD contracts (see scripts/verify-build.cjs).
 build: build-lib build-web
+	@node scripts/verify-build.cjs
 
 build-lib: clean $(BIN)
 	$(BIN)/tsup
