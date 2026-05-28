@@ -61,18 +61,6 @@ export type {
   PositionOffsetControlPosition,
 } from './DraggableCore';
 // `DraggableBounds` was the public name for the internal `Bounds` type.
-export type {Bounds as DraggableBounds} from './utils/types';
-
-// `DraggableEvent` is the PUBLIC event type. Historically (typings/index.d.ts) it
-// was the broad UNION of the React synthetic and native DOM mouse/touch events a
-// consumer might receive — NOT the internal `MouseTouchEvent` (which is the
-// `MouseEvent & TouchEvent` intersection the handlers use for convenient field
-// access). Aliasing the public type to the intersection would be an API break:
-// none of the old union members are assignable to the intersection. Keep the
-// union to preserve compatibility.
-import type * as React from 'react';
-export type DraggableEvent =
-  | React.MouseEvent<HTMLElement | SVGElement>
-  | React.TouchEvent<HTMLElement | SVGElement>
-  | MouseEvent
-  | TouchEvent;
+// `DraggableEvent` is the public event union (defined in ./utils/types alongside
+// the other public types — see the note there on why it must stay a union).
+export type {Bounds as DraggableBounds, DraggableEvent} from './utils/types';

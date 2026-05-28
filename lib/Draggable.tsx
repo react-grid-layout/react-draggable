@@ -348,7 +348,7 @@ class Draggable extends React.Component<Partial<DraggableProps>, DraggableState>
       newState.y = y;
     }
 
-    this.setState(newState as Pick<DraggableState, keyof DraggableState>);
+    this.setState(newState as DraggableState);
   };
 
   render(): ReactElement {

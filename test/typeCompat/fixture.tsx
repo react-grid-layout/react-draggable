@@ -1,9 +1,10 @@
 // Type-level compatibility fixture.
 //
 // This file is NOT run; it is compiled by `test/typeCompat.test.ts` via `tsc`
-// against the AUTO-GENERATED declaration (build/cjs/cjs.d.ts, aliased to
-// "react-draggable"). It asserts that the generated public type surface is
-// API-compatible with the OLD hand-written typings/index.d.ts.
+// against the source entry (lib/cjs.ts, aliased to "react-draggable") — the same
+// public surface the shipped declaration is generated from, checked without
+// requiring a prior build. It asserts that surface is API-compatible with the
+// OLD hand-written typings/index.d.ts.
 //
 // Every exported name and every prop from the old surface is exercised here. If
 // any export is removed/renamed, or any prop is removed/renamed/retyped

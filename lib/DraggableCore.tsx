@@ -73,7 +73,7 @@ export default class DraggableCore extends React.Component<Partial<DraggableCore
 
   static displayName: string | undefined = 'DraggableCore';
 
-  static propTypes: {[key: string]: unknown} = {
+  static propTypes = {
     /**
      * `allowAnyClick` allows dragging using any mouse button.
      * By default, we only accept the left button.
