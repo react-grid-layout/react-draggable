@@ -1,4 +1,3 @@
-// @flow
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
@@ -9,7 +8,10 @@ import {dontSetMe} from './utils/shims';
 import log from './utils/log';
 
 import type {EventHandler, MouseTouchEvent} from './utils/types';
-import type {Element as ReactElement} from 'react';
+
+// Re-export shared types so existing imports from './DraggableCore' keep working.
+export type {DraggableData, DraggableEventHandler, ControlPosition, PositionOffsetControlPosition} from './utils/types';
+import type {DraggableEventHandler} from './utils/types';
 
 // Simple abstraction for dragging events names.
 const eventsFor = {
@@ -28,18 +30,6 @@ const eventsFor = {
 // Default to mouse events.
 let dragEventFor = eventsFor.mouse;
 
-export type DraggableData = {
-  node: HTMLElement,
-  x: number, y: number,
-  deltaX: number, deltaY: number,
-  lastX: number, lastY: number,
-};
-
-export type DraggableEventHandler = (e: MouseEvent, data: DraggableData) => void | false;
-
-export type ControlPosition = {x: number, y: number};
-export type PositionOffsetControlPosition = {x: number|string, y: number|string};
-
 export type DraggableCoreDefaultProps = {
   allowAnyClick: boolean,
   allowMobileScroll: boolean,
@@ -52,14 +42,16 @@ export type DraggableCoreDefaultProps = {
   scale: number,
 };
 
-export type DraggableCoreProps = {
-  ...DraggableCoreDefaultProps,
+export type DraggableCoreProps = DraggableCoreDefaultProps & {
   cancel: string,
-  children: ReactElement<any>,
+  // Public type stays React.ReactNode for backward compatibility with the
+  // hand-written typings shipped through v4.5.0. At runtime React.Children.only
+  // still requires exactly one element (enforced in render()).
+  children?: React.ReactNode,
   offsetParent: HTMLElement,
   grid: [number, number],
   handle: string,
-  nodeRef?: ?React.ElementRef<any>,
+  nodeRef?: React.RefObject<HTMLElement | null> | null,
 };
 
 //
@@ -69,11 +61,19 @@ export type DraggableCoreProps = {
 // work well with libraries that require more control over the element.
 //
 
-export default class DraggableCore extends React.Component<DraggableCoreProps> {
+// Public-facing prop shape: every prop is optional for consumers because the
+// required ones are supplied by `defaultProps`. This reproduces the historical
+// hand-written declaration `React.Component<Partial<DraggableCoreProps>, {}>`
+// so the auto-generated .d.ts stays API-compatible with the old typings.
+export default class DraggableCore extends React.Component<Partial<DraggableCoreProps>> {
 
-  static displayName: ?string = 'DraggableCore';
+  // Internally, defaultProps guarantees every prop is present at runtime, so we
+  // narrow `this.props` back to the fully-resolved type for type-safe access.
+  declare props: DraggableCoreProps;
 
-  static propTypes: Object = {
+  static displayName: string | undefined = 'DraggableCore';
+
+  static propTypes: {[key: string]: unknown} = {
     /**
      * `allowAnyClick` allows dragging using any mouse button.
      * By default, we only accept the left button.
@@ -110,8 +110,8 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
      * `offsetParent`, if set, uses the passed DOM node to compute drag offsets
      * instead of using the parent node.
      */
-    offsetParent: function(props: DraggableCoreProps, propName: $Keys<DraggableCoreProps>) {
-      if (props[propName] && props[propName].nodeType !== 1) {
+    offsetParent: function(props: DraggableCoreProps, propName: keyof DraggableCoreProps) {
+      if (props[propName] && (props[propName] as HTMLElement).nodeType !== 1) {
         throw new Error('Draggable\'s offsetParent must be a DOM Node.');
       }
     },
@@ -221,7 +221,11 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
     transform: dontSetMe
   };
 
-  static defaultProps: DraggableCoreDefaultProps = {
+  // Typed as the full `DraggableCoreProps` (not just the default-provided subset)
+  // so React's JSX LibraryManagedAttributes treats EVERY prop as optional for
+  // consumers, matching the historical hand-written typings. At runtime only the
+  // default-able props are actually populated.
+  static defaultProps: DraggableCoreProps = {
     allowAnyClick: false, // by default only accept left click
     allowMobileScroll: false,
     disabled: false,
@@ -231,7 +235,7 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
     onStop: function(){},
     onMouseDown: function(){},
     scale: 1,
-  };
+  } as unknown as DraggableCoreProps;
 
   dragging: boolean = false;
 
@@ -239,7 +243,7 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
   lastX: number = NaN;
   lastY: number = NaN;
 
-  touchIdentifier: ?number = null;
+  touchIdentifier: number | null | undefined = null;
 
   mounted: boolean = false;
 
@@ -271,13 +275,14 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
 
   // React 19 removed ReactDOM.findDOMNode, so nodeRef is now required.
   // For backward compatibility with React 18 and earlier, we still support findDOMNode if available.
-  findDOMNode(): ?HTMLElement {
+  findDOMNode(): HTMLElement | null {
     if (this.props?.nodeRef) {
       return this.props.nodeRef.current;
     }
     // ReactDOM.findDOMNode was removed in React 19
-    if (typeof ReactDOM.findDOMNode === 'function') {
-      return ReactDOM.findDOMNode(this);
+    const legacyReactDOM = ReactDOM as unknown as {findDOMNode?: (instance: React.Component) => HTMLElement | null};
+    if (typeof legacyReactDOM.findDOMNode === 'function') {
+      return legacyReactDOM.findDOMNode(this);
     }
     // In React 19+, nodeRef is required - log a warning via our log utility
     log(
@@ -303,9 +308,9 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
 
     // Short circuit if handle or cancel prop was provided and selector doesn't match.
     if (this.props.disabled ||
-      (!(e.target instanceof ownerDocument.defaultView.Node)) ||
-      (this.props.handle && !matchesSelectorAndParentsTo(e.target, this.props.handle, thisNode)) ||
-      (this.props.cancel && matchesSelectorAndParentsTo(e.target, this.props.cancel, thisNode))) {
+      (!(e.target instanceof (ownerDocument.defaultView as Window & typeof globalThis).Node)) ||
+      (this.props.handle && !matchesSelectorAndParentsTo(e.target as Node, this.props.handle, thisNode)) ||
+      (this.props.cancel && matchesSelectorAndParentsTo(e.target as Node, this.props.cancel, thisNode))) {
       return;
     }
 
@@ -364,7 +369,8 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
       let deltaX = x - this.lastX, deltaY = y - this.lastY;
       [deltaX, deltaY] = snapToGrid(this.props.grid, deltaX, deltaY);
       if (!deltaX && !deltaY) return; // skip useless drag
-      x = this.lastX + deltaX, y = this.lastY + deltaY;
+      x = this.lastX + deltaX;
+      y = this.lastY + deltaY;
     }
 
     const coreEvent = createCoreData(this, x, y);
@@ -375,13 +381,11 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
     const shouldUpdate = this.props.onDrag(e, coreEvent);
     if (shouldUpdate === false || this.mounted === false) {
       try {
-        // $FlowIgnore
-        this.handleDragStop(new MouseEvent('mouseup'));
-      } catch (err) {
+        this.handleDragStop(new MouseEvent('mouseup') as MouseTouchEvent);
+      } catch {
         // Old browsers
-        const event = ((document.createEvent('MouseEvents'): any): MouseTouchEvent);
+        const event = document.createEvent('MouseEvents') as unknown as MouseTouchEvent;
         // I see why this insanity was deprecated
-        // $FlowIgnore
         event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         this.handleDragStop(event);
       }
@@ -404,7 +408,8 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
       let deltaX = x - this.lastX || 0;
       let deltaY = y - this.lastY || 0;
       [deltaX, deltaY] = snapToGrid(this.props.grid, deltaX, deltaY);
-      x = this.lastX + deltaX, y = this.lastY + deltaY;
+      x = this.lastX + deltaX;
+      y = this.lastY + deltaY;
     }
 
     const coreEvent = createCoreData(this, x, y);
@@ -461,10 +466,13 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
     return this.handleDragStop(e);
   };
 
-  render(): React.Element<any> {
+  render(): React.ReactElement {
     // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
-    return React.cloneElement(React.Children.only(this.props.children), {
+    // children is typed as ReactNode for public-API compatibility; Children.only
+    // throws at runtime unless it is exactly one element, so the cast is safe.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return React.cloneElement(React.Children.only(this.props.children) as React.ReactElement<any>, {
       // Note: mouseMove handler is attached to document so it will still function
       // when the user drags quickly and leaves the bounds of the element.
       onMouseDown: this.onMouseDown,
@@ -473,6 +481,6 @@ export default class DraggableCore extends React.Component<DraggableCoreProps> {
       // {passive: false}, which allows it to cancel. See
       // https://developers.google.com/web/updates/2017/01/scrolling-intervention
       onTouchEnd: this.onTouchEnd
-    });
+    } as React.Attributes);
   }
 }

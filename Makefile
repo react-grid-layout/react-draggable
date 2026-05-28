@@ -4,7 +4,7 @@
 # Make it parallel
 MAKEFLAGS += j4
 export BIN := $(shell yarn bin)
-.PHONY: test dev lint build build-cjs build-esm build-web clean install link publish
+.PHONY: test dev lint build build-lib build-web clean install link publish
 .DEFAULT_GOAL := build
 
 clean:
@@ -12,16 +12,19 @@ clean:
 	mkdir -p build
 
 lint:
-	@$(BIN)/flow
-	@$(BIN)/eslint lib/* lib/utils/*
+	@$(BIN)/eslint lib
+	@$(BIN)/tsc --noEmit
 	@$(BIN)/tsc -p typings
 
-build: clean build-cjs build-esm build-web
+# tsup emits cjs + esm + dts into build/cjs (and rewrites build/cjs/cjs.js to the
+# legacy module.exports === Draggable shape). webpack emits the UMD global bundle.
+# Both depend on `clean` so the dir is reset first even under parallel make (-j).
+build: build-lib build-web
 
-build-cjs: $(BIN)
-	$(BIN)/babel --out-dir ./build/cjs ./lib
+build-lib: clean $(BIN)
+	$(BIN)/tsup
 
-build-web: $(BIN)
+build-web: clean $(BIN)
 	$(BIN)/webpack --mode=production
 
 # Allows usage of `make install`, `make link`

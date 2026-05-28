@@ -1,4 +1,3 @@
-// @flow
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
@@ -10,7 +9,7 @@ import DraggableCore from './DraggableCore';
 import type {ControlPosition, PositionOffsetControlPosition, DraggableCoreProps, DraggableCoreDefaultProps} from './DraggableCore';
 import log from './utils/log';
 import type {Bounds, DraggableEventHandler} from './utils/types';
-import type {Element as ReactElement} from 'react';
+import type {ReactElement} from 'react';
 
 type DraggableState = {
   dragging: boolean,
@@ -18,11 +17,10 @@ type DraggableState = {
   x: number, y: number,
   slackX: number, slackY: number,
   isElementSVG: boolean,
-  prevPropsPosition: ?ControlPosition,
+  prevPropsPosition: ControlPosition | null,
 };
 
-export type DraggableDefaultProps = {
-  ...DraggableCoreDefaultProps,
+export type DraggableDefaultProps = DraggableCoreDefaultProps & {
   axis: 'both' | 'x' | 'y' | 'none',
   bounds: Bounds | string | false,
   defaultClassName: string,
@@ -32,9 +30,7 @@ export type DraggableDefaultProps = {
   scale: number,
 };
 
-export type DraggableProps = {
-  ...DraggableCoreProps,
-  ...DraggableDefaultProps,
+export type DraggableProps = DraggableCoreProps & DraggableDefaultProps & {
   positionOffset: PositionOffsetControlPosition,
   position: ControlPosition,
 };
@@ -43,11 +39,19 @@ export type DraggableProps = {
 // Define <Draggable>
 //
 
-class Draggable extends React.Component<DraggableProps, DraggableState> {
+// Public-facing prop shape: every prop is optional for consumers because the
+// required ones are supplied by `defaultProps`. This reproduces the historical
+// hand-written declaration `React.Component<Partial<DraggableProps>, {}>` so the
+// auto-generated .d.ts stays API-compatible with the old typings.
+class Draggable extends React.Component<Partial<DraggableProps>, DraggableState> {
 
-  static displayName: ?string = 'Draggable';
+  // Internally, defaultProps guarantees every prop is present at runtime, so we
+  // narrow `this.props` back to the fully-resolved type for type-safe access.
+  declare props: DraggableProps;
 
-  static propTypes: DraggableProps = {
+  static displayName?: string = 'Draggable';
+
+  static propTypes = {
     // Accepts all props <DraggableCore> accepts.
     ...DraggableCore.propTypes,
 
@@ -166,7 +170,11 @@ class Draggable extends React.Component<DraggableProps, DraggableState> {
     transform: dontSetMe
   };
 
-  static defaultProps: DraggableDefaultProps = {
+  // Typed as the full `DraggableProps` (not just the default-provided subset) so
+  // React's JSX LibraryManagedAttributes treats EVERY prop as optional for
+  // consumers, matching the historical hand-written typings. At runtime only the
+  // default-able props are actually populated.
+  static defaultProps: DraggableProps = {
     ...DraggableCore.defaultProps,
     axis: 'both',
     bounds: false,
@@ -175,11 +183,11 @@ class Draggable extends React.Component<DraggableProps, DraggableState> {
     defaultClassNameDragged: 'react-draggable-dragged',
     defaultPosition: {x: 0, y: 0},
     scale: 1
-  };
+  } as unknown as DraggableProps;
 
   // React 16.3+
   // Arity (props, state)
-  static getDerivedStateFromProps({position}: DraggableProps, {prevPropsPosition}: DraggableState): ?Partial<DraggableState> {
+  static getDerivedStateFromProps({position}: DraggableProps, {prevPropsPosition}: DraggableState): Partial<DraggableState> | null {
     // Set x/y if a new position is provided in props that is different than the previous.
     if (
       position &&
@@ -243,13 +251,17 @@ class Draggable extends React.Component<DraggableProps, DraggableState> {
 
   // React 19 removed ReactDOM.findDOMNode, so nodeRef is now required.
   // For backward compatibility with React 18 and earlier, we still support findDOMNode if available.
-  findDOMNode(): ?HTMLElement {
+  findDOMNode(): HTMLElement | null {
     if (this.props?.nodeRef) {
       return this.props.nodeRef.current;
     }
-    // ReactDOM.findDOMNode was removed in React 19
-    if (typeof ReactDOM.findDOMNode === 'function') {
-      return ReactDOM.findDOMNode(this);
+    // ReactDOM.findDOMNode was removed from React 19's type defs (and runtime),
+    // so access it dynamically to stay compatible with React 18 and earlier.
+    const legacyReactDOM = ReactDOM as unknown as {
+      findDOMNode?: (instance: unknown) => HTMLElement | null;
+    };
+    if (typeof legacyReactDOM.findDOMNode === 'function') {
+      return legacyReactDOM.findDOMNode(this) as HTMLElement | null;
     }
     return null;
   }
@@ -336,10 +348,10 @@ class Draggable extends React.Component<DraggableProps, DraggableState> {
       newState.y = y;
     }
 
-    this.setState(newState);
+    this.setState(newState as Pick<DraggableState, keyof DraggableState>);
   };
 
-  render(): ReactElement<any> {
+  render(): ReactElement {
     const {
       axis,
       bounds,
@@ -385,8 +397,16 @@ class Draggable extends React.Component<DraggableProps, DraggableState> {
       style = createCSSTransform(transformOpts, positionOffset);
     }
 
+    // React.Children.only types its return as ReactElement<unknown>; narrow the
+    // single child to an element carrying optional DOM style/className props so
+    // we can read and merge them.
+    const onlyChild = React.Children.only(children) as ReactElement<{
+      className?: string,
+      style?: React.CSSProperties,
+    }>;
+
     // Mark with class while dragging
-    const className = clsx((children.props.className || ''), defaultClassName, {
+    const className = clsx((onlyChild.props.className || ''), defaultClassName, {
       [defaultClassNameDragging]: this.state.dragging,
       [defaultClassNameDragged]: this.state.dragged
     });
@@ -395,11 +415,11 @@ class Draggable extends React.Component<DraggableProps, DraggableState> {
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     return (
       <DraggableCore {...draggableCoreProps} onStart={this.onDragStart} onDrag={this.onDrag} onStop={this.onDragStop}>
-        {React.cloneElement(React.Children.only(children), {
+        {React.cloneElement(onlyChild, {
           className: className,
-          style: {...children.props.style, ...style},
+          style: {...onlyChild.props.style, ...style},
           transform: svgTransform
-        })}
+        } as Partial<{className: string, style: React.CSSProperties, transform: string | null}>)}
       </DraggableCore>
     );
   }

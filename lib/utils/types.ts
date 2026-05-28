@@ -1,6 +1,3 @@
-// @flow
-
-// eslint-disable-next-line no-use-before-define
 export type DraggableEventHandler = (e: MouseEvent, data: DraggableData) => void | false;
 
 export type DraggableData = {
@@ -14,17 +11,9 @@ export type Bounds = {
   left?: number, top?: number, right?: number, bottom?: number
 };
 export type ControlPosition = {x: number, y: number};
-export type PositionOffsetControlPosition = {x: number|string, y: number|string};
+export type PositionOffsetControlPosition = {x: number | string, y: number | string};
 export type EventHandler<T> = (e: T) => void | false;
 
-// Missing in Flow
-export class SVGElement extends HTMLElement {
-}
-
-// Missing targetTouches
-export class TouchEvent2 extends TouchEvent {
-  changedTouches: TouchList;
-  targetTouches: TouchList;
-}
-
-export type MouseTouchEvent = MouseEvent & TouchEvent2;
+// MouseEvent and TouchEvent are provided by the TS DOM lib, including
+// changedTouches/targetTouches, so the Flow class shims are no longer needed.
+export type MouseTouchEvent = MouseEvent & TouchEvent;

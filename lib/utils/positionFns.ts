@@ -1,4 +1,3 @@
-// @flow
 import {isNum, int} from './shims';
 import {getTouch, innerWidth, innerHeight, offsetXYFromParent, outerWidth, outerHeight} from './domFns';
 
@@ -18,6 +17,9 @@ export function getBoundPosition(draggable: Draggable, x: number, y: number): [n
   if (typeof bounds === 'string') {
     const {ownerDocument} = node;
     const ownerWindow = ownerDocument.defaultView;
+    if (!ownerWindow) {
+      throw new Error('Cannot resolve the owner window of the draggable node.');
+    }
     let boundNode;
     if (bounds === 'parent') {
       boundNode = node.parentNode;
@@ -26,7 +28,7 @@ export function getBoundPosition(draggable: Draggable, x: number, y: number): [n
       // so we cast it to one of the correct types (Element).
       // The others are Document and ShadowRoot.
       // All three implement querySelector() so it's safe to call.
-      const rootNode = (((node.getRootNode()): any): Element);
+      const rootNode = (node.getRootNode() as unknown) as Element;
       boundNode = rootNode.querySelector(bounds);
     }
 
@@ -73,13 +75,13 @@ export function canDragY(draggable: Draggable): boolean {
 }
 
 // Get {x, y} positions from event.
-export function getControlPosition(e: MouseTouchEvent, touchIdentifier: ?number, draggableCore: DraggableCore): ?ControlPosition {
+export function getControlPosition(e: MouseTouchEvent, touchIdentifier: number | null | undefined, draggableCore: DraggableCore): ControlPosition | null {
   const touchObj = typeof touchIdentifier === 'number' ? getTouch(e, touchIdentifier) : null;
   if (typeof touchIdentifier === 'number' && !touchObj) return null; // not the right touch
   const node = findDOMNode(draggableCore);
   // User can provide an offsetParent if desired.
   const offsetParent = draggableCore.props.offsetParent || node.offsetParent || node.ownerDocument.body;
-  return offsetXYFromParent(touchObj || e, offsetParent, draggableCore.props.scale);
+  return offsetXYFromParent(touchObj || e, offsetParent as HTMLElement, draggableCore.props.scale);
 }
 
 // Create an data object exposed by <DraggableCore>'s events
