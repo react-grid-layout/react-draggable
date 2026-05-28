@@ -46,16 +46,20 @@ function runTsc(projectDir: string): {ok: boolean; output: string} {
   }
 }
 
+// Each case shells out to a full `tsc` compile of the source type graph, which
+// can take several seconds on slower CI runners — well past vitest's 5s default.
+const TSC_TIMEOUT_MS = 60_000;
+
 describe('public type-surface compatibility', () => {
   it('public surface is API-compatible with the old hand-written surface', () => {
     const {ok, output} = runTsc(resolve(__dirname, 'typeCompat'));
     expect(output, output).toBe('');
     expect(ok).toBe(true);
-  });
+  }, TSC_TIMEOUT_MS);
 
   it('the existing typings/test.tsx still compiles unchanged against the public surface', () => {
     const {ok, output} = runTsc(resolve(repoRoot, 'typings'));
     expect(output, output).toBe('');
     expect(ok).toBe(true);
-  });
+  }, TSC_TIMEOUT_MS);
 });
