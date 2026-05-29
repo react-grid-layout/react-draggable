@@ -3,7 +3,16 @@
   "version": "4.5.0",
   "description": "React draggable component",
   "main": "build/cjs/cjs.js",
+  "module": "build/cjs/cjs.mjs",
   "unpkg": "build/web/react-draggable.min.js",
+  "exports": {
+    ".": {
+      "types": "./build/cjs/cjs.d.ts",
+      "import": "./build/cjs/cjs.mjs",
+      "require": "./build/cjs/cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "test": "vitest run --reporter=verbose",
     "test:watch": "vitest",
@@ -15,14 +24,14 @@
     "build": "make clean build",
     "build-example": "mkdir -p example/build/web && cp build/web/react-draggable.min.js example/build/web/ && sed -i.bak 's|../build/web/react-draggable|build/web/react-draggable|g' example/index.html && rm -f example/index.html.bak",
     "lint": "make lint",
-    "flow": "flow"
+    "typecheck": "tsc --noEmit"
   },
   "files": [
     "build",
     "typings"
   ],
-  "typings": "./typings/index.d.ts",
-  "types": "./typings/index.d.ts",
+  "typings": "./build/cjs/cjs.d.ts",
+  "types": "./build/cjs/cjs.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/react-grid-layout/react-draggable.git"
@@ -42,28 +51,21 @@
   },
   "homepage": "https://github.com/react-grid-layout/react-draggable",
   "devDependencies": {
-    "@babel/cli": "^7.28.3",
-    "@babel/core": "^7.28.5",
-    "@babel/eslint-parser": "^7.28.5",
-    "@babel/plugin-transform-class-properties": "^7.27.1",
-    "@babel/plugin-transform-flow-comments": "^7.28.5",
-    "@babel/preset-env": "^7.28.5",
-    "@babel/preset-flow": "^7.27.1",
-    "@babel/preset-react": "^7.28.5",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.1",
     "@types/node": "^25.0.3",
+    "@types/prop-types": "^15.7.15",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.16",
-    "babel-loader": "^10.0.0",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "esbuild-loader": "^4.2.2",
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
-    "flow-bin": "^0.217.0",
     "globals": "^16.5.0",
     "jsdom": "^27.4.0",
     "pre-commit": "^1.2.2",
@@ -73,6 +75,7 @@
     "react-dom": "19",
     "react-frame-component": "^5.2.7",
     "semver": "^7.7.3",
+    "tsup": "^8.3.5",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16",
     "webpack": "^5.104.1",

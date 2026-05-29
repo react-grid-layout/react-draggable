@@ -1,10 +1,19 @@
 const path = require('path');
 const webpack = require('webpack');
 
-// Builds web module. Only really used in example code / static site.
+// Builds the UMD web module (build/web/react-draggable.min.js). Only really used
+// in example code / the static site and shipped via the package "unpkg" field.
+//
+// Webpack is retained ONLY for this UMD artifact: it maps the bare react /
+// react-dom imports to the global React / ReactDOM (externals below) and emits a
+// real UMD wrapper (commonjs/amd/root). tsup/esbuild's IIFE format can't
+// reproduce that, so the rest of the build (cjs/esm/dts) lives in tsup.config.ts.
 module.exports = (env, argv) => ({
 	entry: {
-    'react-draggable.min': './lib/cjs.js',
+    'react-draggable.min': './lib/umd.ts',
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
   },
 	output: {
     filename: '[name].js',
@@ -47,10 +56,11 @@ module.exports = (env, argv) => ({
 	module: {
 		rules: [
 			{
-        test: /\.(?:js|es).?$/,
-        loader: 'babel-loader',
+        test: /\.tsx?$/,
+        loader: 'esbuild-loader',
         options: {
-          cacheDirectory: false, // intended, have had bugs with env like DRAGGABLE_DEBUG in the past
+          target: 'es2019',
+          tsconfig: path.resolve(__dirname, 'tsconfig.json'),
         },
         exclude: /(node_modules)/
       }

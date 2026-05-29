@@ -1,4 +1,3 @@
-// @flow
 const prefixes = ['Moz', 'Webkit', 'O', 'ms'];
 export function getPrefix(prop: string='transform'): string {
   // Ensure we're running in an environment where there is actually a global
@@ -46,4 +45,4 @@ function kebabToTitleCase(str: string): string {
 // Default export is the prefix itself, like 'Moz', 'Webkit', etc
 // Note that you may have to re-test for certain things; for instance, Chrome 50
 // can handle unprefixed `transform`, but not unprefixed `user-select`
-export default (getPrefix(): string);
+export default (getPrefix() as string);

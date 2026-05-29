@@ -98,8 +98,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Flow check
-        run: yarn flow
+      - name: TypeScript check (source)
+        run: yarn tsc --noEmit
 
-      - name: TypeScript check
+      - name: TypeScript check (public typings)
         run: yarn tsc -p typings

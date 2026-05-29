@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "lib": ["ES2019", "DOM", "DOM.Iterable"],
+    "types": ["react", "react-dom", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "react-draggable": ["../../lib/cjs.ts"]
+    }
+  },
+  "files": [
+    "fixture.tsx"
+  ]
+}

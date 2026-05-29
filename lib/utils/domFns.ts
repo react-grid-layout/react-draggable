@@ -1,8 +1,15 @@
-// @flow
 import {findInArray, isFunction, int} from './shims';
 import browserPrefix, {browserPrefixToKey} from './getPrefix';
 
 import type {ControlPosition, PositionOffsetControlPosition, MouseTouchEvent} from './types';
+
+type Indexable = {[key: string]: unknown};
+
+// Drag handlers receive a more specific event type (MouseTouchEvent) than the
+// DOM's `EventListener` (which takes a base `Event`). We accept any such handler
+// and cast to `EventListener` only at the addEventListener/removeEventListener
+// boundary, mirroring the old permissive `Function` parameter type.
+type EventListenerLike = (event: never) => void | false;
 
 let matchesSelectorFunc = '';
 export function matchesSelector(el: Node, selector: string): boolean {
@@ -14,57 +21,67 @@ export function matchesSelector(el: Node, selector: string): boolean {
       'msMatchesSelector',
       'oMatchesSelector'
     ], function(method){
-      // $FlowIgnore: Doesn't think elements are indexable
-      return isFunction(el[method]);
-    });
+      // Doesn't think elements are indexable
+      return isFunction((el as unknown as Indexable)[method]);
+    }) ?? '';
   }
 
   // Might not be found entirely (not an Element?) - in that case, bail
-  // $FlowIgnore: Doesn't think elements are indexable
-  if (!isFunction(el[matchesSelectorFunc])) return false;
+  // Doesn't think elements are indexable
+  const matchFn = (el as unknown as Indexable)[matchesSelectorFunc];
+  if (!isFunction(matchFn)) return false;
 
-  // $FlowIgnore: Doesn't think elements are indexable
-  return el[matchesSelectorFunc](selector);
+  // Doesn't think elements are indexable
+  return Boolean(matchFn.call(el, selector));
 }
 
 // Works up the tree to the draggable itself attempting to match selector.
 export function matchesSelectorAndParentsTo(el: Node, selector: string, baseNode: Node): boolean {
-  let node = el;
+  let node: Node | null = el;
   do {
     if (matchesSelector(node, selector)) return true;
     if (node === baseNode) return false;
-    // $FlowIgnore[incompatible-type]
     node = node.parentNode;
   } while (node);
 
   return false;
 }
 
-export function addEvent(el: ?Node, event: string, handler: Function, inputOptions?: Object): void {
+export function addEvent(
+  el: Node | null | undefined,
+  event: string,
+  handler: EventListenerLike,
+  inputOptions?: AddEventListenerOptions
+): void {
   if (!el) return;
   const options = {capture: true, ...inputOptions};
-  // $FlowIgnore[method-unbinding]
+  const listener = handler as EventListener;
   if (el.addEventListener) {
-    el.addEventListener(event, handler, options);
-  } else if (el.attachEvent) {
-    el.attachEvent('on' + event, handler);
+    el.addEventListener(event, listener, options);
+  } else if ((el as unknown as Indexable).attachEvent) {
+    (el as unknown as {attachEvent(name: string, handler: EventListener): void}).attachEvent('on' + event, listener);
   } else {
-    // $FlowIgnore: Doesn't think elements are indexable
-    el['on' + event] = handler;
+    // Doesn't think elements are indexable
+    (el as unknown as Indexable)['on' + event] = listener;
   }
 }
 
-export function removeEvent(el: ?Node, event: string, handler: Function, inputOptions?: Object): void {
+export function removeEvent(
+  el: Node | null | undefined,
+  event: string,
+  handler: EventListenerLike,
+  inputOptions?: AddEventListenerOptions
+): void {
   if (!el) return;
   const options = {capture: true, ...inputOptions};
-  // $FlowIgnore[method-unbinding]
+  const listener = handler as EventListener;
   if (el.removeEventListener) {
-    el.removeEventListener(event, handler, options);
-  } else if (el.detachEvent) {
-    el.detachEvent('on' + event, handler);
+    el.removeEventListener(event, listener, options);
+  } else if ((el as unknown as Indexable).detachEvent) {
+    (el as unknown as {detachEvent(name: string, handler: EventListener): void}).detachEvent('on' + event, listener);
   } else {
-    // $FlowIgnore: Doesn't think elements are indexable
-    el['on' + event] = null;
+    // Doesn't think elements are indexable
+    (el as unknown as Indexable)['on' + event] = null;
   }
 }
 
@@ -72,7 +89,7 @@ export function outerHeight(node: HTMLElement): number {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetTop which is including margin. See getBoundPosition
   let height = node.clientHeight;
-  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
+  const computedStyle = (node.ownerDocument.defaultView as Window).getComputedStyle(node);
   height += int(computedStyle.borderTopWidth);
   height += int(computedStyle.borderBottomWidth);
   return height;
@@ -82,14 +99,14 @@ export function outerWidth(node: HTMLElement): number {
   // This is deliberately excluding margin for our calculations, since we are using
   // offsetLeft which is including margin. See getBoundPosition
   let width = node.clientWidth;
-  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
+  const computedStyle = (node.ownerDocument.defaultView as Window).getComputedStyle(node);
   width += int(computedStyle.borderLeftWidth);
   width += int(computedStyle.borderRightWidth);
   return width;
 }
 export function innerHeight(node: HTMLElement): number {
   let height = node.clientHeight;
-  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
+  const computedStyle = (node.ownerDocument.defaultView as Window).getComputedStyle(node);
   height -= int(computedStyle.paddingTop);
   height -= int(computedStyle.paddingBottom);
   return height;
@@ -97,7 +114,7 @@ export function innerHeight(node: HTMLElement): number {
 
 export function innerWidth(node: HTMLElement): number {
   let width = node.clientWidth;
-  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
+  const computedStyle = (node.ownerDocument.defaultView as Window).getComputedStyle(node);
   width -= int(computedStyle.paddingLeft);
   width -= int(computedStyle.paddingRight);
   return width;
@@ -118,7 +135,7 @@ export function offsetXYFromParent(evt: EventWithOffset, offsetParent: HTMLEleme
   return {x, y};
 }
 
-export function createCSSTransform(controlPos: ControlPosition, positionOffset: PositionOffsetControlPosition): Object {
+export function createCSSTransform(controlPos: ControlPosition, positionOffset: PositionOffsetControlPosition): {[key: string]: string} {
   const translation = getTranslation(controlPos, positionOffset, 'px');
   return {[browserPrefixToKey('transform', browserPrefix)]: translation };
 }
@@ -137,12 +154,12 @@ export function getTranslation({x, y}: ControlPosition, positionOffset: Position
   return translation;
 }
 
-export function getTouch(e: MouseTouchEvent, identifier: number): ?{clientX: number, clientY: number} {
+export function getTouch(e: MouseTouchEvent, identifier: number): {clientX: number, clientY: number} | null | undefined {
   return (e.targetTouches && findInArray(e.targetTouches, t => identifier === t.identifier)) ||
          (e.changedTouches && findInArray(e.changedTouches, t => identifier === t.identifier));
 }
 
-export function getTouchIdentifier(e: MouseTouchEvent): ?number {
+export function getTouchIdentifier(e: MouseTouchEvent): number | undefined {
   if (e.targetTouches && e.targetTouches[0]) return e.targetTouches[0].identifier;
   if (e.changedTouches && e.changedTouches[0]) return e.changedTouches[0].identifier;
 }
@@ -152,9 +169,9 @@ export function getTouchIdentifier(e: MouseTouchEvent): ?number {
 // Useful for preventing blue highlights all over everything when dragging.
 
 // Note we're passing `document` b/c we could be iframed
-export function addUserSelectStyles(doc: ?Document) {
+export function addUserSelectStyles(doc: Document | null | undefined) {
   if (!doc) return;
-  let styleEl = doc.getElementById('react-draggable-style-el');
+  let styleEl = doc.getElementById('react-draggable-style-el') as HTMLStyleElement | null;
   if (!styleEl) {
     styleEl = doc.createElement('style');
     styleEl.type = 'text/css';
@@ -166,7 +183,7 @@ export function addUserSelectStyles(doc: ?Document) {
   if (doc.body) addClassName(doc.body, 'react-draggable-transparent-selection');
 }
 
-export function scheduleRemoveUserSelectStyles(doc: ?Document) {
+export function scheduleRemoveUserSelectStyles(doc: Document | null | undefined) {
   // Prevent a possible "forced reflow"
   if (window.requestAnimationFrame) {
     window.requestAnimationFrame(() => {
@@ -177,14 +194,15 @@ export function scheduleRemoveUserSelectStyles(doc: ?Document) {
   }
 }
 
-function removeUserSelectStyles(doc: ?Document) {
+function removeUserSelectStyles(doc: Document | null | undefined) {
   if (!doc) return;
   try {
     if (doc.body) removeClassName(doc.body, 'react-draggable-transparent-selection');
-    // $FlowIgnore: IE
-    if (doc.selection) {
-      // $FlowIgnore: IE
-      doc.selection.empty();
+    // IE
+    const ieSelection = (doc as unknown as {selection?: {empty(): void}}).selection;
+    if (ieSelection) {
+      // IE
+      ieSelection.empty();
     } else {
       // Remove selection caused by scroll, unless it's a focused input
       // (we use doc.defaultView in case we're in an iframe)
@@ -193,7 +211,7 @@ function removeUserSelectStyles(doc: ?Document) {
         selection.removeAllRanges();
       }
     }
-  } catch (e) {
+  } catch {
     // probably IE
   }
 }

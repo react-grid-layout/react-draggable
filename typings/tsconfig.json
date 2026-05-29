@@ -4,13 +4,13 @@
     "jsx": "preserve",
     "strict": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "react-draggable": ["./index.d.ts"]
+      "react-draggable": ["../lib/cjs.ts"]
     }
   },
   "files": [
-    "index.d.ts",
     "test.tsx"
   ]
 }
