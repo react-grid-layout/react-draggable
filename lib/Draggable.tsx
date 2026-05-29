@@ -51,7 +51,12 @@ class Draggable extends React.Component<Partial<DraggableProps>, DraggableState>
 
   static displayName?: string = 'Draggable';
 
-  static propTypes = {
+  // The index-signature annotation is load-bearing: without it tsc infers the
+  // PropTypes.Requireable<...> types and emits `import PropTypes from 'prop-types'`
+  // into the generated public .d.ts, forcing consumers to install
+  // @types/prop-types (the v4.5.0 hand-written typings had no prop-types dep).
+  // Do not remove. See lib/DraggableCore.tsx for the same guard.
+  static propTypes: {[key: string]: unknown} = {
     // Accepts all props <DraggableCore> accepts.
     ...DraggableCore.propTypes,
 

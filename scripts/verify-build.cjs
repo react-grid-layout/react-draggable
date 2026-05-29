@@ -56,6 +56,26 @@ assert.ok(
   'UMD bundle must expose the global `ReactDraggable`'
 );
 
+// ── Contract 3: generated declarations must not leak internal-only deps ──────
+// The shipped .d.ts is generated from source. The v4.5.0 hand-written typings
+// depended only on `react`; if a `propTypes`/`defaultProps` static loses its
+// index-signature annotation, tsc infers PropTypes.* types and emits
+// `import ... 'prop-types'` into the public declaration, silently forcing
+// consumers to install @types/prop-types. Fail the build if that creeps back.
+const dtsDir = path.join(root, 'build', 'cjs');
+const dtsFiles = fs
+  .readdirSync(dtsDir)
+  .filter((f) => f.endsWith('.d.ts') || f.endsWith('.d.mts'));
+const leaks = dtsFiles.filter((f) =>
+  /['"]prop-types['"]/.test(fs.readFileSync(path.join(dtsDir, f), 'utf8'))
+);
+assert.equal(
+  leaks.length,
+  0,
+  `Generated declarations leak 'prop-types' (consumers would need @types/prop-types): ${leaks.join(', ')}. ` +
+    `Annotate the offending static (e.g. \`static propTypes: {[key: string]: unknown}\`) so tsc does not emit PropTypes types.`
+);
+
 console.log(
-  '✓ build contract OK: CJS module.exports===Draggable (+.default, .DraggableCore); UMD global ReactDraggable'
+  '✓ build contract OK: CJS module.exports===Draggable (+.default, .DraggableCore); UMD global ReactDraggable; no prop-types leak in .d.ts'
 );

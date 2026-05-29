@@ -73,7 +73,12 @@ export default class DraggableCore extends React.Component<Partial<DraggableCore
 
   static displayName: string | undefined = 'DraggableCore';
 
-  static propTypes = {
+  // The index-signature annotation is load-bearing: without it tsc infers the
+  // PropTypes.Requireable<...> types and emits `import PropTypes from 'prop-types'`
+  // into the generated public .d.ts, forcing consumers to install
+  // @types/prop-types (the v4.5.0 hand-written typings had no prop-types dep).
+  // Do not remove. See lib/Draggable.tsx for the same guard.
+  static propTypes: {[key: string]: unknown} = {
     /**
      * `allowAnyClick` allows dragging using any mouse button.
      * By default, we only accept the left button.
