@@ -27,8 +27,7 @@
     "typecheck": "tsc --noEmit"
   },
   "files": [
-    "build",
-    "typings"
+    "build"
   ],
   "typings": "./build/cjs/cjs.d.ts",
   "types": "./build/cjs/cjs.d.ts",
