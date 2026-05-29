@@ -1,5 +1,15 @@
 # Changelog
 
+### 4.6.0 (May 29, 2026)
+
+- Internal: Migrate library source from Flow to TypeScript. Types are now generated from source instead of hand-maintained, eliminating Flow/TypeScript drift. The build uses tsup (CommonJS + ESM + generated declarations) with webpack for the UMD bundle. No public API change — the CommonJS export shape (`module.exports === Draggable`, plus `.default` and `.DraggableCore`), the UMD `ReactDraggable` global, and the shipped type surface are all unchanged. (#805)
+- Feature: ship an ESM build and an `exports` map alongside the existing CommonJS entry, so the package can be imported natively in both module systems. (#805)
+- Fix: treat ctrl+click as a right-click on macOS so it no longer starts a drag. (#786)
+- Fix: remove a global module declaration from the TypeScript types to prevent type pollution. (#787)
+- Internal: Support React 19 (dependency upgrade and nodeRef-based browser tests).
+- Internal: Migrate the test suite from Karma/Jasmine to Vitest, expand unit coverage, and run CI across Node 20, 22, and 24. (#785, #788)
+- Docs: Modernize the README and publish a GitHub Pages demo site. (#790)
+
 ### 4.5.0 (Jun 25, 2025)
 
 - Internal: Update clsx version (#754)
