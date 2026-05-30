@@ -41,10 +41,20 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      # The typeCompat tsc compile is Node-version-independent; skip it on every
+      # non-primary matrix node so the full source type graph is compiled once,
+      # not three times. All other unit tests still run on every Node version.
       - name: Run unit tests
+        env:
+          SKIP_TSC_TYPE_COMPAT: ${{ matrix.node-version != 20 && '1' || '' }}
         run: yarn test
 
+      # The build (tsup --dts + webpack) recompiles the full type graph for
+      # declaration emit; that output is byte-identical across Node versions, so
+      # building on every matrix entry just recompiles the same type graph N times.
+      # Gate it to the primary Node version. Unit tests still run on all versions.
       - name: Build
+        if: matrix.node-version == 20
         run: yarn build
 
   test-browser:
@@ -84,22 +94,9 @@ jobs:
       - name: Run tests with coverage
         run: yarn test:coverage
 
-  typecheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: TypeScript check (source)
-        run: yarn tsc --noEmit
-
-      - name: TypeScript check (public typings)
-        run: yarn tsc -p typings
+  # NOTE: the standalone TypeScript checks (`tsc --noEmit` for source and
+  # `tsc -p typings` for the public .d.ts) are already run by `make lint` in the
+  # `lint` job above. Running them again here recompiled the full type graph a
+  # second time every CI run for no added coverage, so this job was removed and
+  # `lint` is the single owner of type-checking. Re-add a dedicated job only if
+  # `make lint` ever stops invoking tsc.

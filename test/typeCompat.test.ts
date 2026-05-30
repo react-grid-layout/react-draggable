@@ -50,7 +50,18 @@ function runTsc(projectDir: string): {ok: boolean; output: string} {
 // can take several seconds on slower CI runners — well past vitest's 5s default.
 const TSC_TIMEOUT_MS = 60_000;
 
-describe('public type-surface compatibility', () => {
+// These cases spawn `tsc` against the source type graph. The result is purely a
+// function of the TypeScript dependency + source — it does NOT depend on the Node
+// runtime version. CI runs `yarn test` across a Node version matrix, so without a
+// guard this full-graph compile would run once per matrix entry, recompiling the
+// identical type graph N times for zero added coverage. CI sets
+// SKIP_TSC_TYPE_COMPAT=1 on every non-primary matrix node so the compile happens
+// exactly once. Locally (env unset) it always runs.
+const describeTypeCompat = process.env.SKIP_TSC_TYPE_COMPAT
+  ? describe.skip
+  : describe;
+
+describeTypeCompat('public type-surface compatibility', () => {
   it('public surface is API-compatible with the old hand-written surface', () => {
     const {ok, output} = runTsc(resolve(__dirname, 'typeCompat'));
     expect(output, output).toBe('');

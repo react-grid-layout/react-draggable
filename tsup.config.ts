@@ -45,7 +45,10 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   dts: true,
   sourcemap: true,
-  clean: true,
+  // The Makefile's `clean` target (an order-only prereq of build-lib) wipes the
+  // whole build/ tree once before tsup runs, so tsup re-cleaning its own outDir
+  // here is redundant in the canonical `yarn build` (= `make clean build`) path.
+  clean: false,
   target: 'es2019',
   external,
   // ESM output -> .mjs, CJS output -> .js (so package "main" stays build/cjs/cjs.js).
