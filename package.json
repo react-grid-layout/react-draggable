@@ -1,6 +1,6 @@
 {
   "name": "react-draggable",
-  "version": "4.6.0",
+  "version": "4.7.0",
   "description": "React draggable component",
   "main": "build/cjs/cjs.js",
   "module": "build/cjs/cjs.mjs",

@@ -1,5 +1,10 @@
 # Changelog
 
+### 4.7.0 (Jun 18, 2026)
+
+- Feature: add a `nonce` prop to support a strict Content Security Policy. It's applied to the dynamically-injected user-select `<style>` element so a `style-src` policy without `'unsafe-inline'` no longer blocks it. When omitted, webpack's `__webpack_nonce__` global is used if available. `enableUserSelectHack={false}` remains a no-prop opt-out. ([#808](https://github.com/react-grid-layout/react-draggable/pull/808), closes [#791](https://github.com/react-grid-layout/react-draggable/pull/791))
+- Internal: de-duplicate redundant `tsc` compilation in the build/CI pipeline.
+
 ### 4.6.0 (May 29, 2026)
 
 - Internal: Migrate library source from Flow to TypeScript. Types are now generated from source instead of hand-maintained, eliminating Flow/TypeScript drift. The build uses tsup (CommonJS + ESM + generated declarations) with webpack for the UMD bundle. No public API change — the CommonJS export shape (`module.exports === Draggable`, plus `.default` and `.DraggableCore`), the UMD `ReactDraggable` global, and the shipped type surface are all unchanged. (#805)
