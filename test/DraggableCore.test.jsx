@@ -504,6 +504,28 @@ describe('DraggableCore', () => {
     });
   });
 
+  describe('nonce prop', () => {
+    function removeStyleEl() {
+      const el = document.getElementById('react-draggable-style-el');
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    }
+    beforeEach(removeStyleEl);
+    afterEach(removeStyleEl);
+
+    it('applies the nonce to the injected style element on drag start', () => {
+      const { container } = render(
+        <DraggableCoreWrapper nonce="test-nonce">
+          <div />
+        </DraggableCoreWrapper>
+      );
+
+      startDrag(container.firstChild, { x: 0, y: 0 });
+      const styleEl = document.getElementById('react-draggable-style-el');
+      expect(styleEl).not.toBe(null);
+      expect(styleEl.getAttribute('nonce')).toBe('test-nonce');
+    });
+  });
+
   describe('unmount safety', () => {
     it('should track mounted state correctly', () => {
       const coreRef = React.createRef();

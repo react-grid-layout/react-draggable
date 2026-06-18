@@ -181,6 +181,47 @@ describe('domFns - additional coverage', () => {
       expect(all.length).toBe(1);
     });
 
+    it('does not set a nonce attribute when none is provided', () => {
+      addUserSelectStyles(document);
+      const styleEl = document.getElementById('react-draggable-style-el');
+      expect(styleEl.hasAttribute('nonce')).toBe(false);
+    });
+
+    it('applies an explicit nonce to the injected style element', () => {
+      addUserSelectStyles(document, 'abc123');
+      const styleEl = document.getElementById('react-draggable-style-el');
+      expect(styleEl.getAttribute('nonce')).toBe('abc123');
+    });
+
+    it('does not retroactively set a nonce on an already-injected element', () => {
+      addUserSelectStyles(document);
+      addUserSelectStyles(document, 'abc123');
+      const styleEl = document.getElementById('react-draggable-style-el');
+      expect(styleEl.hasAttribute('nonce')).toBe(false);
+    });
+
+    it('falls back to __webpack_nonce__ when no explicit nonce is passed', () => {
+      globalThis.__webpack_nonce__ = 'from-webpack';
+      try {
+        addUserSelectStyles(document);
+        const styleEl = document.getElementById('react-draggable-style-el');
+        expect(styleEl.getAttribute('nonce')).toBe('from-webpack');
+      } finally {
+        delete globalThis.__webpack_nonce__;
+      }
+    });
+
+    it('prefers an explicit nonce over __webpack_nonce__', () => {
+      globalThis.__webpack_nonce__ = 'from-webpack';
+      try {
+        addUserSelectStyles(document, 'explicit');
+        const styleEl = document.getElementById('react-draggable-style-el');
+        expect(styleEl.getAttribute('nonce')).toBe('explicit');
+      } finally {
+        delete globalThis.__webpack_nonce__;
+      }
+    });
+
     it('removes the body class via requestAnimationFrame', async () => {
       addUserSelectStyles(document);
       expect(

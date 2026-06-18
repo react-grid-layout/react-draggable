@@ -168,14 +168,28 @@ export function getTouchIdentifier(e: MouseTouchEvent): number | undefined {
 //
 // Useful for preventing blue highlights all over everything when dragging.
 
+// webpack exposes the page's CSP nonce as the free variable `__webpack_nonce__`.
+// Read it defensively: the `typeof` guard keeps this safe under bundlers that
+// don't define it (a bare reference to an undeclared identifier would throw).
+declare const __webpack_nonce__: string | undefined;
+function getDefaultNonce(): string | undefined {
+  return typeof __webpack_nonce__ !== 'undefined' ? __webpack_nonce__ : undefined;
+}
+
 // Note we're passing `document` b/c we could be iframed
-export function addUserSelectStyles(doc: Document | null | undefined) {
+export function addUserSelectStyles(doc: Document | null | undefined, nonce?: string | null) {
   if (!doc) return;
   let styleEl = doc.getElementById('react-draggable-style-el') as HTMLStyleElement | null;
   if (!styleEl) {
     styleEl = doc.createElement('style');
     styleEl.type = 'text/css';
     styleEl.id = 'react-draggable-style-el';
+    // Attach a CSP nonce so a strict `style-src` policy doesn't block this
+    // injected element. Prefer the explicit prop; otherwise fall back to
+    // webpack's `__webpack_nonce__`. Only the first call (which creates the
+    // element) applies it; later calls reuse the existing element as before.
+    const resolvedNonce = nonce ?? getDefaultNonce();
+    if (resolvedNonce) styleEl.setAttribute('nonce', resolvedNonce);
     styleEl.innerHTML = '.react-draggable-transparent-selection *::-moz-selection {all: inherit;}\n';
     styleEl.innerHTML += '.react-draggable-transparent-selection *::selection {all: inherit;}\n';
     doc.getElementsByTagName('head')[0].appendChild(styleEl);

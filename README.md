@@ -29,6 +29,7 @@ A simple component for making elements draggable.
   - [DraggableCore](#draggablecore)
 - [Using nodeRef](#using-noderef)
 - [Controlled vs. Uncontrolled](#controlled-vs-uncontrolled)
+- [Content Security Policy](#content-security-policy)
 - [Contributing](#contributing)
 
 ## Installation
@@ -117,6 +118,7 @@ type DraggableData = {
 | `grid` | `[number, number]` | - | Snap to grid `[x, y]` |
 | `handle` | `string` | - | CSS selector for the drag handle |
 | `nodeRef` | `React.RefObject` | - | Ref to the DOM element. Required for React Strict Mode |
+| `nonce` | `string` | - | CSP nonce for the injected user-select `<style>` element (see [Content Security Policy](#content-security-policy)) |
 | `offsetParent` | `HTMLElement` | - | Custom offsetParent for drag calculations |
 | `onDrag` | `DraggableEventHandler` | - | Called while dragging |
 | `onMouseDown` | `(e: MouseEvent) => void` | - | Called on mouse down |
@@ -214,6 +216,42 @@ function ControlledDraggable() {
   );
 }
 ```
+
+## Content Security Policy
+
+To prevent text from being highlighted while dragging, react-draggable injects a
+small `<style>` element into the document `<head>` the first time a drag starts
+(the `enableUserSelectHack`, on by default). Under a strict Content Security
+Policy that omits `'unsafe-inline'` from `style-src`, the browser blocks that
+element and logs a CSP violation.
+
+You have three ways to handle this:
+
+1. **Pass a `nonce`.** Provide the same nonce your CSP header advertises and it's
+   applied to the injected element:
+
+   ```jsx
+   <Draggable nonce={cspNonce}>
+     <div>Drag me</div>
+   </Draggable>
+   ```
+
+2. **Do nothing, if you use webpack.** When no `nonce` prop is given,
+   react-draggable falls back to webpack's
+   [`__webpack_nonce__`](https://webpack.js.org/guides/csp/) global if your build
+   defines it — no per-component prop needed.
+
+3. **Opt out of the injected style.** Set `enableUserSelectHack={false}` and add
+   the two rules to your own (CSP-compliant) stylesheet:
+
+   ```css
+   .react-draggable-transparent-selection *::-moz-selection { all: inherit; }
+   .react-draggable-transparent-selection *::selection { all: inherit; }
+   ```
+
+The nonce is only read when the element is first created. The same element is
+shared by every `<Draggable>`/`<DraggableCore>` on the page, so set the nonce on
+whichever instance drags first (or, more simply, set it consistently everywhere).
 
 ## Contributing
 

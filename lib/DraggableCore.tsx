@@ -52,6 +52,7 @@ export type DraggableCoreProps = DraggableCoreDefaultProps & {
   grid: [number, number],
   handle: string,
   nodeRef?: React.RefObject<HTMLElement | null> | null,
+  nonce?: string,
 };
 
 //
@@ -188,6 +189,14 @@ export default class DraggableCore extends React.Component<Partial<DraggableCore
      * pointing to the actual child DOM node and not a custom component.
      */
     nodeRef: PropTypes.object,
+
+    /**
+     * `nonce` is applied to the dynamically-injected <style> element used by the
+     * user-select hack, so it isn't blocked under a strict Content Security
+     * Policy (`style-src` without `'unsafe-inline'`). If omitted, webpack's
+     * `__webpack_nonce__` global is used when available.
+     */
+    nonce: PropTypes.string,
 
     /**
      * Called when dragging starts.
@@ -346,7 +355,7 @@ export default class DraggableCore extends React.Component<Partial<DraggableCore
 
     // Add a style to the body to disable user-select. This prevents text from
     // being selected all over the page.
-    if (this.props.enableUserSelectHack) addUserSelectStyles(ownerDocument);
+    if (this.props.enableUserSelectHack) addUserSelectStyles(ownerDocument, this.props.nonce);
 
     // Initiate dragging. Set the current x and y as offsets
     // so we know how much we've moved during the drag. This allows us
