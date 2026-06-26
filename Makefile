@@ -15,6 +15,7 @@ lint:
 	@$(BIN)/eslint lib
 	@$(BIN)/tsc --noEmit
 	@$(BIN)/tsc -p typings
+	@$(BIN)/tsc -p typings/tsconfig.react18.json
 
 # tsup emits cjs + esm + dts into build/cjs (and rewrites build/cjs/cjs.js to the
 # legacy module.exports === Draggable shape). webpack emits the UMD global bundle.
