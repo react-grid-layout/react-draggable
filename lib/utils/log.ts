@@ -1,4 +1,3 @@
 /*eslint no-console:0*/
-export default function log(...args: unknown[]): void {
-  if (process.env.DRAGGABLE_DEBUG) console.log(...args);
-}
+const log = typeof process !== 'undefined' && process.env.DRAGGABLE_DEBUG ? console.log.bind(console) : function noop(): void {};
+export default log;
