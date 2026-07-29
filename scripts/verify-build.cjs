@@ -73,9 +73,38 @@ assert.equal(
   leaks.length,
   0,
   `Generated declarations leak 'prop-types' (consumers would need @types/prop-types): ${leaks.join(', ')}. ` +
-    `Annotate the offending static (e.g. \`static propTypes: {[key: string]: unknown}\`) so tsc does not emit PropTypes types.`
+    `Annotate the offending static (e.g. \`static propTypes?: {[key: string]: unknown}\`) so tsc does not emit PropTypes types.`
+);
+
+// ── Contract 4: no unguarded `process` in browser-facing bundles (issue #806) ─
+// lib/utils/log.ts reads process.env.DRAGGABLE_DEBUG. Webpack's EnvironmentPlugin
+// substitutes that exact member expression with a literal in the UMD build, but
+// tsup/esbuild does not, so the raw read survives into the CJS/ESM output. A
+// bundler that does not shim `process` then throws "process is not defined" the
+// moment a consumer imports the package. The `typeof process` guard is what makes
+// the read safe; note that optional chaining (`process.env?.FOO`) silently
+// defeats the webpack substitution, so the guard is the only thing holding here.
+// Strip every guarded read, then fail if any bare `process` reference remains.
+const GUARDED_PROCESS_READ =
+  /typeof\s+process\s*!==\s*(['"])undefined\1\s*(?:&&\s*process\.env\.[A-Za-z_$][\w$]*)?/g;
+const bundles = [umdPath].concat(
+  fs
+    .readdirSync(dtsDir)
+    .filter((f) => f.endsWith('.js') || f.endsWith('.mjs'))
+    .map((f) => path.join(dtsDir, f))
+);
+const unguarded = bundles.filter((p) =>
+  /\bprocess\b/.test(fs.readFileSync(p, 'utf8').replace(GUARDED_PROCESS_READ, ''))
+);
+assert.equal(
+  unguarded.length,
+  0,
+  `Unguarded \`process\` reference in browser-facing bundle(s): ${unguarded
+    .map((p) => path.relative(root, p))
+    .join(', ')}. ` +
+    `Wrap the read in \`typeof process !== 'undefined' && process.env.NAME\` (plain member access, no optional chaining).`
 );
 
 console.log(
-  '✓ build contract OK: CJS module.exports===Draggable (+.default, .DraggableCore); UMD global ReactDraggable; no prop-types leak in .d.ts'
+  '✓ build contract OK: CJS module.exports===Draggable (+.default, .DraggableCore); UMD global ReactDraggable; no prop-types leak in .d.ts; no unguarded process'
 );
