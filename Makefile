@@ -4,7 +4,8 @@
 # Make it parallel
 MAKEFLAGS += j4
 export BIN := $(shell yarn bin)
-.PHONY: test dev lint build build-lib build-web clean install link publish
+.PHONY: test dev lint build build-lib build-web clean install link publish \
+        check-release release-patch release-minor release-major
 .DEFAULT_GOAL := build
 
 clean:
@@ -51,7 +52,24 @@ dev: $(BIN) clean
 
 node_modules/.bin: install
 
+# ── Release ──────────────────────────────────────────────────────────────────
+# Two steps, deliberately separate:
+#
+#   make release-patch    bump package.json, commit, tag. Local only.
+#   make publish          verify, rebuild, push, publish to npm.
+#
+# Cut the release LAST. `release-*` tags whatever HEAD is at the time, so any
+# commit you land afterwards leaves the tag stranded behind the tip and publish
+# will stop and tell you to move it.
+#
+# The dirty-tree guard excludes CHANGELOG.md, which you are expected to have
+# edited and which the release commit picks up.
 define release
+	if [ -n "`git status --porcelain --untracked-files=no -- . ':(exclude)CHANGELOG.md'`" ]; then \
+		echo "ERROR: uncommitted changes outside CHANGELOG.md; commit or stash first"; \
+		git status --short --untracked-files=no -- . ':(exclude)CHANGELOG.md'; \
+		exit 1; \
+	fi && \
 	VERSION=`node -pe "require('./package.json').version"` && \
 	NEXT_VERSION=`node -pe "require('semver').inc(\"$$VERSION\", '$(1)')"` && \
 	node -e "\
@@ -63,18 +81,37 @@ define release
 		});" && \
 	git add package.json CHANGELOG.md && \
 	git commit -m "release v$$NEXT_VERSION" && \
-	git tag "v$$NEXT_VERSION" -m "release v$$NEXT_VERSION"
+	git tag "v$$NEXT_VERSION" -m "release v$$NEXT_VERSION" && \
+	echo "" && \
+	echo "tagged v$$NEXT_VERSION. Nothing has been pushed. Run \`make publish\` to ship it."
+
 endef
 
-release-patch: test
+# lint + test + build, so a version can never be tagged on a tree that does not
+# lint, test, or build. Previously this ran unit tests only.
+release-patch: lint test build
 	@$(call release,patch)
 
-release-minor: test
+release-minor: lint test build
 	@$(call release,minor)
 
-release-major: test
+release-major: lint test build
 	@$(call release,major)
 
-publish: build
-	git push --tags origin HEAD:master
-	yarn publish
+# Standalone so you can ask "is this publishable?" without publishing.
+check-release:
+	@node scripts/check-release.cjs
+
+# The sub-makes keep the gate strictly before the build under parallel make
+# (MAKEFLAGS += j4 above); as plain prerequisites they would race.
+#
+# `npm publish`, not `yarn publish`: yarn 1's publish prompts for a version,
+# writes it to package.json, and creates its own tag. release-* already did all
+# three, so yarn re-bumped every release and asked a question with no right
+# answer. npm publish just publishes the version already in package.json. This
+# is the one place the project does not use yarn; installs and adds still do.
+publish:
+	@$(MAKE) check-release
+	@$(MAKE) build
+	git push --follow-tags origin master
+	npm publish
