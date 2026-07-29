@@ -1,5 +1,10 @@
 # Changelog
 
+### 4.7.1 (Jul 28, 2026)
+
+- Fix: props are no longer marked required under React 18 TypeScript. Regression in 4.6.0. The `propTypes` static was a required member of the public type; React 18's JSX `LibraryManagedAttributes` consults `propTypes` when it is required, and doing so cancels the optionality `defaultProps` normally grants. React 19 ignores `propTypes`, which is why the v19-only type check missed it. `make lint` now also type-checks the public surface against `@types/react@18`. ([#809](https://github.com/react-grid-layout/react-draggable/pull/809), closes [#807](https://github.com/react-grid-layout/react-draggable/issues/807))
+- Fix: guard the `process` access in the debug logger so browser bundlers that do not shim `process` no longer crash on import. ([#810](https://github.com/react-grid-layout/react-draggable/pull/810), closes [#806](https://github.com/react-grid-layout/react-draggable/issues/806))
+
 ### 4.7.0 (Jun 18, 2026)
 
 - Feature: add a `nonce` prop to support a strict Content Security Policy. It's applied to the dynamically-injected user-select `<style>` element so a `style-src` policy without `'unsafe-inline'` no longer blocks it. When omitted, webpack's `__webpack_nonce__` global is used if available. `enableUserSelectHack={false}` remains a no-prop opt-out. ([#808](https://github.com/react-grid-layout/react-draggable/pull/808), closes [#791](https://github.com/react-grid-layout/react-draggable/pull/791))
