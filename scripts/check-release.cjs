@@ -51,7 +51,28 @@ if (branch !== 'master') {
   );
 }
 
-// ── 3. The tag exists and is exactly HEAD ────────────────────────────────────
+// ── 3. The version is not already on npm ─────────────────────────────────────
+// Deliberately ahead of the tag checks. Sitting on master just after a release
+// trips "the tag is not the tip" too, but that is not the useful advice there:
+// the version is spent, so the answer is to cut a new one, not to move the tag.
+let published = '';
+try {
+  published = execFileSync('npm', ['view', `${pkg.name}@${pkg.version}`, 'version'], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  }).trim();
+} catch {
+  // npm exits non-zero with E404 when the version does not exist, which is the
+  // state we want. Anything else surfaces at `npm publish` a moment later.
+}
+if (published) {
+  fail(
+    `${pkg.name}@${pkg.version} is already published`,
+    'make release-patch to cut a new version'
+  );
+}
+
+// ── 4. The tag exists and is exactly HEAD ────────────────────────────────────
 let tagged;
 try {
   tagged = git('rev-parse', '--verify', '--quiet', `${tag}^{commit}`);
@@ -70,7 +91,7 @@ if (tagged !== head) {
   );
 }
 
-// ── 4. The push must fast-forward ────────────────────────────────────────────
+// ── 5. The push must fast-forward ────────────────────────────────────────────
 try {
   git('fetch', '--quiet', 'origin');
 } catch {
@@ -86,24 +107,6 @@ if (remote !== head) {
       'git pull --rebase origin master, re-run make lint test, then move the tag to the new tip'
     );
   }
-}
-
-// ── 5. The version is not already on npm ─────────────────────────────────────
-let published = '';
-try {
-  published = execFileSync('npm', ['view', `${pkg.name}@${pkg.version}`, 'version'], {
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'ignore'],
-  }).trim();
-} catch {
-  // npm exits non-zero with E404 when the version does not exist, which is the
-  // state we want. Anything else surfaces at `npm publish` a moment later.
-}
-if (published) {
-  fail(
-    `${pkg.name}@${pkg.version} is already published`,
-    'make release-patch to cut a new version'
-  );
 }
 
 console.log(
