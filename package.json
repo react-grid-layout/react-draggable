@@ -57,6 +57,7 @@
     "@types/node": "^25.0.3",
     "@types/prop-types": "^15.7.15",
     "@types/react": "^19.2.7",
+    "@types/react-18": "npm:@types/react@^18.3.27",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",

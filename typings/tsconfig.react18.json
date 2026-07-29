@@ -1,0 +1,23 @@
+{
+  "//": "Type-checks the public API against @types/react@18 as well as the default v19. React 18's JSX `LibraryManagedAttributes` consults a component's `propTypes`, unlike v19 which ignores it. A `propTypes` member leaking into the public types there makes `defaultProps` stop marking props optional, so React 18 consumers must pass every prop. v19 alone cannot catch that regression. Only `react` is redirected to the v18 types; `react-dom` stays on its installed v19 types (skipLibCheck ignores any v18/v19 mismatch inside its .d.ts). Aliasing react-dom too would pull in an `@types/react-dom-18` whose `@types/react@^18` peer cannot be satisfied under npm's strict resolution.",
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "preserve",
+    "strict": true,
+    "target": "ES2019",
+    "lib": ["ES2019", "DOM", "DOM.Iterable"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "types": ["node"],
+    "skipLibCheck": true,
+    "paths": {
+      "react-draggable": ["../lib/cjs.ts"],
+      "react": ["../node_modules/@types/react-18"],
+      "react/jsx-runtime": ["../node_modules/@types/react-18/jsx-runtime"]
+    }
+  },
+  "files": [
+    "test.tsx"
+  ]
+}

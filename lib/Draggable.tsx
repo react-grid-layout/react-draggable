@@ -51,12 +51,20 @@ class Draggable extends React.Component<Partial<DraggableProps>, DraggableState>
 
   static displayName?: string = 'Draggable';
 
-  // The index-signature annotation is load-bearing: without it tsc infers the
-  // PropTypes.Requireable<...> types and emits `import PropTypes from 'prop-types'`
-  // into the generated public .d.ts, forcing consumers to install
-  // @types/prop-types (the v4.5.0 hand-written typings had no prop-types dep).
+  // Both the annotation and the `?` are load-bearing:
+  //  - The index-signature annotation stops tsc from inferring the
+  //    PropTypes.Requireable<...> types and emitting `import PropTypes from
+  //    'prop-types'` into the generated public .d.ts, which would force consumers
+  //    to install @types/prop-types (the v4.5.0 hand-written typings had none).
+  //  - The `?` keeps `propTypes` from being a *required* member of the public
+  //    type. React <= 18's JSX LibraryManagedAttributes only consults a
+  //    component's `propTypes` when it is required (`C extends {propTypes: ...}`);
+  //    when it does, this index-signature `propTypes` makes `defaultProps` stop
+  //    marking props optional, so consumers are forced to pass every prop.
+  //    Optional dodges that branch; React 19 ignores `propTypes` entirely. The
+  //    typings/tsconfig.react18.json check guards against a regression here.
   // Do not remove. See lib/DraggableCore.tsx for the same guard.
-  static propTypes: {[key: string]: unknown} = {
+  static propTypes?: {[key: string]: unknown} = {
     // Accepts all props <DraggableCore> accepts.
     ...DraggableCore.propTypes,
 
