@@ -50,6 +50,7 @@
     "Samuel Reed <samuel.trace.reed@gmail.com> (http://strml.net/)"
   ],
   "license": "MIT",
+  "packageManager": "yarn@1.22.22",
   "bugs": {
     "url": "https://github.com/react-grid-layout/react-draggable/issues"
   },
