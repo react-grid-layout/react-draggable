@@ -7,9 +7,14 @@
   "unpkg": "build/web/react-draggable.min.js",
   "exports": {
     ".": {
-      "types": "./build/cjs/cjs.d.ts",
-      "import": "./build/cjs/cjs.mjs",
-      "require": "./build/cjs/cjs.js"
+      "import": {
+        "types": "./build/cjs/cjs.d.mts",
+        "default": "./build/cjs/cjs.mjs"
+      },
+      "require": {
+        "types": "./build/cjs/cjs.d.ts",
+        "default": "./build/cjs/cjs.js"
+      }
     },
     "./package.json": "./package.json"
   },
