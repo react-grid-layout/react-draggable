@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 4.7.2 (Sep 16, 2026)
 
 - Fix: ESM consumers under `moduleResolution: node16`/`nodenext` no longer resolve the CommonJS type declaration. The `exports` map carried a single condition-independent `"types"` key, so the `import` entry was typed by `build/cjs/cjs.d.ts` — a CJS declaration, since the package has no `"type": "module"` — which made a default import resolve to the module namespace and `<Draggable>` fail with TS2604/TS2786. Each condition now declares its own `types`, pointing the ESM entry at the `cjs.d.mts` tsup already emits. Regression in 4.6.0; types-only, no runtime change. (closes [#816](https://github.com/react-grid-layout/react-draggable/issues/816))
 - Internal: the build contract check now asserts that `exports` types each condition separately, and type-checks a real ESM consumer against the built package under `nodenext` — resolving through `exports` rather than a `paths` mapping, which is what let this regression through.
