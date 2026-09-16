@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'yarn'
 
       - name: Install dependencies
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20, 22, 24]
+        node-version: [22, 24]
     steps:
       - uses: actions/checkout@v4
 
@@ -46,7 +46,7 @@ jobs:
       # not three times. All other unit tests still run on every Node version.
       - name: Run unit tests
         env:
-          SKIP_TSC_TYPE_COMPAT: ${{ matrix.node-version != 20 && '1' || '' }}
+          SKIP_TSC_TYPE_COMPAT: ${{ matrix.node-version != 22 && '1' || '' }}
         run: yarn test
 
       # The build (tsup --dts + webpack) recompiles the full type graph for
@@ -54,7 +54,7 @@ jobs:
       # building on every matrix entry just recompiles the same type graph N times.
       # Gate it to the primary Node version. Unit tests still run on all versions.
       - name: Build
-        if: matrix.node-version == 20
+        if: matrix.node-version == 22
         run: yarn build
 
   test-browser:
@@ -65,7 +65,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'yarn'
 
       - name: Install dependencies
@@ -85,7 +85,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'yarn'
 
       - name: Install dependencies
