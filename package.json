@@ -89,7 +89,11 @@
     "webpack-dev-server": "^5.2.2"
   },
   "resolutions": {
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.5",
+    "js-yaml": "^4.3.2",
+    "fast-uri": "^3.1.6",
+    "esbuild": "^0.28.2",
+    "uuid": "^11.1.1"
   },
   "precommit": [
     "lint",
