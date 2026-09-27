@@ -18,6 +18,8 @@ It can be built outside the library. Scroll from `onDrag` and let the drag conti
     else if (y < box.top + 40) scrollerRef.current.scrollTop -= 10;
   }}
 >
+  <div ref={nodeRef}>Drag me</div>
+</Draggable>
 ```
 
 If you need scroll-aware drag and drop with sortable containers, use a full drag-and-drop library (dnd-kit, react-dnd).
