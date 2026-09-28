@@ -52,19 +52,19 @@ class Draggable extends React.Component<Partial<DraggableProps>, DraggableState>
   static displayName?: string = 'Draggable';
 
   // Both the annotation and the `?` are load-bearing:
-  //  - The index-signature annotation stops tsc from inferring the
+  //  - The React.ComponentClass annotation stops tsc from inferring the
   //    PropTypes.Requireable<...> types and emitting `import PropTypes from
   //    'prop-types'` into the generated public .d.ts, which would force consumers
   //    to install @types/prop-types (the v4.5.0 hand-written typings had none).
   //  - The `?` keeps `propTypes` from being a *required* member of the public
   //    type. React <= 18's JSX LibraryManagedAttributes only consults a
   //    component's `propTypes` when it is required (`C extends {propTypes: ...}`);
-  //    when it does, this index-signature `propTypes` makes `defaultProps` stop
+  //    when it does, a broadly typed `propTypes` can make `defaultProps` stop
   //    marking props optional, so consumers are forced to pass every prop.
   //    Optional dodges that branch; React 19 ignores `propTypes` entirely. The
   //    typings/tsconfig.react18.json check guards against a regression here.
   // Do not remove. See lib/DraggableCore.tsx for the same guard.
-  static propTypes?: {[key: string]: unknown} = {
+  static propTypes?: React.ComponentClass['propTypes'] = {
     // Accepts all props <DraggableCore> accepts.
     ...DraggableCore.propTypes,
 
@@ -200,7 +200,7 @@ class Draggable extends React.Component<Partial<DraggableProps>, DraggableState>
 
   // React 16.3+
   // Arity (props, state)
-  static getDerivedStateFromProps({position}: DraggableProps, {prevPropsPosition}: DraggableState): Partial<DraggableState> | null {
+  static getDerivedStateFromProps({position}: Partial<DraggableProps>, {prevPropsPosition}: DraggableState): Partial<DraggableState> | null {
     // Set x/y if a new position is provided in props that is different than the previous.
     if (
       position &&
@@ -218,6 +218,8 @@ class Draggable extends React.Component<Partial<DraggableProps>, DraggableState>
     return null;
   }
 
+  // React resolves defaultProps before construction; expose the consumer shape.
+  constructor(props: Partial<DraggableProps>);
   constructor(props: DraggableProps) {
     super(props);
 
