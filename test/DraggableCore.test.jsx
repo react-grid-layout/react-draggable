@@ -620,5 +620,36 @@ describe('DraggableCore', () => {
       expect(threw).toBe(true);
       errorSpy.mockRestore();
     });
+
+    it('should name nodeRef in the drag start error when nodeRef is not provided', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const coreRef = React.createRef();
+      render(
+        <DraggableCore ref={coreRef}>
+          <div />
+        </DraggableCore>
+      );
+
+      // React 19 has no ReactDOM.findDOMNode, so without nodeRef there is no node to drag.
+      expect(() => coreRef.current.handleDragStart(new MouseEvent('mousedown'))).toThrow(/nodeRef/);
+      // The warning from mount is not repeated on drag start.
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      warnSpy.mockRestore();
+    });
+
+    it('should keep the old drag start error when nodeRef is provided but not attached', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const coreRef = React.createRef();
+      const nodeRef = React.createRef();
+      render(
+        <DraggableCore ref={coreRef} nodeRef={nodeRef}>
+          <div />
+        </DraggableCore>
+      );
+
+      expect(() => coreRef.current.handleDragStart(new MouseEvent('mousedown'))).toThrow('<DraggableCore> not mounted on DragStart!');
+      expect(warnSpy).not.toHaveBeenCalled();
+      warnSpy.mockRestore();
+    });
   });
 });
