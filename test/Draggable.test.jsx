@@ -431,4 +431,53 @@ describe('Draggable', () => {
       expect(container.firstChild).toBeTruthy();
     });
   });
+
+  // These run on React 19, which has no ReactDOM.findDOMNode.
+  describe('missing nodeRef', () => {
+    it('should warn once on mount when nodeRef is not provided', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      render(
+        <Draggable>
+          <div />
+        </Draggable>
+      );
+
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy.mock.calls[0][0]).toContain('nodeRef');
+      expect(warnSpy.mock.calls[0][0]).toContain('#using-noderef');
+      warnSpy.mockRestore();
+    });
+
+    it('should warn only once under StrictMode', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      render(
+        <React.StrictMode>
+          <Draggable>
+            <div />
+          </Draggable>
+        </React.StrictMode>
+      );
+
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when nodeRef is provided', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const { container } = render(
+        <DraggableWrapper>
+          <div />
+        </DraggableWrapper>
+      );
+      act(() => {
+        simulateDrag(container.firstChild, { from: { x: 0, y: 0 }, to: { x: 100, y: 100 } });
+      });
+
+      expect(warnSpy).not.toHaveBeenCalled();
+      warnSpy.mockRestore();
+    });
+  });
 });
