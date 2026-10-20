@@ -133,6 +133,36 @@ describe('DraggableCore', () => {
   });
 
   describe('cancellation', () => {
+    it('preserves mouse coordinates when onDrag cancels', () => {
+      const onStop = vi.fn();
+      const { container } = render(
+        <DraggableCoreWrapper onDrag={() => false} onStop={onStop}>
+          <div />
+        </DraggableCoreWrapper>
+      );
+      startDrag(container.firstChild, { x: 10, y: 20 });
+      moveDrag({ x: 30, y: 50 });
+      expect(onStop.mock.calls[0][1]).toMatchObject({ x: 30, y: 50, deltaX: 20, deltaY: 30 });
+    });
+
+    it('stops touch movement when onDrag cancels', () => {
+      const onDrag = vi.fn(() => false);
+      const onStop = vi.fn();
+      const { container } = render(
+        <DraggableCoreWrapper onDrag={onDrag} onStop={onStop}>
+          <div />
+        </DraggableCoreWrapper>
+      );
+      container.firstChild.dispatchEvent(createTouchEvent('touchstart', { clientX: 10, clientY: 20 }));
+      document.dispatchEvent(createTouchEvent('touchmove', { clientX: 30, clientY: 50 }));
+      expect(onStop).toHaveBeenCalledTimes(1);
+      expect(onStop.mock.calls[0][1]).toMatchObject({ x: 30, y: 50, deltaX: 20, deltaY: 30 });
+      document.dispatchEvent(createTouchEvent('touchmove', { clientX: 40, clientY: 60 }));
+      expect(onDrag).toHaveBeenCalledTimes(1);
+      document.dispatchEvent(createTouchEvent('touchend', { clientX: 40, clientY: 60 }));
+      expect(onStop).toHaveBeenCalledTimes(1);
+    });
+
     it('should cancel drag when onStart returns false', () => {
       const onStart = vi.fn(() => false);
       const onDrag = vi.fn();
