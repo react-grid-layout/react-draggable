@@ -116,8 +116,9 @@ The separate project serves source and local React through Vite. Playwright send
 real mouse input through the same selected scenarios, using native CSS layout
 rather than jsdom stubs. The existing Puppeteer/UMD/CDN suite remains separate.
 
-Use an already installed Playwright package, or set `PLAYWRIGHT_MODULE_PATH` to an
-existing package directory. `PLAYWRIGHT_EXECUTABLE_PATH` optionally selects an
+`playwright` is a devDependency and CI runs this check after the browser tests.
+Run `yarn playwright install chromium` once, or set `PLAYWRIGHT_MODULE_PATH` to
+another Playwright package directory. `PLAYWRIGHT_EXECUTABLE_PATH` optionally selects an
 installed Chromium executable. The runner never installs packages or browsers.
 For example:
 

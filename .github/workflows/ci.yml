@@ -109,6 +109,15 @@ jobs:
       - name: Run browser tests
         run: yarn test:browser
 
+      - name: Install Playwright Chromium
+        run: yarn playwright install --with-deps chromium
+
+      # Replays the golden scenarios with real Chromium input and fails if a
+      # trace differs from its jsdom golden file. The github-actions reporter
+      # puts each failure in a check annotation.
+      - name: Browser cross-check of golden traces
+        run: yarn golden:browser --reporter=default --reporter=github-actions
+
   coverage:
     runs-on: ubuntu-latest
     permissions:
