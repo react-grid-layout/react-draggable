@@ -79,6 +79,7 @@
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.5.0",
     "jsdom": "^27.4.0",
+    "playwright": "1.62.1",
     "pre-commit": "^1.2.2",
     "process": "^0.11.10",
     "puppeteer": "^25.11.0",
