@@ -21,7 +21,7 @@ Yarn scripts:
 - `yarn test path/to/test.jsx` - Run a single test file
 - `yarn test -t "test name"` - Run tests matching a pattern
 - `yarn typecheck` - `tsc --noEmit` on the source
-- `yarn test:browser` - Build and run browser tests (Puppeteer)
+- `yarn test:browser` - Build and run browser tests (Puppeteer). Yarn 4 skips dependency postinstall scripts, so run `yarn puppeteer browsers install chrome` once first.
 - `yarn test:all` - Run all tests
 - `yarn test:coverage` - Run tests with coverage report
 
