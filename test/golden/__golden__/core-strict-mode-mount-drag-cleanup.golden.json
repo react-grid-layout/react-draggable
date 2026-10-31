@@ -3,7 +3,6 @@
   "component": "DraggableCore",
   "name": "core-strict-mode-mount-drag-cleanup",
   "schemaVersion": 1,
-  "version": "4.7.2",
   "steps": [
     {"capture":true,"kind":"listener","operation":"add","passive":false,"target":"node","type":"touchstart"},
     {"capture":true,"kind":"listener","operation":"remove","passive":{"$type":"undefined"},"target":"document","type":"mousemove"},

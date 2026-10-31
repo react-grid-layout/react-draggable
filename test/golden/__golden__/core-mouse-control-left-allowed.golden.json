@@ -3,7 +3,6 @@
   "component": "DraggableCore",
   "name": "core-mouse-control-left-allowed",
   "schemaVersion": 1,
-  "version": "4.7.2",
   "steps": [
     {"capture":true,"kind":"listener","operation":"add","passive":false,"target":"node","type":"touchstart"},
     {"body":{"hasSelectionClass":false,"styleElExists":false,"styleElNonce":null},"dom":[{"classes":["seed"],"connected":true,"id":"node","styleTransform":"","svgTransformAttr":null,"translate":""}],"kind":"snapshot","label":"mount","listeners":[{"capture":true,"passive":false,"target":"node","type":"touchstart"}],"selection":0},

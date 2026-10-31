@@ -1,6 +1,6 @@
 import {afterAll, beforeAll, describe, expect, test} from 'vitest';
 import {createServer} from 'vite';
-import {mkdtemp, readFile} from 'node:fs/promises';
+import {mkdtemp, readFile, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -35,8 +35,10 @@ function comparableTrace(trace) {
   });
 }
 
+let cacheDir;
+
 beforeAll(async () => {
-  const cacheDir = await mkdtemp(path.join(tmpdir(), 'react-draggable-golden-vite-'));
+  cacheDir = await mkdtemp(path.join(tmpdir(), 'react-draggable-golden-vite-'));
   server = await createServer({
     configFile: false,
     root: projectRoot,
@@ -60,7 +62,11 @@ afterAll(async () => {
   try {
     await browser?.close();
   } finally {
-    await server?.close();
+    try {
+      await server?.close();
+    } finally {
+      if (cacheDir) await rm(cacheDir, {recursive: true, force: true});
+    }
   }
 });
 
@@ -107,7 +113,6 @@ describe('real mouse input agrees with checked-in jsdom goldens', () => {
     const goldenPath = path.join(projectRoot, 'test/golden/__golden__', `${name}.golden.json`);
     const golden = JSON.parse(await readFile(goldenPath, 'utf8'));
     expect(golden.name).toBe(name);
-    expect(golden.version).toBe('4.7.2');
     const context = await browser.newContext({viewport: {width: 1200, height: 900}});
     const page = await context.newPage();
     const errors = [];
