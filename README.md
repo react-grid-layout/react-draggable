@@ -255,6 +255,9 @@ whichever instance drags first (or, more simply, set it consistently everywhere)
 
 ## Contributing
 
+Interaction behavior is pinned by [golden traces](test/golden/README.md).
+Explain golden diffs in your PR before regenerating them.
+
 - Fork the project
 - Run `yarn dev` to start the development server
 - Make changes and add tests
