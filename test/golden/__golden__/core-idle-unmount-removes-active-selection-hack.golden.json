@@ -4,7 +4,6 @@
   "knownBug": "R5: unmounting an idle sibling removes the active body class and page selection.",
   "name": "core-idle-unmount-removes-active-selection-hack",
   "schemaVersion": 1,
-  "version": "4.7.2",
   "steps": [
     {"capture":true,"kind":"listener","operation":"add","passive":false,"target":"node","type":"touchstart"},
     {"capture":true,"kind":"listener","operation":"add","passive":false,"target":"idle","type":"touchstart"},

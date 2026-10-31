@@ -4,7 +4,6 @@
   "knownBug": "R10: touchend stops a mouse drag with NaN data and removes the touch listener pair.",
   "name": "core-hybrid-touchend-during-mouse-leaks-listeners",
   "schemaVersion": 1,
-  "version": "4.7.2",
   "steps": [
     {"capture":true,"kind":"listener","operation":"add","passive":false,"target":"node","type":"touchstart"},
     {"body":{"hasSelectionClass":false,"styleElExists":false,"styleElNonce":null},"dom":[{"classes":["seed"],"connected":true,"id":"node","styleTransform":"","svgTransformAttr":null,"translate":""}],"kind":"snapshot","label":"mount","listeners":[{"capture":true,"passive":false,"target":"node","type":"touchstart"}],"selection":0},

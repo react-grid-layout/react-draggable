@@ -3,7 +3,6 @@
   "component": "DraggableCore",
   "name": "core-without-nodeRef-react19-start-error",
   "schemaVersion": 1,
-  "version": "4.7.2",
   "steps": [
     {"body":{"hasSelectionClass":false,"styleElExists":false,"styleElNonce":null},"dom":[{"classes":["seed"],"connected":true,"id":"node","styleTransform":"","svgTransformAttr":null,"translate":""}],"kind":"snapshot","label":"mount","listeners":[],"selection":0},
     {"button":0,"clientX":10,"clientY":10,"ctrlKey":false,"defaultPrevented":false,"kind":"input","target":"node","type":"mousedown","x":10,"y":10},

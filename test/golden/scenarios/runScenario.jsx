@@ -4,7 +4,6 @@ import {flushSync} from 'react-dom';
 import Draggable, {DraggableCore} from '../../../lib/Draggable';
 import {createRecorder} from '../recorder';
 import {installLayout, pointerDriver} from '../harness';
-import {version} from '../../../package.json';
 
 /** Exercise the public component boundary. Lifecycle actions share the input timeline. */
 export function runScenario(scenario) {
@@ -117,7 +116,7 @@ export function runScenario(scenario) {
       recorder.snapshot('unmount', observedNodes);
     }
     return {
-      schemaVersion: 1, version, name: scenario.name, component: scenario.component,
+      schemaVersion: 1, name: scenario.name, component: scenario.component,
       cadence: scenario.cadence, ...(scenario.knownBug ? {knownBug: scenario.knownBug} : {}),
       steps: recorder.trace
     };

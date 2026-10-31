@@ -3,7 +3,6 @@
   "component": "Draggable",
   "name": "draggable-mouse-unmount-during-onStop",
   "schemaVersion": 1,
-  "version": "4.7.2",
   "steps": [
     {"capture":true,"kind":"listener","operation":"add","passive":false,"target":"node","type":"touchstart"},
     {"body":{"hasSelectionClass":false,"styleElExists":false,"styleElNonce":null},"dom":[{"classes":["react-draggable","seed"],"connected":true,"id":"node","styleTransform":"translate(0px,0px)","svgTransformAttr":null,"translate":""}],"kind":"snapshot","label":"mount","listeners":[{"capture":true,"passive":false,"target":"node","type":"touchstart"}],"selection":0},

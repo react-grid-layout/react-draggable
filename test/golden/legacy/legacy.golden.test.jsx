@@ -4,7 +4,6 @@ import {createRoot} from 'react-dom/client';
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import Draggable from '../../../lib/Draggable';
 import DraggableCore from '../../../lib/DraggableCore';
-import {version} from '../../../package.json';
 import {createRecorder} from '../recorder';
 import {expectGolden} from '../expectGolden';
 import {pointerDriver} from '../harness';
@@ -48,7 +47,7 @@ function runLegacy(Component, component, name) {
     mounted = false;
     recorder.snapshot('unmount', [node]);
     return {
-      schemaVersion: 1, version, reactVersion: React.version, name, component,
+      schemaVersion: 1, reactVersion: React.version, name, component,
       cadence: 'per-event', steps: recorder.trace,
     };
   } finally {
@@ -66,7 +65,8 @@ describe('React 18 legacy findDOMNode source traces', () => {
     ['legacy-core-findDOMNode', 'DraggableCore', DraggableCore],
     ['legacy-draggable-findDOMNode', 'Draggable', Draggable],
   ])('%s', (name, component, Component) => {
-    expect(React.version).toBe('18.3.1');
+    // Any matching React 18 runs the findDOMNode path; the config checks the pair.
+    expect(React.version.split('.')[0]).toBe('18');
     expect(ReactDOM.version).toBe(React.version);
     const trace = runLegacy(Component, component, name);
     // Regeneration must still demonstrate a successful legacy drag lifecycle.
