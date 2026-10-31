@@ -3,7 +3,8 @@
 
 # Make it parallel
 MAKEFLAGS += j4
-export BIN := $(shell yarn bin)
+# Yarn 4 prints every binary for a bare `yarn bin`; nodeLinker: node-modules puts them here.
+export BIN := $(CURDIR)/node_modules/.bin
 .PHONY: test dev lint build build-lib build-web clean install link publish \
         check-release release-patch release-minor release-major
 .DEFAULT_GOAL := build
