@@ -1,0 +1,29 @@
+{
+  "cadence": "per-event",
+  "component": "Draggable",
+  "name": "draggable-touch-onStart-false-still-prevents-default",
+  "schemaVersion": 1,
+  "version": "4.7.2",
+  "steps": [
+    {"capture":true,"kind":"listener","operation":"add","passive":false,"target":"node","type":"touchstart"},
+    {"body":{"hasSelectionClass":false,"styleElExists":false,"styleElNonce":null},"dom":[{"classes":["react-draggable","seed"],"connected":true,"id":"node","styleTransform":"translate(0px,0px)","svgTransformAttr":null,"translate":""}],"kind":"snapshot","label":"mount","listeners":[{"capture":true,"passive":false,"target":"node","type":"touchstart"}],"selection":0},
+    {"button":{"$type":"undefined"},"changedTouches":[{"identifier":7,"target":"node","x":10,"y":10}],"clientX":{"$type":"undefined"},"clientY":{"$type":"undefined"},"ctrlKey":{"$type":"undefined"},"defaultPrevented":false,"kind":"input","target":"node","targetTouches":[{"identifier":7,"target":"node","x":10,"y":10}],"touches":[{"identifier":7,"target":"node","x":10,"y":10}],"type":"touchstart"},
+    {"component":"Draggable","data":{"$type":"undefined"},"eventType":"touchstart","kind":"callback","name":"onMouseDown","returned":{"$type":"undefined"}},
+    {"eventType":"touchstart","kind":"preventDefault"},
+    {"component":"Draggable","data":{"deltaX":0,"deltaY":0,"lastX":0,"lastY":0,"nodeId":"node","x":0,"y":0},"eventType":"touchstart","kind":"callback","name":"onStart","returned":false},
+    {"defaultPrevented":true,"kind":"dispatched","type":"touchstart"},
+    {"body":{"hasSelectionClass":false,"styleElExists":false,"styleElNonce":null},"dom":[{"classes":["react-draggable","seed"],"connected":true,"id":"node","styleTransform":"translate(0px,0px)","svgTransformAttr":null,"translate":""}],"kind":"snapshot","label":"touchstart","listeners":[{"capture":true,"passive":false,"target":"node","type":"touchstart"}],"selection":0},
+    {"button":{"$type":"undefined"},"changedTouches":[{"identifier":7,"target":"node","x":35,"y":25}],"clientX":{"$type":"undefined"},"clientY":{"$type":"undefined"},"ctrlKey":{"$type":"undefined"},"defaultPrevented":false,"kind":"input","target":"document","targetTouches":[{"identifier":7,"target":"node","x":35,"y":25}],"touches":[{"identifier":7,"target":"node","x":35,"y":25}],"type":"touchmove"},
+    {"defaultPrevented":false,"kind":"dispatched","type":"touchmove"},
+    {"body":{"hasSelectionClass":false,"styleElExists":false,"styleElNonce":null},"dom":[{"classes":["react-draggable","seed"],"connected":true,"id":"node","styleTransform":"translate(0px,0px)","svgTransformAttr":null,"translate":""}],"kind":"snapshot","label":"touchmove","listeners":[{"capture":true,"passive":false,"target":"node","type":"touchstart"}],"selection":0},
+    {"button":{"$type":"undefined"},"changedTouches":[{"identifier":7,"target":"node","x":35,"y":25}],"clientX":{"$type":"undefined"},"clientY":{"$type":"undefined"},"ctrlKey":{"$type":"undefined"},"defaultPrevented":false,"kind":"input","target":"document","targetTouches":[],"touches":[],"type":"touchend"},
+    {"defaultPrevented":false,"kind":"dispatched","type":"touchend"},
+    {"body":{"hasSelectionClass":false,"styleElExists":false,"styleElNonce":null},"dom":[{"classes":["react-draggable","seed"],"connected":true,"id":"node","styleTransform":"translate(0px,0px)","svgTransformAttr":null,"translate":""}],"kind":"snapshot","label":"touchend","listeners":[{"capture":true,"passive":false,"target":"node","type":"touchstart"}],"selection":0},
+    {"capture":true,"kind":"listener","operation":"remove","passive":{"$type":"undefined"},"target":"document","type":"mousemove"},
+    {"capture":true,"kind":"listener","operation":"remove","passive":{"$type":"undefined"},"target":"document","type":"touchmove"},
+    {"capture":true,"kind":"listener","operation":"remove","passive":{"$type":"undefined"},"target":"document","type":"mouseup"},
+    {"capture":true,"kind":"listener","operation":"remove","passive":{"$type":"undefined"},"target":"document","type":"touchend"},
+    {"capture":true,"kind":"listener","operation":"remove","passive":false,"target":"node","type":"touchstart"},
+    {"body":{"hasSelectionClass":false,"styleElExists":false,"styleElNonce":null},"dom":[{"classes":["react-draggable","seed"],"connected":false,"id":"node","styleTransform":"translate(0px,0px)","svgTransformAttr":null,"translate":""}],"kind":"snapshot","label":"unmount","listeners":[],"selection":0}
+  ]
+}

@@ -22,6 +22,8 @@
     "test": "vitest run --reporter=verbose",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "golden:update": "GOLDEN_UPDATE=1 vitest run test/golden/scenarios --reporter=verbose",
+    "golden:typecheck": "tsc --noEmit -p test/golden",
     "test:ui": "vitest --ui",
     "test:browser": "yarn build && vitest run --config vitest.browser.config.js",
     "test:all": "yarn test && yarn test:browser",

@@ -10,7 +10,7 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./test/setup.js'],
     include: ['test/**/*.test.{js,jsx,ts,tsx}'],
-    exclude: ['test/browser/**'],
+    exclude: ['test/browser/**', 'test/golden/browser/**', 'test/golden/legacy/**'],
     // Suppress error stack traces from expected test failures
     onConsoleLog: () => false,
     coverage: {
