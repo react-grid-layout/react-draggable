@@ -51,7 +51,10 @@ test-all: test test-browser
 dev: $(BIN) clean
 	env DRAGGABLE_DEBUG=1 $(BIN)/webpack serve --mode=development
 
-node_modules/.bin: install
+# A fresh checkout has no node_modules/.bin yet; install it on demand. This is a
+# file target, so it is skipped once the directory exists.
+$(BIN):
+	yarn install
 
 # ── Release ──────────────────────────────────────────────────────────────────
 # Two steps, deliberately separate:
