@@ -16,3 +16,16 @@ it('keeps undefined and nonfinite coordinates in valid JSON, one complete step p
   expect(lines).toHaveLength(2);
   expect(lines.map(line => JSON.parse(line.replace(/,$/, '')))).toEqual(expected);
 });
+
+it('never encodes an ordinary object the same as a sentinel', () => {
+  const pairs: Array<[unknown, unknown]> = [
+    [undefined, {$type: 'undefined'}],
+    [NaN, {$number: 'NaN'}],
+    [new Array(1), [{$hole: true}]],
+    [new Array(1), [null]],
+    [{$type: 'undefined'}, {$escaped: {$type: 'undefined'}}]
+  ];
+  for (const [sentinel, lookalike] of pairs) {
+    expect(serialize({name: 'x', steps: [sentinel]})).not.toBe(serialize({name: 'x', steps: [lookalike]}));
+  }
+});
