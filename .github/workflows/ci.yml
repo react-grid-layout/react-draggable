@@ -9,17 +9,26 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Corepack goes first so setup-node's yarn cache lookup runs the version
+      # pinned in package.json.
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: 24
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Lint
         run: yarn lint
@@ -29,8 +38,17 @@ jobs:
     strategy:
       matrix:
         node-version: [22, 24]
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Corepack goes first so setup-node's yarn cache lookup runs the version
+      # pinned in package.json.
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -39,7 +57,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       # The typeCompat tsc compile is Node-version-independent; skip it on every
       # non-primary matrix node so the full source type graph is compiled once,
@@ -59,37 +77,60 @@ jobs:
 
   test-browser:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Corepack goes first so setup-node's yarn cache lookup runs the version
+      # pinned in package.json.
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: 24
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Build
         run: yarn build
+
+      # Yarn 4 does not run dependency postinstall scripts, so puppeteer's own
+      # Chrome download never happens during install.
+      - name: Install Chrome for Puppeteer
+        run: yarn puppeteer browsers install chrome
 
       - name: Run browser tests
         run: yarn test:browser
 
   coverage:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Corepack goes first so setup-node's yarn cache lookup runs the version
+      # pinned in package.json.
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: 24
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Run tests with coverage
         run: yarn test:coverage

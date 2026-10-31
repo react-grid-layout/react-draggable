@@ -3,7 +3,8 @@
 
 # Make it parallel
 MAKEFLAGS += j4
-export BIN := $(shell yarn bin)
+# Yarn 4 prints every binary for a bare `yarn bin`; nodeLinker: node-modules puts them here.
+export BIN := $(CURDIR)/node_modules/.bin
 .PHONY: test dev lint build build-lib build-web clean install link publish \
         check-release release-patch release-minor release-major
 .DEFAULT_GOAL := build
@@ -50,7 +51,10 @@ test-all: test test-browser
 dev: $(BIN) clean
 	env DRAGGABLE_DEBUG=1 $(BIN)/webpack serve --mode=development
 
-node_modules/.bin: install
+# A fresh checkout has no node_modules/.bin yet; install it on demand. This is a
+# file target, so it is skipped once the directory exists.
+$(BIN):
+	yarn install
 
 # ── Release ──────────────────────────────────────────────────────────────────
 # Two steps, deliberately separate:
