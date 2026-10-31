@@ -13,7 +13,7 @@ clean:
 	rm -rf build
 	mkdir -p build
 
-lint:
+lint: $(BIN)
 	@$(BIN)/eslint lib
 	@$(BIN)/tsc --noEmit
 	@$(BIN)/tsc -p typings
