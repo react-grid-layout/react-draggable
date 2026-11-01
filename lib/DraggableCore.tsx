@@ -30,6 +30,9 @@ const eventsFor = {
 // Default to mouse events.
 let dragEventFor = eventsFor.mouse;
 
+// ReactDOM.findDOMNode was removed in React 19
+const legacyReactDOM = ReactDOM as unknown as {findDOMNode?: (instance: React.Component) => HTMLElement | null};
+
 export type DraggableCoreDefaultProps = {
   allowAnyClick: boolean,
   allowMobileScroll: boolean,
@@ -269,6 +272,8 @@ export default class DraggableCore extends React.Component<Partial<DraggableCore
 
   mounted: boolean = false;
 
+  warnedMissingNodeRef: boolean = false;
+
   componentDidMount() {
     this.mounted = true;
     // Touch handlers must be added with {passive: false} to be cancelable.
@@ -301,16 +306,19 @@ export default class DraggableCore extends React.Component<Partial<DraggableCore
     if (this.props?.nodeRef) {
       return this.props.nodeRef.current;
     }
-    // ReactDOM.findDOMNode was removed in React 19
-    const legacyReactDOM = ReactDOM as unknown as {findDOMNode?: (instance: React.Component) => HTMLElement | null};
     if (typeof legacyReactDOM.findDOMNode === 'function') {
       return legacyReactDOM.findDOMNode(this);
     }
-    // In React 19+, nodeRef is required - log a warning via our log utility
-    log(
-      'react-draggable: ReactDOM.findDOMNode is not available in React 19+. ' +
-      'You must provide a nodeRef prop. See: https://github.com/react-grid-layout/react-draggable#noderef'
-    );
+    // In React 19+, nodeRef is required. Warn once per instance; `log` is a no-op
+    // unless DRAGGABLE_DEBUG is set, so users would never see it.
+    if (!this.warnedMissingNodeRef) {
+      this.warnedMissingNodeRef = true;
+      // eslint-disable-next-line no-console
+      console.warn(
+        'react-draggable: ReactDOM.findDOMNode is not available in React 19+. ' +
+        'You must provide a nodeRef prop. See: https://github.com/react-grid-layout/react-draggable#using-noderef'
+      );
+    }
     return null;
   }
 
@@ -324,6 +332,12 @@ export default class DraggableCore extends React.Component<Partial<DraggableCore
     // Get nodes. Be sure to grab relative document (could be iframed)
     const thisNode = this.findDOMNode();
     if (!thisNode || !thisNode.ownerDocument || !thisNode.ownerDocument.body) {
+      if (!this.props.nodeRef && typeof legacyReactDOM.findDOMNode !== 'function') {
+        throw new Error(
+          '<DraggableCore> has no DOM node on DragStart: no nodeRef prop was provided, and ReactDOM.findDOMNode ' +
+          'is not available in React 19+. See: https://github.com/react-grid-layout/react-draggable#using-noderef'
+        );
+      }
       throw new Error('<DraggableCore> not mounted on DragStart!');
     }
     const {ownerDocument} = thisNode;
