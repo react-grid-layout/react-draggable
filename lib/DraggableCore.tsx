@@ -402,15 +402,7 @@ export default class DraggableCore extends React.Component<Partial<DraggableCore
     // Call event handler. If it returns explicit false, trigger end.
     const shouldUpdate = this.props.onDrag(e, coreEvent);
     if (shouldUpdate === false || this.mounted === false) {
-      try {
-        this.handleDragStop(new MouseEvent('mouseup') as MouseTouchEvent);
-      } catch {
-        // Old browsers
-        const event = document.createEvent('MouseEvents') as unknown as MouseTouchEvent;
-        // I see why this insanity was deprecated
-        event.initMouseEvent('mouseup', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        this.handleDragStop(event);
-      }
+      this.handleDragStop(e);
       return;
     }
 
