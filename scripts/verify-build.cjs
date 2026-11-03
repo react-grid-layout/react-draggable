@@ -61,7 +61,7 @@ assert.ok(
 // ── Contract 3: generated declarations must not leak internal-only deps ──────
 // The shipped .d.ts is generated from source. The v4.5.0 hand-written typings
 // depended only on `react`; if a `propTypes`/`defaultProps` static loses its
-// index-signature annotation, tsc infers PropTypes.* types and emits
+// explicit React.ComponentClass annotation, tsc infers PropTypes.* types and emits
 // `import ... 'prop-types'` into the public declaration, silently forcing
 // consumers to install @types/prop-types. Fail the build if that creeps back.
 const dtsDir = path.join(root, 'build', 'cjs');
@@ -75,7 +75,7 @@ assert.equal(
   leaks.length,
   0,
   `Generated declarations leak 'prop-types' (consumers would need @types/prop-types): ${leaks.join(', ')}. ` +
-    `Annotate the offending static (e.g. \`static propTypes?: {[key: string]: unknown}\`) so tsc does not emit PropTypes types.`
+    `Annotate the offending static (e.g. \`static propTypes?: React.ComponentClass['propTypes']\`) so tsc does not emit PropTypes types.`
 );
 
 // ── Contract 4: no unguarded `process` in browser-facing bundles (issue #806) ─
@@ -185,9 +185,14 @@ try {
   );
   fs.writeFileSync(
     path.join(consumerDir, 'consumer.tsx'),
-    `import Draggable, {DraggableCore} from 'react-draggable';\n` +
+    `import {lazy} from 'react';\n` +
+      `import Draggable, {DraggableCore} from 'react-draggable';\n` +
       `export const Dragged = () => <Draggable><div /></Draggable>;\n` +
-      `export const Core = () => <DraggableCore><div /></DraggableCore>;\n`
+      `export const Core = () => <DraggableCore><div /></DraggableCore>;\n` +
+      `const LazyDraggable = lazy(() => import('react-draggable'));\n` +
+      `const LazyCore = lazy(() => import('react-draggable').then(m => ({default: m.DraggableCore})));\n` +
+      `export const LazyDragged = () => <LazyDraggable><div /></LazyDraggable>;\n` +
+      `export const LazyDraggedCore = () => <LazyCore><div /></LazyCore>;\n`
   );
 
   try {

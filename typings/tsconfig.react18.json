@@ -4,6 +4,7 @@
     "noEmit": true,
     "jsx": "preserve",
     "strict": true,
+    "module": "commonjs",
     "target": "ES2019",
     "lib": ["ES2019", "DOM", "DOM.Iterable"],
     "moduleResolution": "node",

@@ -67,3 +67,16 @@ root.render(
 root.render(<Draggable><div/></Draggable>);
 
 root.render(<DraggableCore><div/></DraggableCore>);
+
+// Both exports must be ComponentTypes for React.lazy, without consumer casts.
+const LazyDraggable = React.lazy(() => import('react-draggable'));
+const LazyCore = React.lazy(() => import('react-draggable').then(m => ({default: m.DraggableCore})));
+
+root.render(<LazyDraggable><div/></LazyDraggable>);
+root.render(<LazyCore><div/></LazyCore>);
+
+// Lazy loading must preserve the component's prop checks.
+// @ts-expect-error axis only accepts the documented directions
+root.render(<LazyDraggable axis="diagonal"><div/></LazyDraggable>);
+// @ts-expect-error scale must be a number
+root.render(<LazyCore scale="large"><div/></LazyCore>);
