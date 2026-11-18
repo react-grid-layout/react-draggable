@@ -493,7 +493,7 @@ export default class DraggableCore extends React.Component<Partial<DraggableCore
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     // children is typed as ReactNode for public-API compatibility; Children.only
     // throws at runtime unless it is exactly one element, so the cast is safe.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line typescript/no-explicit-any
     return React.cloneElement(React.Children.only(this.props.children) as React.ReactElement<any>, {
       // Note: mouseMove handler is attached to document so it will still function
       // when the user drags quickly and leaves the bounds of the element.

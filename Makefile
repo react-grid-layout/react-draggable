@@ -14,7 +14,7 @@ clean:
 	mkdir -p build
 
 lint: $(BIN)
-	@$(BIN)/eslint lib
+	@$(BIN)/oxlint lib
 	@$(BIN)/tsc --noEmit
 	@$(BIN)/tsc -p typings
 	@$(BIN)/tsc -p typings/tsconfig.react18.json

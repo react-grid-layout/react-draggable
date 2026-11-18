@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This project uses Make for builds. Key commands:
 
 - `make build` - Full build (cleans, then builds with tsup (CJS, ESM, `.d.ts`) and webpack (UMD bundle))
-- `make lint` - Runs ESLint on `lib`, then `tsc --noEmit` on the source and `tsc -p typings` (React 19 and React 18) on the public typings
+- `make lint` - Runs oxlint on `lib`, then `tsc --noEmit` on the source and `tsc -p typings` (React 19 and React 18) on the public typings
 - `make test` - Runs unit tests via Vitest
 - `make test-browser` - Runs browser tests via Puppeteer (requires build first)
 - `make test-all` - Runs both unit and browser tests
