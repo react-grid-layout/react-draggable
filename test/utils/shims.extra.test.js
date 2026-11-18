@@ -52,7 +52,6 @@ describe('shims - additional edge cases', () => {
 
     it('returns false for boxed Number objects', () => {
       // typeof new Number(1) === 'object'
-      // eslint-disable-next-line no-new-wrappers
       expect(isNum(new Number(1))).toBe(false);
     });
 

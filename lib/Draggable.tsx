@@ -242,7 +242,7 @@ class Draggable extends React.Component<Partial<DraggableProps>, DraggableState>
     };
 
     if (props.position && !(props.onDrag || props.onStop)) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line no-console
       console.warn('A `position` was applied to this <Draggable>, without drag handlers. This will make this ' +
         'component effectively undraggable. Please attach `onDrag` or `onStop` handlers so you can adjust the ' +
         '`position` of this element.');

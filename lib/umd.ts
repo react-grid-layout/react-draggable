@@ -16,7 +16,7 @@
 // cjs.ts keeps the modern default+named ESM shape for the tsup cjs/esm/dts
 // artifacts; this file is consumed only by webpack and is excluded from tsup.
 
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
+/* oxlint-disable typescript/no-require-imports, typescript/no-explicit-any */
 const {default: Draggable, DraggableCore} = require('./Draggable') as typeof import('./Draggable');
 
 const root = Draggable as any;

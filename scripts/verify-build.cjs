@@ -28,7 +28,6 @@ assert.ok(
   `Missing CJS build at ${cjsPath} — run \`yarn build\` first.`
 );
 
-// eslint-disable-next-line global-require, import/no-dynamic-require
 const cjs = require(cjsPath);
 assert.equal(
   typeof cjs,
